@@ -5,9 +5,9 @@ namespace Dogo
 	enum class RenderAPI
 	{
 #if DG_PLATFORM_WINDOWS
-		None = 0, OpenGL, VULKAN, D3D11, D3D12
+		API_NONE, OpenGL, VULKAN, D3D11, D3D12
 #else
-		None = 0, OpenGL, VULKAN
+		API_NONE, OpenGL, VULKAN
 #endif
 	};
 	class GraphicsContext
@@ -21,7 +21,12 @@ namespace Dogo
 		virtual void Shutdown() = 0;
 		virtual void ClearColor(float x, float y, float z, float a) = 0;
 
+
+#if DG_PLATFORM_WINDOWS
 		static void Create(HWND* handle, RenderAPI api);
+#else
+		static void Create(RenderAPI api);
+#endif
 
 		static GraphicsContext* Get() { return s_Context; }
 		static RenderAPI GetAPI() { return s_RenderAPI; }

@@ -1,5 +1,4 @@
 #include "dgpch.h"
-#include <Windows.h>
 #include <Dogo.h>
 
 class Sandbox : public Dogo::Application

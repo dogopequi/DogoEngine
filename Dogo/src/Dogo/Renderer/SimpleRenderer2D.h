@@ -29,7 +29,7 @@ namespace Dogo
 			RenderAPI api = GraphicsContext::GetAPI();
 			switch (api)
 			{
-			case RenderAPI::None:
+			case RenderAPI::API_NONE:
 				DG_FATAL("Invalid render API");
 				break;
 			case RenderAPI::OpenGL:

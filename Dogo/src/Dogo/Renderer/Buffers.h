@@ -5,7 +5,7 @@ namespace Dogo {
 
 	enum class ShaderDataType
 	{
-		None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, uInt, uInt2, uInt3, uInt4, Bool
+		TYPE_NONE, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, uInt, uInt2, uInt3, uInt4, Boolean
 	};
 
 	static uint32_t ShaderDataTypeSize(ShaderDataType type)
@@ -26,7 +26,7 @@ namespace Dogo {
 		case ShaderDataType::uInt2:     return 4 * 2;
 		case ShaderDataType::uInt3:     return 4 * 3;
 		case ShaderDataType::uInt4:     return 4 * 4;
-		case ShaderDataType::Bool:     return 1;
+		case ShaderDataType::Boolean:     return 1;
 		}
 
 		DG_ASSERT_MSG(false, "Unknown ShaderDataType");
@@ -51,7 +51,7 @@ namespace Dogo {
 		case ShaderDataType::uInt2:     return GL_UNSIGNED_INT;
 		case ShaderDataType::uInt3:     return GL_UNSIGNED_INT;
 		case ShaderDataType::uInt4:     return GL_UNSIGNED_INT;
-		case ShaderDataType::Bool:     return GL_BOOL;
+		case ShaderDataType::Boolean:     return GL_BOOL;
 		}
 
 		DG_ASSERT_MSG(false, "Unknown ShaderDataType");
@@ -116,7 +116,7 @@ namespace Dogo {
 			case ShaderDataType::uInt2:    return 2;
 			case ShaderDataType::uInt3:    return 3;
 			case ShaderDataType::uInt4:    return 4;
-			case ShaderDataType::Bool:    return 1;
+			case ShaderDataType::Boolean:    return 1;
 			}
 
 			DG_ASSERT_MSG(false, "Unknown ShaderDataType");

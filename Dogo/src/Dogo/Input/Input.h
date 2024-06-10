@@ -176,9 +176,9 @@
 #define DG_KEY_Z                  90
 #define DG_KEY_GRAVE_ACCENT       186 // ` = [
 #define DG_KEY_PLUS				  187// + = ]
-#define DG_KEY_ACUTE_ACCENT       222 // ด = {
-#define DG_KEY_CEDILHA            191 // ็ = }
-#define DG_KEY_DEGREE             220 // บ = \
+#define DG_KEY_ACUTE_ACCENT       222 // ยด = {
+#define DG_KEY_CEDILHA            191 // รง = }
+#define DG_KEY_DEGREE             220 // ยบ = \
 
 #define DG_KEY_LEFT_BRACKET       186 // DG_KEY_RIGHT_ALT
 #define DG_KEY_RIGHT_BRACKET      187 // DG_KEY_RIGHT_ALT
@@ -255,11 +255,11 @@ namespace Dogo
 {
 	enum class KeyState
 	{
-		None = 0, PRESSED, REPEAT, RELEASED
+		KEY_NONE, PRESSED, REPEAT, RELEASED
 	};
 	enum class ButtonState
 	{
-		None = 0, PRESSED, REPEAT, RELEASED
+		BUTTON_NONE, PRESSED, REPEAT, RELEASED
 	};
 
 	class Input
@@ -456,17 +456,17 @@ namespace Dogo
 		case DG_KEY_ACUTE_ACCENT:
 		{
 			if (Input::GetLastKey() == DG_KEY_LEFT_ALT) { Input::ProcessKey(DG_KEY_LEFT_CURLY_BRACKET, false); return "{"; }
-			return "ด";
+			return "ยด";
 		}
 		case DG_KEY_CEDILHA:
 		{
 			if (Input::GetLastKey() == DG_KEY_LEFT_ALT) { Input::ProcessKey(DG_KEY_RIGHT_CURLY_BRACKET, false); return "}"; }
-			return "็";
+			return "รง";
 		}
 		case DG_KEY_DEGREE:
 		{
 			if (Input::GetLastKey() == DG_KEY_LEFT_ALT) { Input::ProcessKey(DG_KEY_BACKSLASH, false); return "\\"; }
-			return "บ";
+			return "ยบ";
 		}
 		case DG_KEY_ESCAPE:
 			return "ESC";

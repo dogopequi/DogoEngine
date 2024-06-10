@@ -5,7 +5,7 @@
 #include "Dogo/Logger.h"
 namespace Dogo
 {
-	Window* Window::Create(const WindowAttrib& attrib)
+	DG_Window* DG_Window::Create(const WindowAttrib& attrib)
 	{
 		return new LinuxWindow(attrib);
 	}

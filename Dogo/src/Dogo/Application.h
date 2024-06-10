@@ -10,7 +10,9 @@
 #include "Graphics/WindowsWindow.h"
 namespace Dogo
 {
+	#if DG_PLATFORM_WINDOWS
 	using namespace DirectX;
+	#endif
 	class DG_API Application
 	{
 	public:
@@ -34,7 +36,7 @@ namespace Dogo
 		bool MouseButtonReleasedCallBack(MouseButtonReleasedEvent& e);
 		bool MouseScrolledCallBack(MouseScrolledEvent& e);
 	private:
-		Window* m_Window;
+		DG_Window* m_Window;
 		LayerStack m_LayerStack;
 
 		bool m_IsRunning;

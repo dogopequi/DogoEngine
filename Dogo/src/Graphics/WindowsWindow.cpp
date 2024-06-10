@@ -11,7 +11,7 @@
 	namespace Dogo
 	{
 	std::map<HWND, WindowsWindow*> WindowsWindow::s_Handles;
-	Window* Window::Create(const WindowAttrib& attrib)
+	DG_Window* DG_Window::Create(const WindowAttrib& attrib)
 	{
 		return new WindowsWindow(attrib);
 	}

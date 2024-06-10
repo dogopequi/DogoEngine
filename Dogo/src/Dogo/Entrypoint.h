@@ -1,7 +1,11 @@
 #pragma once
-#include <Windows.h>
-#include <tchar.h>
+//#include <tchar.h>
+#if DG_PLATFORM_WINDOWS
 #include "Dogo/Input/WindowsInput.h"
+#endif
+#if DG_PLATFORM_LINUX
+#include "Dogo/Input/LinuxInput.h"
+#endif
 extern Dogo::Application* Dogo::CreateApplication();
 
 //#if DG_PLATFORM_WINDOWS
@@ -22,16 +26,16 @@ extern Dogo::Application* Dogo::CreateApplication();
 #if DG_PLATFORM_WINDOWS
 Dogo::Input* Dogo::Input::s_Instance = new Dogo::WindowsInput();
 #else
-
+Dogo::Input* Dogo::Input::s_Instance = new Dogo::LinuxInput();
 #endif
 int main(int argc, char** argv)
 {
-    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    DWORD dwMode = 0;
-    GetConsoleMode(hOut, &dwMode);
-    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    SetConsoleMode(hOut, dwMode);
+//    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+//
+//    DWORD dwMode = 0;
+//    GetConsoleMode(hOut, &dwMode);
+//    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+//    SetConsoleMode(hOut, dwMode);
 	auto app = Dogo::CreateApplication();
 	app->Run();
 	delete app;

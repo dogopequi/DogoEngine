@@ -15,7 +15,7 @@ namespace Dogo
 		WindowAttrib(const std::string& name = "Dogo Engine", uint32_t width = 1280, uint32_t height = 720)
 			: Name(name), Width(width), Height(height){}
 	};
-	class DG_API Window
+	class DG_API DG_Window
 	{
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
@@ -38,7 +38,7 @@ namespace Dogo
 		virtual void SetInstance(HINSTANCE instance) = 0;
 #endif
 
-		static Window* Create(const WindowAttrib& attrib = WindowAttrib());
+		static DG_Window* Create(const WindowAttrib& attrib = WindowAttrib());
 	};
 }
 

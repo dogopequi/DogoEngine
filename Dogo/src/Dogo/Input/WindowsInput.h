@@ -1,5 +1,7 @@
 #pragma once
+#if DG_PLATFORM_WINDOWS
 #include "Input.h"
+
 namespace Dogo
 {
 	class WindowsInput : public Input
@@ -15,4 +17,5 @@ namespace Dogo
 		virtual void ProcessScrollDeltaImpl(int32_t delta) override;
 	};
 }
+#endif
 

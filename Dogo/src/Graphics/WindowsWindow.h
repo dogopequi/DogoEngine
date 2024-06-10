@@ -7,7 +7,7 @@
 namespace Dogo
 {
 	LRESULT CALLBACK Win32ProcessMessage(HWND hwnd, uint32_t msg, WPARAM wparam, LPARAM lparam);
-	class DG_API WindowsWindow : public Window
+	class DG_API WindowsWindow : public DG_Window
 	{
 	public:
 

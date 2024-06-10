@@ -27,13 +27,13 @@ namespace Dogo
 		xcb_atom_t wmProtocols;
 		xcb_atom_t wmDelete_win;
 	};
-	class DG_API LinuxWindow : public Window
+	class DG_API LinuxWindow : public DG_Window
 	{
 	public:
 		LinuxWindow(const WindowAttrib& attrib);
 		virtual ~LinuxWindow();
 
-		void OnUpdate() override;
+		virtual void OnUpdate() override;
 
 		virtual uint32_t GetWidth() const { return m_Width; }
 		virtual uint32_t GetHeight() const { return m_Height; }
@@ -41,6 +41,14 @@ namespace Dogo
 		virtual float GetClock() const override;
 		virtual void SetVsync(bool b) override;
 		virtual bool isVSync() const { return m_VSync; }
+		
+		
+		virtual bool InitContext() override {}
+		virtual bool isRunning() const override{}
+		virtual bool Init() override{}
+		virtual void ClearColor(float x, float y, float z, float a) override{}
+		virtual void SetEventCallback(const EventCallbackFn& callback) override{}
+		virtual GraphicsContext* GetContext() const override{}
 
 	private:
 		virtual bool Init(const WindowAttrib& attrib);

@@ -35,6 +35,7 @@ void Dogo::SimpleRenderer2D::Flush()
 		m_Shader->SetUniformMatrix4f("projection", MVP->projection, 2);
 
 	}break;
+	#if DG_PLATFORM_WINDOWS
 	case RenderAPI::D3D11:
 	{
 		m_Shader->Bind();
@@ -44,6 +45,7 @@ void Dogo::SimpleRenderer2D::Flush()
 		DX11Context::GetContext()->GetDeviceContext().Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		DX11Context::GetContext()->GetDeviceContext().Get()->RSSetViewports(1, &DX11Context::GetContext()->GetViewport());
 	}
+	#endif
 	break;
 	default:
 		DG_FATAL("API NOT SPECIFIED");

@@ -1,4 +1,5 @@
 #include "dgpch.h"
+#if DG_PLATFORM_WINDOWS
 #include "WindowsInput.h"
 #include "Graphics/WindowsWindow.h"
 namespace Dogo
@@ -99,3 +100,4 @@ namespace Dogo
 		}
 	}
 }
+#endif

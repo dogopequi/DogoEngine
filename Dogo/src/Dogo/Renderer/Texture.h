@@ -4,11 +4,11 @@ namespace Dogo
 {
 	enum class ImageType
 	{
-		None = 0, JPEG, JPG, PNG, PPM
+		TYPE_NONE, JPEG, JPG, PNG, PPM
 	};
 	enum class TextureType
 	{
-		None = 0, oneD, twoD, threeD
+		TYPE_NONE, oneD, twoD, threeD
 	};
 	class Texture
 	{

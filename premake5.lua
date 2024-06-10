@@ -41,18 +41,18 @@ project "Dogo"
         STBinclude,
         GLMinclude,
         "%{IncludeDir.glad}",
-        "D:/Dev/assimp/Assimp/include"
+       -- "D:/Dev/assimp/Assimp/include"
     }
 
-    libdirs
-    {
-        "D:/Dev/assimp/Assimp/lib/x64"
-    }
+    --libdirs
+    --{
+        --"D:/Dev/assimp/Assimp/lib/x64"
+    --}
     links
     {
         "glad",
 		"opengl32.lib",
-        "assimp-vc143-mt.lib"
+        --"assimp-vc143-mt.lib"
     }
 
     filter "system:windows"
@@ -88,7 +88,7 @@ project "Dogo"
         defines
         {
             "DG_PLATFORM_LINUX",
-            "DG_BUILD_SO"
+            "DG_BUILD_STATIC"
         }
 
         libdirs
@@ -136,18 +136,20 @@ project "Sandbox"
         "Dogo/src",
         STBinclude,
         GLMinclude,
-        "D:/Dev/assimp/Assimp/include"
+        "%{IncludeDir.glad}"
+        --"D:/Dev/assimp/Assimp/include"
     }
 
-    libdirs
-    {
-        "D:/Dev/assimp/Assimp/lib/x64"
-    }
+    --libdirs
+    --{
+        --"D:/Dev/assimp/Assimp/lib/x64"
+    --}
 
     links
     {
-        "assimp-vc143-mt.lib",
-        "Dogo"
+        --"assimp-vc143-mt.lib",
+        "Dogo",
+        "glad"
     }
     
     filter "system:windows"
@@ -182,6 +184,7 @@ project "Sandbox"
         {
             "DG_PLATFORM_LINUX",
         }
+
     
     filter "configurations:Debug"
         defines "DG_BUILD_DEBUG"

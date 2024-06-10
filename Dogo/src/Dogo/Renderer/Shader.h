@@ -4,7 +4,7 @@ namespace Dogo
 {
 	enum class ShaderType
 	{
-		None = 0, COMPUTE, VERTEX, FRAGMENT, GEOMETRY
+		SHADER_NONE, COMPUTE, VERTEX, FRAGMENT, GEOMETRY
 	};
 	class Shader
 	{

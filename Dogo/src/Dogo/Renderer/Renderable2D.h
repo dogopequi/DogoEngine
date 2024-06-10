@@ -17,7 +17,7 @@ namespace Dogo
 	class Renderable2D
 	{
 	public:
-		Renderable2D(glm::vec3& pos, float* vertices, size_t vertSize, uint32_t* indices, size_t indiceSize, BufferLayout& layout, std::shared_ptr<Shader> shader)
+		Renderable2D(const glm::vec3& pos, float* vertices, size_t vertSize, uint32_t* indices, size_t indiceSize, BufferLayout& layout, std::shared_ptr<Shader> shader)
 			: m_Position(pos)
 		{
 			m_Layout = std::make_shared<BufferLayout>(layout);
@@ -54,12 +54,14 @@ namespace Dogo
 		inline std::shared_ptr<VertexArray> GetVAO() const { return m_VertexArray; }
 		inline std::shared_ptr<VertexBuffer> GetVBO() const { return m_VertexBuffer; }
 		inline std::shared_ptr<IndexBuffer> GetIBO() const { return m_IndexBuffer; }
+		#if DG_PLATFORM_WINDOWS
 		inline void SetLayout(std::shared_ptr<Shader> shader) const
 		{ 
 			std::shared_ptr<DX11VertexShader> dx11shader = std::static_pointer_cast<DX11VertexShader>(shader);
 			std::shared_ptr<DX11VertexBuffer> dx11vbo = std::static_pointer_cast<DX11VertexBuffer>(m_VertexBuffer);
 			dx11vbo->SetLayout(*m_Layout, dx11shader->GetBufferPointer(), dx11shader->GetBufferLength());
 		}
+		#endif
 		inline void SetLayout() const { m_VertexBuffer->SetLayout(*m_Layout); }
 
 
