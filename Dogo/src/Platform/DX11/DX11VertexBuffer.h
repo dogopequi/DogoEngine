@@ -1,4 +1,5 @@
 #pragma once
+#if DG_PLATFORM_WINDOWS
 #include "Dogo/Renderer/Buffers.h"
 #include "Platform/DX11/DX11Context.h"
 #include "Dogo/Renderer/Buffers.h"
@@ -28,3 +29,4 @@ namespace Dogo
 	};
 }
 
+#endif

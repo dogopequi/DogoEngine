@@ -18,12 +18,14 @@ namespace Dogo
 		case RenderAPI::OpenGL:
 			s_Context = new OpenGLContext(handle);
 			break;
+#if DG_PLATFORM_WINDOWS
 		case RenderAPI::D3D11:
 			s_Context = new DX11Context(handle);
 			break;
 		case RenderAPI::D3D12:
 			DG_FATAL("Not implemented");
 			break;
+#endif
 		case RenderAPI::VULKAN:
 			DG_FATAL("Not implemented");
 			break;

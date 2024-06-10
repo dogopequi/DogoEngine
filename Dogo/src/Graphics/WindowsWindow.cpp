@@ -1,4 +1,5 @@
 #include "dgpch.h"
+#if DG_PLATFORM_WINDOWS
 #include "Dogo/Core.h"
 #include "Dogo/Logger.h"
 #include "WindowsWindow.h"
@@ -7,7 +8,6 @@
 #include "Dogo/Input/WindowsInput.h"
 #include "Dogo/Events/MouseEvent.h"
 
-#if DG_PLATFORM_WINDOWS
 	namespace Dogo
 	{
 	std::map<HWND, WindowsWindow*> WindowsWindow::s_Handles;

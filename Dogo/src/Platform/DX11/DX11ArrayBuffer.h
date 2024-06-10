@@ -1,4 +1,5 @@
 #pragma once
+#if DG_PLATFORM_WINDOWS
 #include "DX11VertexBuffer.h"
 #include "DX11IndexBuffer.h"
 namespace Dogo
@@ -20,3 +21,4 @@ namespace Dogo
 	};
 }
 
+#endif

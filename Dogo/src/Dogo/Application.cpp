@@ -87,7 +87,9 @@ namespace Dogo
 	}
 	bool Application::KeyPressedCallBack(KeyPressedEvent& e)
 	{
-		DG_TRACE(e.ToString().c_str());
+		//DG_TRACE(e.ToString().c_str());
+		if(e.GetKeyCode() == DG_KEY_ESCAPE)
+			ClipCursor(nullptr);
 		return true;
 	}
 	bool Application::KeyReleasedCallBack(KeyReleasedEvent& e)
@@ -97,7 +99,32 @@ namespace Dogo
 	}
 	bool Application::MouseMovedCallBack(MouseMovedEvent& e)
 	{
-		/*DG_TRACE(e.ToString().c_str());*/
+		//TODO fix bug, the reset of the position is triggering the camera look.
+		//DG_TRACE(e.ToString().c_str());
+		if (Input::GetKey() == DG_KEY_ESCAPE)
+			return false;
+		RECT rect;
+		WindowsWindow* window = (WindowsWindow*)m_Window;
+		GetClientRect(window->GetHandle(), &rect);
+
+		POINT ul;
+		ul.x = rect.left;
+		ul.y = rect.top;
+
+		POINT lr;
+		lr.x = rect.right;
+		lr.y = rect.bottom;
+
+		MapWindowPoints(window->GetHandle(), nullptr, &ul, 1);
+		MapWindowPoints(window->GetHandle(), nullptr, &lr, 1);
+
+		rect.left = ul.x;
+		rect.top = ul.y;
+
+		rect.right = lr.x;
+		rect.bottom = lr.y;
+
+
 		float xpos = static_cast<float>(Input::GetMouseX());
 		float ypos = static_cast<float>(Input::GetMouseY());
 
@@ -106,12 +133,18 @@ namespace Dogo
 			lastX = xpos;
 			lastY = ypos;
 			firstMouse = false;
+
+			ClipCursor(&rect);
+			SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
 		}
 
 		float xoffset = xpos - lastX;
 		float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 		lastX = xpos;
 		lastY = ypos;
+
+		ClipCursor(&rect);
+		SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
 
 		float sensitivity = 0.1f; // change this value to your liking
 		xoffset *= sensitivity;

@@ -1,5 +1,7 @@
 #pragma once
+#if DG_PLATFORM_WINDOWS
 #include "Dogo/Core.h"
+
 #include "Platform/DX11/DX11Context.h"
 #include "Dogo/Renderer/Texture.h"
 namespace Dogo
@@ -29,4 +31,5 @@ namespace Dogo
 		ComPtr<ID3D11ShaderResourceView> m_TextureView;
 	};
 }
+#endif
 

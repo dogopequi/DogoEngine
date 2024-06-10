@@ -1,4 +1,5 @@
 #pragma once
+#if DG_PLATFORM_WINDOWS
 #include "Dogo/Core.h"
 #include "Dogo/Renderer/Shader.h"
 #include "Platform/DX11/DX11Context.h"
@@ -106,4 +107,5 @@ namespace Dogo
 		ComPtr<ID3D11ComputeShader> m_ComputeShader;
 	};
 }
+#endif
 

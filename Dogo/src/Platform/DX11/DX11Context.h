@@ -1,5 +1,5 @@
 #pragma once
-
+#if DG_PLATFORM_WINDOWS
 #include "Graphics/GraphicsContext.h"
 	class Window;
 
@@ -52,3 +52,4 @@
 		};
 	}
 
+#endif

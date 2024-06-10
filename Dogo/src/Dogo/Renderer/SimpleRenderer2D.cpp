@@ -8,9 +8,9 @@ Dogo::SimpleRenderer2D::SimpleRenderer2D()
 	MVP->view = glm::mat4(1.0f);
 	MVP->projection = glm::mat4(1.0f);
 	MVP->transform = glm::mat4(1.0f);
-#if OPENGL
-	glEnable(GL_DEPTH_TEST);
-#endif
+	RenderAPI api = GraphicsContext::GetAPI();
+	if(api == RenderAPI::OpenGL)
+		glEnable(GL_DEPTH_TEST);
 }
 
 Dogo::SimpleRenderer2D::~SimpleRenderer2D()

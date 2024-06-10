@@ -1,4 +1,5 @@
 #include "dgpch.h"
+#if DG_PLATFORM_WINDOWS
 #include "DX11ArrayBuffer.h"
 
 namespace Dogo
@@ -33,3 +34,4 @@ namespace Dogo
 		}
 	}
 }
+#endif

@@ -57,7 +57,7 @@ namespace Dogo {
 		DG_ASSERT_MSG(false, "Unknown ShaderDataType");
 		return 0;
 	}
-
+#if DG_PLATFORM_WINDOWS
 	static DXGI_FORMAT ShaderDataTypeToDX11(ShaderDataType type)
 	{
 		switch (type)
@@ -82,7 +82,7 @@ namespace Dogo {
 		DG_ASSERT_MSG(false, "Unknown ShaderDataType");
 		return DXGI_FORMAT_R32_FLOAT;
 	}
-
+#endif
 	struct BufferElement
 	{
 		std::string Name;

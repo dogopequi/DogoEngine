@@ -14,8 +14,16 @@ namespace Dogo
 		case RenderAPI::OpenGL:
 			return new OpenGLTexture(filepath, imageType, textureType, name);
 			break;
+#if DG_PLATFORM_WINDOWS
 		case RenderAPI::D3D11:
 			return new DX11Texture(filepath, textureType, name);
+			break;
+		case RenderAPI::D3D12:
+			DG_FATAL("Not implemented");
+			break;
+#endif
+		case RenderAPI::VULKAN:
+			DG_FATAL("Not implemented");
 			break;
 		default:
 			DG_FATAL("Invalid API to create TextureManager");

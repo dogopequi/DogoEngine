@@ -1,4 +1,5 @@
 #include "dgpch.h"
+#if DG_PLATFORM_WINDOWS
 #include "DX11VertexBuffer.h"
 #include "Graphics/WindowsWindow.h"
 namespace Dogo
@@ -60,3 +61,4 @@ namespace Dogo
 		DX11Context::GetContext()->GetDeviceContext().Get()->IASetVertexBuffers(0, 1, nullBuffer, &m_Size, &m_Offset);
 	}
 }
+#endif

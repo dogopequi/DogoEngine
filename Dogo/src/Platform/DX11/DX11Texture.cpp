@@ -1,4 +1,5 @@
 #include "dgpch.h"
+#if DG_PLATFORM_WINDOWS
 #include "DX11Texture.h"
 #include "Dogo/Logger.h"
 #include "Graphics/WindowsWindow.h"
@@ -182,3 +183,4 @@ namespace Dogo
 		}
 	}
 }
+#endif

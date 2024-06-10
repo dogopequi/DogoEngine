@@ -4,7 +4,11 @@ namespace Dogo
 {
 	enum class RenderAPI
 	{
-		None = 0, OpenGL, D3D11, D3D12, VULKAN
+#if DG_PLATFORM_WINDOWS
+		None = 0, OpenGL, VULKAN, D3D11, D3D12
+#else
+		None = 0, OpenGL, VULKAN
+#endif
 	};
 	class GraphicsContext
 	{

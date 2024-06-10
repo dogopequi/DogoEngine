@@ -13,9 +13,10 @@ namespace Dogo
     {
         return new OpenGLShader(vertSource, fragSource);
     }
-
+#if DG_PLATFORM_WINDOWS
     Shader* Shader::Create(const std::wstring& filepath, ShaderType type)
     {
         return DX11Shader::Create(filepath, type);
     }
+#endif
 }

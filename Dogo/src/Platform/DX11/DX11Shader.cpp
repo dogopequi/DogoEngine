@@ -1,4 +1,5 @@
 #include "dgpch.h"
+#if DG_PLATFORM_WINDOWS
 #include "DX11Shader.h"
 #include "Dogo/Logger.h"
 #include "Graphics/WindowsWindow.h"
@@ -412,3 +413,5 @@ namespace Dogo
 		DX11Context::GetContext()->GetDeviceContext().Get()->GSSetShader(nullptr, nullptr, NULL);
 	}
 }
+
+#endif

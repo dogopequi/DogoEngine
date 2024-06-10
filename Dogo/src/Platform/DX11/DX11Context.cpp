@@ -1,4 +1,5 @@
 #include "dgpch.h"
+#if DG_PLATFORM_WINDOWS
 #include "DX11Context.h"
 #include "Dogo/Core.h"
 #include "Dogo/Logger.h"
@@ -237,3 +238,4 @@ namespace Dogo
 	}
 
 }
+#endif

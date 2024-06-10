@@ -1,4 +1,5 @@
 #include "dgpch.h"
+#if DG_PLATFORM_WINDOWS
 #include "DX11IndexBuffer.h"
 #include "DX11Context.h"
 #include "Graphics/WindowsWindow.h"
@@ -35,3 +36,4 @@ namespace Dogo
 		DX11Context::GetContext()->GetDeviceContext()->IASetIndexBuffer(*nullBuffer, DXGI_FORMAT_R32_UINT, 0);
 	}
 }
+#endif

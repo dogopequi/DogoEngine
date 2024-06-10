@@ -25,12 +25,34 @@ namespace Dogo
 		{ MVP->model = model; }
 		inline void SetProjectionMatrixPerspective(float FOV, float width, float height, float minDepth, float maxDepth)
 		{ 
-#if OPENGL
-			glm::mat4 proj = glm::perspectiveFovRH_NO(glm::radians(FOV), width, height, minDepth, maxDepth);
+			glm::mat4 proj;
+			RenderAPI api = GraphicsContext::GetAPI();
+			switch (api)
+			{
+			case RenderAPI::None:
+				DG_FATAL("Invalid render API");
+				break;
+			case RenderAPI::OpenGL:
+				proj = glm::perspectiveFovRH_NO(glm::radians(FOV), width, height, minDepth, maxDepth);
+				break;
+#if DG_PLATFORM_WINDOWS
+			case RenderAPI::D3D11:
+				proj = glm::perspectiveFovRH_ZO(glm::radians(FOV), width, height, minDepth, maxDepth);
+				break;
+			case RenderAPI::D3D12:
+				DG_FATAL("Not implemented");
+				break;
 #endif
-#if DX11
-			glm::mat4 proj = glm::perspectiveFovRH_ZO(glm::radians(FOV), width, height, minDepth, maxDepth);
-#endif
+			case RenderAPI::VULKAN:
+				DG_FATAL("Not implemented");
+				break;
+			default:
+			{
+				proj = glm::perspectiveFovRH_NO(glm::radians(FOV), width, height, minDepth, maxDepth);
+				DG_FATAL("Invalid render API, defaulted to OPENGL SPEC");
+			}
+				break;
+			}
 			MVP->projection = proj;
 		}
 		inline void SetTransformMatrix(const glm::mat4& transform) { MVP->transform = transform; }
@@ -42,13 +64,11 @@ namespace Dogo
 
 		inline std::shared_ptr<Shader> GetVertexShader() const {return m_Shader;}
 
-#if OPENGL
 		inline void SetVertexAndPixelShader(const std::string& vertex, const std::string& pixel)
 		{
 			m_Shader.reset(Shader::Create(vertex, pixel));;
 		}
-#endif
-#if DX11
+#if DG_PLATFORM_WINDOWS
 		inline void SetVertexAndPixelShader(const std::wstring& vertex, const std::wstring& pixel)
 		{ 
 			m_Shader.reset(Shader::Create(vertex, ShaderType::VERTEX)); m_PixelShader.reset(Shader::Create(pixel, ShaderType::FRAGMENT));
@@ -59,7 +79,7 @@ namespace Dogo
 		std::deque<const Renderable2D*> m_RenderQueue;
 		std::unique_ptr<MatrixPass> MVP;
 		std::shared_ptr<Shader> m_Shader;
-		std::shared_ptr<Shader> m_PixelShader;
+		std::shared_ptr<Shader> m_PixelShader; //dead space if its opengl
 
 	};
 
