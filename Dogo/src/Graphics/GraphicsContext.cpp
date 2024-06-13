@@ -34,7 +34,7 @@ namespace Dogo
 		}
 		s_RenderAPI = api;
 	}
-#endif
+#else
 	void GraphicsContext::Create(RenderAPI api)
 	{
 		switch (api)
@@ -54,4 +54,5 @@ namespace Dogo
 		}
 		s_RenderAPI = api;
 	}
+#endif
 }

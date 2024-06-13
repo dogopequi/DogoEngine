@@ -34,30 +34,30 @@ namespace Dogo
 			DG_INFO("row:  %f, %f, %f, %f", ptr[i * 4 + 0], ptr[i * 4 + 1], ptr[i * 4 + 2], ptr[i * 4 + 3]);
 		}
 	}
-	void processInput(glm::vec3& pos, glm::vec3& front, glm::vec3& up, float time){}
-//	{
-//		WindowsWindow* window = WindowsWindow::GetWindowClass(NULL);
-//		const float cameraSpeed = 2.5f * time; // adjust accordingly
-//		if (Input::IsKeyPressed(DG_KEY_W))
-//			pos += cameraSpeed * front;
-//		if (Input::IsKeyPressed(DG_KEY_S))
-//			pos -= cameraSpeed * front;
-//		if (Input::IsKeyPressed(DG_KEY_A))
-//			pos -= glm::normalize(glm::cross(front, up)) * cameraSpeed;
-//		if (Input::IsKeyPressed(DG_KEY_D))
-//			pos += glm::normalize(glm::cross(front, up)) * cameraSpeed;
-//
-//		if (Input::IsKeyPressed(DG_KEY_L))
-//			window->LockCursor();
-//		if (Input::IsKeyPressed(DG_KEY_U))
-//			window->UnlockCursor();
-	//}
+	void processInput(glm::vec3& pos, glm::vec3& front, glm::vec3& up, float time)
+	{
+		WindowsWindow* window = WindowsWindow::GetWindowClass(NULL);
+		const float cameraSpeed = 2.5f * time; // adjust accordingly
+		if (Input::IsKeyPressed(DG_KEY_W))
+			pos += cameraSpeed * front;
+		if (Input::IsKeyPressed(DG_KEY_S))
+			pos -= cameraSpeed * front;
+		if (Input::IsKeyPressed(DG_KEY_A))
+			pos -= glm::normalize(glm::cross(front, up)) * cameraSpeed;
+		if (Input::IsKeyPressed(DG_KEY_D))
+			pos += glm::normalize(glm::cross(front, up)) * cameraSpeed;
+
+		if (Input::IsKeyPressed(DG_KEY_L))
+			window->LockCursor();
+		if (Input::IsKeyPressed(DG_KEY_U))
+			window->UnlockCursor();
+	}
 	
 	Application::Application()
 	{
-//		m_Window = Window::Create();
-//		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Application::OnEvent));
-//		m_IsRunning = true;
+		m_Window = DG_Window::Create();
+		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Application::OnEvent));
+		m_IsRunning = true;
 	}
 	Application::~Application()
 	{
@@ -357,13 +357,13 @@ namespace Dogo
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-//		dispatcher.Dispatch<WindowCloseEvent>(DG_BIND_EVENT_FN(Application::OnWindowClose));
-//		dispatcher.Dispatch<KeyPressedEvent>(DG_BIND_EVENT_FN(Application::KeyPressedCallBack));
-//		dispatcher.Dispatch<KeyReleasedEvent>(DG_BIND_EVENT_FN(Application::KeyReleasedCallBack));
-//		dispatcher.Dispatch<MouseMovedEvent>(DG_BIND_EVENT_FN(Application::MouseMovedCallBack));
-//		dispatcher.Dispatch<MouseButtonPressedEvent>(DG_BIND_EVENT_FN(Application::MouseButtonPressedCallBack));
-//		dispatcher.Dispatch<MouseButtonReleasedEvent>(DG_BIND_EVENT_FN(Application::MouseButtonReleasedCallBack));
-//		dispatcher.Dispatch<MouseScrolledEvent>(DG_BIND_EVENT_FN(Application::MouseScrolledCallBack));
+		dispatcher.Dispatch<WindowCloseEvent>(DG_BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<KeyPressedEvent>(DG_BIND_EVENT_FN(Application::KeyPressedCallBack));
+		dispatcher.Dispatch<KeyReleasedEvent>(DG_BIND_EVENT_FN(Application::KeyReleasedCallBack));
+		dispatcher.Dispatch<MouseMovedEvent>(DG_BIND_EVENT_FN(Application::MouseMovedCallBack));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(DG_BIND_EVENT_FN(Application::MouseButtonPressedCallBack));
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(DG_BIND_EVENT_FN(Application::MouseButtonReleasedCallBack));
+		dispatcher.Dispatch<MouseScrolledEvent>(DG_BIND_EVENT_FN(Application::MouseScrolledCallBack));
 	}
 
 }

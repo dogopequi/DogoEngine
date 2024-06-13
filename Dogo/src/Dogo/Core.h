@@ -22,5 +22,5 @@
 #define DG_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 #define BIT(x) (1 << x)
 
-#define OPENGL 1
-#define DX11 0
+#define OPENGL 0
+#define DX11 1

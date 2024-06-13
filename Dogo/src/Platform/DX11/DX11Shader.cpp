@@ -10,7 +10,7 @@ namespace Dogo
 	{
 		switch (type)
 		{
-		case ShaderType::None:
+		case ShaderType::SHADER_NONE:
 			DG_ERROR("Shader type doesn't exist");
 			return nullptr;
 			break;
