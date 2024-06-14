@@ -19,11 +19,11 @@ void LogOutput(DG_LOG_LEVEL level, const char* msg, ...)
 	const char* stringLevel[6] = { "[FATAL]: ", "[ERROR]: " , "[WARN]: " , "[INFO]: " , "[DEBUG]: " , "[TRACE]: " };
 	bool isError = level < 2;
 
-	char outMessage[32000] = { 0 };
+	char outMessage[3200] = { 0 };
 
 	va_list arg_ptr;
 	va_start(arg_ptr, msg);
-	vsnprintf(outMessage, 32000, msg, arg_ptr);
+	vsnprintf(outMessage, 3200, msg, arg_ptr);
 	va_end(arg_ptr);
 
 	char outMessage2[32000] = { 0 };

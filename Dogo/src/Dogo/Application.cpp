@@ -18,6 +18,7 @@
 #include "Platform/DX11/DX11Shader.h"
 #include "Dogo/Renderer/Renderable2D.h"
 #include "Dogo/Renderer/SimpleRenderer2D.h"
+#include "Dogo/DogoMemory.h"
 //#include <assimp/Importer.hpp>
 //#include <assimp/scene.h>
 //#include <assimp/postprocess.h>
@@ -194,6 +195,7 @@ namespace Dogo
 
 	void Application::Run()
 	{
+		MemoryUsage::PrintUsage();
 		#if DG_PLATFORM_WINDOWS
 		m_Window->SetInstance(instance);
 		#endif
@@ -219,7 +221,7 @@ namespace Dogo
 			{ShaderDataType::Float3, "COLOR"},
 			{ShaderDataType::Float2, "TEXCOORD"}
 		};
-		std::wstring vertexSrc = LR"(
+		std::string vertexSrc = R"(
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
@@ -245,7 +247,7 @@ namespace Dogo
 			}
 		)";
 
-		std::wstring fragmentSrc = LR"(
+		std::string fragmentSrc = R"(
 			#version 330 core
 			
 			layout(location = 0) out vec4 color;
@@ -297,6 +299,7 @@ namespace Dogo
 		float deltaTime{ 0.0f };
 		float lastFrame{ 0.0f };
 		float y = 0;
+		MemoryUsage::PrintUsage();
 		while (m_Window->isRunning() && m_Window != nullptr)
 		{
 			m_Window->ClearColor(0.2f, 1.0f, 1.0f, 1.0f);
@@ -343,6 +346,7 @@ namespace Dogo
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 			m_Window->OnUpdate();
+			MemoryUsage::PrintUsage();
 		}
 	}
 
