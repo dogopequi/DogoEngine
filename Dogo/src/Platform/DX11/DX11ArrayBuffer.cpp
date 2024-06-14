@@ -23,6 +23,8 @@ namespace Dogo
 	}
 	void DX11ArrayBuffer::Draw(uint32_t count)
 	{
+		DX11Context::GetContext()->GetDeviceContext().Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		DX11Context::GetContext()->GetDeviceContext().Get()->RSSetViewports(1, &DX11Context::GetContext()->GetViewport());
 		for (size_t i = 0; i < m_VertexBuffers.size(); i++)
 		{
 			std::shared_ptr<DX11VertexBuffer> buffer = (std::shared_ptr<DX11VertexBuffer>)m_VertexBuffers[i];

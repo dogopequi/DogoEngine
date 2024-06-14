@@ -35,14 +35,12 @@ namespace Dogo
 			case RenderAPI::OpenGL:
 				proj = glm::perspectiveFovRH_NO(glm::radians(FOV), width, height, minDepth, maxDepth);
 				break;
-#if DG_PLATFORM_WINDOWS
 			case RenderAPI::D3D11:
 				proj = glm::perspectiveFovRH_ZO(glm::radians(FOV), width, height, minDepth, maxDepth);
 				break;
 			case RenderAPI::D3D12:
 				DG_FATAL("Not implemented");
 				break;
-#endif
 			case RenderAPI::VULKAN:
 				DG_FATAL("Not implemented");
 				break;
@@ -62,24 +60,47 @@ namespace Dogo
 		inline glm::mat4 GetProjectionMatrix() const { return MVP->projection; }
 		inline glm::mat4 GetTransformMatrix() const { return MVP->transform; }
 
-		inline std::shared_ptr<Shader> GetVertexShader() const {return m_Shader;}
-
-		inline void SetVertexAndPixelShader(const std::string& vertex, const std::string& pixel)
-		{
-			m_Shader.reset(Shader::Create(vertex, pixel));;
-		}
-#if DG_PLATFORM_WINDOWS
+		inline std::shared_ptr<Shader> GetVertexShader() const {return m_VertexShader;}
+		inline std::shared_ptr<Shader> GetPixelShader() const { return m_PixelShader; }
 		inline void SetVertexAndPixelShader(const std::wstring& vertex, const std::wstring& pixel)
 		{ 
-			m_Shader.reset(Shader::Create(vertex, ShaderType::VERTEX)); m_PixelShader.reset(Shader::Create(pixel, ShaderType::FRAGMENT));
+			RenderAPI api = GraphicsContext::GetAPI();
+			switch (api)
+			{
+			case RenderAPI::API_NONE:
+				DG_FATAL("Invalid render API");
+				break;
+			case RenderAPI::OpenGL:
+				m_VertexShader.reset(Shader::Create(vertex, pixel));
+				break;
+			case RenderAPI::D3D11:
+				m_VertexShader.reset(Shader::Create(vertex, ShaderType::VERTEX));
+				m_PixelShader.reset(Shader::Create(vertex, ShaderType::FRAGMENT));
+				break;
+			case RenderAPI::D3D12:
+				DG_FATAL("Not implemented");
+				break;
+			case RenderAPI::VULKAN:
+				DG_FATAL("Not implemented");
+				break;
+			default:
+			{
+				DG_FATAL("Invalid render API, defaulted to OPENGL SPEC");
+			}
+			break;
+			}
 		}
-#endif
+		inline void SetVertexAndPixelShader(const std::string& vertex, const std::string& pixel)
+		{
+			m_VertexShader.reset(Shader::Create(vertex, pixel));
+		}
 
 	private:
 		std::deque<const Renderable2D*> m_RenderQueue;
 		std::unique_ptr<MatrixPass> MVP;
-		std::shared_ptr<Shader> m_Shader;
-		std::shared_ptr<Shader> m_PixelShader; //dead space if its opengl
+		std::shared_ptr<Shader> m_VertexShader;
+		std::shared_ptr<Shader> m_PixelShader;
+
 
 	};
 

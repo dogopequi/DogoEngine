@@ -2,21 +2,113 @@
 #include "Shader.h"
 #include "Platform/DX11/DX11Shader.h"
 #include "Platform/OpenGL/OpenGLShader.h"
+#include "Graphics/GraphicsContext.h"
+#include "Dogo/Logger.h"
 namespace Dogo
 {
-    Shader* Shader::Create(const std::string& shaderSource, ShaderType type)
-    {
-        return new OpenGLShader(shaderSource, type);
-    }
-
-    Shader* Shader::Create(const std::string& vertSource, const std::string& fragSource)
-    {
-        return new OpenGLShader(vertSource, fragSource);
-    }
-#if DG_PLATFORM_WINDOWS
     Shader* Shader::Create(const std::wstring& filepath, ShaderType type)
     {
-        return DX11Shader::Create(filepath, type);
+		RenderAPI api = GraphicsContext::GetAPI();
+		{
+			switch (api)
+			{
+			case Dogo::RenderAPI::API_NONE:
+				DG_FATAL("No API specified");
+				break;
+			case Dogo::RenderAPI::OpenGL:
+				return new OpenGLShader(filepath, type);
+				break;
+			case Dogo::RenderAPI::VULKAN:
+				DG_FATAL("Not Implemented");
+				break;
+			case Dogo::RenderAPI::D3D11:
+				return DX11Shader::Create(filepath, type);
+				break;
+			case Dogo::RenderAPI::D3D12:
+				DG_FATAL("Not Implemented");
+				break;
+			default:
+				DG_FATAL("No API specified");
+				break;
+			}
+		}
     }
-#endif
+	Shader* Shader::Create(const std::string& filepath, const std::string& filepath2)
+	{
+		RenderAPI api = GraphicsContext::GetAPI();
+		{
+			switch (api)
+			{
+			case Dogo::RenderAPI::API_NONE:
+				DG_FATAL("No API specified");
+				break;
+			case Dogo::RenderAPI::OpenGL:
+				return new OpenGLShader(filepath, filepath2);
+				break;
+			case Dogo::RenderAPI::VULKAN:
+				DG_FATAL("Not Implemented");
+				break;
+			case Dogo::RenderAPI::D3D11:
+				break;
+			case Dogo::RenderAPI::D3D12:
+				DG_FATAL("Not Implemented");
+				break;
+			default:
+				DG_FATAL("No API specified");
+				break;
+			}
+		}
+	}
+	Shader* Shader::Create(const std::wstring& filepath, const std::wstring& filepath2)
+	{
+		RenderAPI api = GraphicsContext::GetAPI();
+		{
+			switch (api)
+			{
+			case Dogo::RenderAPI::API_NONE:
+				DG_FATAL("No API specified");
+				break;
+			case Dogo::RenderAPI::OpenGL:
+				return new OpenGLShader(filepath, filepath2);
+				break;
+			case Dogo::RenderAPI::VULKAN:
+				DG_FATAL("Not Implemented");
+				break;
+			case Dogo::RenderAPI::D3D11:
+				break;
+			case Dogo::RenderAPI::D3D12:
+				DG_FATAL("Not Implemented");
+				break;
+			default:
+				DG_FATAL("No API specified");
+				break;
+			}
+		}
+	}
+	Shader* Shader::Create(const std::string& filepath, ShaderType type)
+	{
+		RenderAPI api = GraphicsContext::GetAPI();
+		{
+			switch (api)
+			{
+			case Dogo::RenderAPI::API_NONE:
+				DG_FATAL("No API specified");
+				break;
+			case Dogo::RenderAPI::OpenGL:
+				return new OpenGLShader(filepath, type);
+				break;
+			case Dogo::RenderAPI::VULKAN:
+				DG_FATAL("Not Implemented");
+				break;
+			case Dogo::RenderAPI::D3D11:
+				break;
+			case Dogo::RenderAPI::D3D12:
+				DG_FATAL("Not Implemented");
+				break;
+			default:
+				DG_FATAL("No API specified");
+				break;
+			}
+		}
+	}
 }

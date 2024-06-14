@@ -21,6 +21,7 @@
 #include <string.h>
 #include <filesystem>
 #include <codecvt>
+#include <locale>
 #include <deque>
 
 #ifdef DG_PLATFORM_WINDOWS

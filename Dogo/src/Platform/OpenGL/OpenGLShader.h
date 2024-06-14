@@ -10,8 +10,10 @@ namespace Dogo
 	class OpenGLShader : public Shader
 	{
 	public:
+		OpenGLShader(const std::wstring& shaderSource, ShaderType type);
 		OpenGLShader(const std::string& shaderSource, ShaderType type);
 		OpenGLShader(const std::string& vertSource, const std::string& fragSource);
+		OpenGLShader(const std::wstring& vertSource, const std::wstring& fragSource);
 		~OpenGLShader();
 
 		bool GetIsValid() const { return isValid; }
@@ -21,6 +23,7 @@ namespace Dogo
 		void Unbind();
 
 		void CreateShader(const std::string& shaderSource, ShaderType type);
+		void CreateShader(const std::wstring& shaderSource, ShaderType type);
 
 		void SetUniform1i(const std::string& name, int32_t value, uint8_t index = 0) override;
 		void SetUniform2i(const std::string& name, glm::ivec2 value, uint8_t index = 0) override;

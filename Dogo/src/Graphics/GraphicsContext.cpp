@@ -8,6 +8,7 @@ namespace Dogo
 {
 	GraphicsContext* GraphicsContext::s_Context = nullptr;
 	RenderAPI GraphicsContext::s_RenderAPI = RenderAPI::API_NONE;
+
 #if DG_PLATFORM_WINDOWS
 	void GraphicsContext::Create(HWND* handle, RenderAPI api)
 	{
@@ -44,6 +45,12 @@ namespace Dogo
 			break;
 		case RenderAPI::OpenGL:
 			s_Context = new OpenGLContext();
+			break;
+		case RenderAPI::D3D11:
+			DG_FATAL("Not possible on Linux");
+			break;
+		case RenderAPI::D3D12:
+			DG_FATAL("Not possible on Linux");
 			break;
 		case RenderAPI::VULKAN:
 			DG_FATAL("Not implemented");

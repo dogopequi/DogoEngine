@@ -103,7 +103,7 @@ namespace Dogo
 		//DG_TRACE(e.ToString().c_str());
 		if (Input::GetKey() == DG_KEY_ESCAPE)
 			return false;
-		RECT rect;
+		/*RECT rect;
 		WindowsWindow* window = (WindowsWindow*)m_Window;
 		GetClientRect(window->GetHandle(), &rect);
 
@@ -122,7 +122,7 @@ namespace Dogo
 		rect.top = ul.y;
 
 		rect.right = lr.x;
-		rect.bottom = lr.y;
+		rect.bottom = lr.y;*/
 
 
 		float xpos = static_cast<float>(Input::GetMouseX());
@@ -133,9 +133,6 @@ namespace Dogo
 			lastX = xpos;
 			lastY = ypos;
 			firstMouse = false;
-
-			ClipCursor(&rect);
-			SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
 		}
 
 		float xoffset = xpos - lastX;
@@ -143,8 +140,8 @@ namespace Dogo
 		lastX = xpos;
 		lastY = ypos;
 
-		ClipCursor(&rect);
-		SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
+		//ClipCursor(&rect);
+		//SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
 
 		float sensitivity = 0.1f; // change this value to your liking
 		xoffset *= sensitivity;
@@ -206,11 +203,6 @@ namespace Dogo
 			DG_WARN("Failed to init context");
 			return;
 		}
-#if DG_PLATFORM_WINDOWS
-		using namespace DirectX;
-		using namespace PackedVector;
-		using Microsoft::WRL::ComPtr;
-		#endif
 
 		float vertices[] = {
 			0.0f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f , 0.5f, 0.0f, // Red
@@ -227,7 +219,7 @@ namespace Dogo
 			{ShaderDataType::Float3, "COLOR"},
 			{ShaderDataType::Float2, "TEXCOORD"}
 		};
-		std::string vertexSrc = R"(
+		std::wstring vertexSrc = LR"(
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
@@ -253,7 +245,7 @@ namespace Dogo
 			}
 		)";
 
-		std::string fragmentSrc = R"(
+		std::wstring fragmentSrc = LR"(
 			#version 330 core
 			
 			layout(location = 0) out vec4 color;

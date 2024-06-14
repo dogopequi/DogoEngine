@@ -24,32 +24,33 @@ void Dogo::SimpleRenderer2D::Submit(const Renderable2D& renderable)
 
 void Dogo::SimpleRenderer2D::Flush()
 {
-
-	RenderAPI api = GraphicsContext::Get()->GetAPI();
-	switch (api)
+	RenderAPI api = GraphicsContext::GetAPI();
 	{
-	case RenderAPI::OpenGL:
-	{
-		m_Shader->Bind();
-		m_Shader->SetUniformMatrix4f("view", MVP->view, 1);
-		m_Shader->SetUniformMatrix4f("projection", MVP->projection, 2);
-
-	}break;
-	#if DG_PLATFORM_WINDOWS
-	case RenderAPI::D3D11:
-	{
-		m_Shader->Bind();
-		m_PixelShader->Bind();
-		m_Shader->SetUniformMatrix4f("view", MVP->view, 1);
-		m_Shader->SetUniformMatrix4f("projection", MVP->projection, 2);
-		DX11Context::GetContext()->GetDeviceContext().Get()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		DX11Context::GetContext()->GetDeviceContext().Get()->RSSetViewports(1, &DX11Context::GetContext()->GetViewport());
+		switch (api)
+		{
+		case Dogo::RenderAPI::API_NONE:
+			DG_FATAL("No API specified");
+			break;
+		case Dogo::RenderAPI::OpenGL:
+			m_VertexShader->Bind();
+			break;
+		case Dogo::RenderAPI::VULKAN:
+			DG_FATAL("Not Implemented");
+			break;
+		case Dogo::RenderAPI::D3D11:
+			m_VertexShader->Bind();
+			m_PixelShader->Bind();
+			break;
+		case Dogo::RenderAPI::D3D12:
+			DG_FATAL("Not Implemented");
+			break;
+		default:
+			DG_FATAL("No API specified");
+			break;
+		}
 	}
-	#endif
-	break;
-	default:
-		DG_FATAL("API NOT SPECIFIED");
-	}
+	m_VertexShader->SetUniformMatrix4f("view", MVP->view, 1);
+	m_VertexShader->SetUniformMatrix4f("projection", MVP->projection, 2);
 
 	while (!m_RenderQueue.empty())
 	{
@@ -61,7 +62,7 @@ void Dogo::SimpleRenderer2D::Flush()
 		MVP->model = glm::mat4(1.0f);
 		MVP->model *= MVP->transform;
 
-		m_Shader->SetUniformMatrix4f("model", MVP->model, 0);
+		m_VertexShader->SetUniformMatrix4f("model", MVP->model, 0);
 
 		renderable->GetVAO()->Draw(renderable->GetIBO()->getComponentCount());
 
