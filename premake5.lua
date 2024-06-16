@@ -94,16 +94,19 @@ project "Dogo"
         libdirs
         {
             os.findlib("X11"),
-            os.findlib("xcb")
         }
 
-        linkoptions
+        links
         {
-            "-lxcb",
-            "-lX11",
-            "-lX11-xcb",
-            "-lxkbcommon"
+            "GL",
+            "X11"
         }
+
+       buildoptions
+       {
+           "-v"  -- Enable verbose output
+       }
+    
 
     filter "configurations:Debug"
         defines "DG_BUILD_DEBUG"
@@ -149,6 +152,7 @@ project "Sandbox"
     {
         --"assimp-vc143-mt.lib",
         "Dogo",
+        "glad"
     }
     
     filter "system:windows"
@@ -167,6 +171,17 @@ project "Sandbox"
         defines
         {
             "DG_PLATFORM_LINUX",
+        }
+
+        libdirs
+        {
+            os.findlib("X11"),
+        }
+
+        links
+        {
+            "GL",
+            "X11"
         }
 
     

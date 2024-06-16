@@ -2,12 +2,9 @@
 
 #if DG_PLATFORM_LINUX
 #include "Window.h"
-//#include <xcb/xcb.h>
-//#include <X11/keysym.h>
-//#include <X11/XKBlib.h>
-//#include <X11/Xlib.h>
-//#include <X11/Xlib-xcb.h>
-//#include <sys/time.h>
+#include <GL/gl.h>
+#include <GL/glx.h>
+
 
 #if _POSIX_C_SOURCE >= 199309L
 #include <time.h>
@@ -18,15 +15,6 @@
 
 namespace Dogo
 {
-	struct LinuxState
-	{
-		Display* display;
-		xcb_connection_t* connection;
-		xcb_window_t window;
-		xcb_screen_t* screen;
-		xcb_atom_t wmProtocols;
-		xcb_atom_t wmDelete_win;
-	};
 	class DG_API LinuxWindow : public DG_Window
 	{
 	public:
@@ -43,8 +31,16 @@ namespace Dogo
 		virtual bool isVSync() const { return m_VSync; }
 		
 		
-		virtual bool InitContext() override {}
-		virtual bool isRunning() const override{}
+		virtual bool InitContext() override 
+		{ 
+			GraphicsContext::Create(RenderAPI::OpenGL, display, vi);
+			m_Context = GraphicsContext::Get();
+			if (!m_Context->Init())
+				return false;
+
+			return true;
+		}
+		virtual bool isRunning() const override{ return m_IsRunning;}
 		virtual bool Init() override{}
 		virtual void ClearColor(float x, float y, float z, float a) override{}
 		virtual void SetEventCallback(const EventCallbackFn& callback) override{}
@@ -58,7 +54,14 @@ namespace Dogo
 		uint32_t m_Height{};
 		std::string m_Name{};
 		bool m_VSync{};
-		LinuxState state{};
+		bool m_IsRunning = false;
+		Display* display;
+		int screen;
+		Window root;
+		Window window;
+		XEvent event;
+		XVisualInfo* vi;
+		GraphicsContext* m_Context;
 
 	};
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include <glad/glad.h>
 
 namespace Dogo
 {
@@ -22,6 +23,8 @@ namespace Dogo
 		static void Create(HWND* handle, RenderAPI api);
 #else
 		static void Create(RenderAPI api);
+		static void Create(RenderAPI api, Display *dpy, XVisualInfo* vi);
+		virtual bool Init(const Window& win) = 0;
 #endif
 
 		static GraphicsContext* Get() { return s_Context; }

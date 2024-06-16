@@ -21,12 +21,14 @@ namespace Dogo
 			case Dogo::RenderAPI::VULKAN:
 				DG_FATAL("Not Implemented");
 				break;
+				#if DG_PLATFORM_WINDOWS
 			case Dogo::RenderAPI::D3D11:
 				return DX11Shader::Create(filepath, type);
 				break;
 			case Dogo::RenderAPI::D3D12:
 				DG_FATAL("Not Implemented");
 				break;
+				#endif
 			default:
 				DG_FATAL("No API specified");
 				break;

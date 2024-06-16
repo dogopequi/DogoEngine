@@ -3,13 +3,13 @@
 void* operator new(size_t size)
 {
 	Dogo::MemoryMetrics.TotalAllocated += size;
-	DG_TRACE("Allocating: %zu", size);
+	//DG_TRACE("Allocating: %zu", size);
 	return malloc(size);
 }
 void operator delete(void* memory, size_t size)
 {
 	Dogo::MemoryMetrics.TotalFreed += size;
-	DG_TRACE("Deallocating: %zu", size);
+	//DG_TRACE("Deallocating: %zu", size);
 	free(memory);
 }
 
