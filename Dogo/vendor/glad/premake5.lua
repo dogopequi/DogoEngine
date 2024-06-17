@@ -6,13 +6,6 @@ project "glad"
     targetdir ("bin/" .. outputDir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputDir .. "/%{prj.name}")
 
-    files
-    {
-        "include/glad/glad.h",
-        "include/KHR/khrplatform.h",
-        "src/glad.c"
-    }
-
 	includedirs
 	{
 		"include"
@@ -30,5 +23,22 @@ project "glad"
     
     filter "system:windows"
         systemversion "latest"
+
+        files
+        {
+            "include/glad/glad.h",
+            "include/KHR/khrplatform.h",
+            "src/glad.c"
+        }
+
     filter "system:linux"
         systemversion "latest"
+
+        files
+        {
+            "include/glad/gl.h",
+            "include/glad/glx.h",
+            "include/KHR/khrplatform.h",
+            "src/gl.c",
+            "src/glx.c"
+        }

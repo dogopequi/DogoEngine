@@ -1,7 +1,8 @@
 #pragma once
-#include "glad/glad.h"
 #if DG_PLATFORM_LINUX
-#include <GL/glx.h>
+#include <glad/gl.h>
+#include <glad/glx.h>
+
 #endif
 #include "Graphics/GraphicsContext.h"
 class DG_Window;

@@ -2,8 +2,8 @@
 
 #if DG_PLATFORM_LINUX
 #include "Window.h"
-#include <GL/gl.h>
-#include <GL/glx.h>
+#include <glad/gl.h>
+#include <glad/glx.h>
 
 
 #if _POSIX_C_SOURCE >= 199309L
@@ -60,7 +60,7 @@ namespace Dogo
 		Window root;
 		Window window;
 		XEvent event;
-		XVisualInfo* vi;
+		Visual* visual;
 		GraphicsContext* m_Context;
 
 	};
