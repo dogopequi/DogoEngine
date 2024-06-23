@@ -10,10 +10,12 @@ namespace Dogo
 		windowHandle = handle;
 	}
 #else
-	OpenGLContext::OpenGLContext(Display *dpy, XVisualInfo* vi)
+	OpenGLContext::OpenGLContext(Display *dpy, Visual* vi, int screen, const Window& window)
 	{
 		display = dpy;
-		viinfo = vi;
+		visual = vi;
+		this->screen = screen;
+		this->window = window;
 	}
 	#endif
 	OpenGLContext::OpenGLContext()
@@ -26,35 +28,7 @@ namespace Dogo
 		delete windowHandle;
 		#endif
 	}
-	bool OpenGLContext::Init(const Window& win)
-	{
-		*glc = glXCreateContext(display, viinfo, NULL, GL_TRUE);
-		if(!*glc)
-		{
-			DG_ERROR("Failed to create OpenGL Context");
-		}
-		if(!glXMakeCurrent(display, win, *glc))
-		{
-			DG_ERROR("Failed to make context current");
-		}
-			
-		if (!gladLoadGLLoader((GLADloadproc)glXGetProcAddress)) {
-			DG_WARN("Failed to initialize GLAD");
-		return false;
-		}
-		
-		if (!gladLoadGL()) {
-			DG_WARN("Failed to initialize Glad!");
-			return false;
-		}
 
-		DG_INFO("OpenGL Info:");
-		DG_INFO("  Vendor: %s", glGetString(GL_VENDOR));
-		DG_INFO("  Renderer: %s", glGetString(GL_RENDERER));
-		DG_INFO("  Version: %s", glGetString(GL_VERSION));
-
-		return true;
-	}
 	void OpenGLContext::SwapBuffer()
 	{
 		#if DG_PLATFORM_WINDOWS
@@ -73,10 +47,53 @@ namespace Dogo
 		m_HRC = wglCreateContext(m_HDC);
 		wglMakeCurrent(m_HDC, m_HRC);
 #endif
-		if (!gladLoadGL()) {
-			DG_WARN("Failed to initialize Glad!");
+		int glx_version = gladLoaderLoadGLX(display, screen);
+		if (!glx_version)
+		{
+			DG_ERROR("Failed to load GLX");
 			return false;
 		}
+
+		DG_INFO("Loaded GLX %d, %d", GLAD_VERSION_MAJOR(glx_version), GLAD_VERSION_MINOR(glx_version));
+
+		GLint visual_attributes[] = 
+		{
+		 GLX_RENDER_TYPE, GLX_RGBA_BIT,
+		 GLX_DOUBLEBUFFER, 1,
+		 None
+		};
+
+		int num_fbc = 0;
+		GLXFBConfig* fbc = glXChooseFBConfig(display, screen, visual_attributes, &num_fbc);
+
+		GLint context_attributes[] = {
+		GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+		 GLX_CONTEXT_MINOR_VERSION_ARB, 3,
+		 GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
+		None
+		};
+
+		context =
+			glXCreateContextAttribsARB(display, fbc[0], NULL, 1, context_attributes);
+		if (!context) {
+			DG_ERROR("Unable to create OpenGL context.");
+			return false;
+		}
+
+		glXMakeCurrent(display, window, context);
+
+		int gl_version = gladLoaderLoadGL();
+		if (!gl_version) {
+			DG_ERROR("Unable to load GL.");
+			return false;
+		}
+
+		DG_INFO("Loaded GL %d, %d", GLAD_VERSION_MAJOR(gl_version), GLAD_VERSION_MINOR(gl_version));
+
+		XWindowAttributes gwa;
+		XGetWindowAttributes(display, window, &gwa);
+		glViewport(0, 0, gwa.width, gwa.height);
+
 
 		DG_INFO("OpenGL Info:");
 		DG_INFO("  Vendor: %s", glGetString(GL_VENDOR));

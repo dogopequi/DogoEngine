@@ -1,6 +1,4 @@
 #pragma once
-#include <glad/glad.h>
-#include "Dogo/Renderer/Buffers.h"
 #include "Dogo/Renderer/Buffers.h"
 namespace Dogo
 {

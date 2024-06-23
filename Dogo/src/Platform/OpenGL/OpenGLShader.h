@@ -5,6 +5,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Dogo/Core.h"
+
+#if DG_PLATFORM_WINDOWS
+#include <glad/glad.h>
+#endif
+#if DG_PLATFORM_LINUX
+#include <glad/gl.h>
+#include <glad/glx.h>
+#endif
 namespace Dogo
 {
 	class OpenGLShader : public Shader

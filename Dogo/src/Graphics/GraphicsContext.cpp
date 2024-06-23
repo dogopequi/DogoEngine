@@ -62,15 +62,15 @@ namespace Dogo
 		s_RenderAPI = api;
 	}
 	
-	void GraphicsContext::Create(RenderAPI api, Display *dpy, XVisualInfo* vi)
+	void GraphicsContext::Create(RenderAPI api, Display *dpy, Visual* vi, int screen, const Window& window)
 	{
-				switch (api)
+		switch (api)
 		{
 		case RenderAPI::API_NONE:
 			DG_FATAL("Invalid render API");
 			break;
 		case RenderAPI::OpenGL:
-			s_Context = new OpenGLContext(dpy, vi);
+			s_Context = new OpenGLContext(dpy, vi, screen, window);
 			break;
 		case RenderAPI::D3D11:
 			DG_FATAL("Not possible on Linux");

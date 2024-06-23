@@ -33,7 +33,7 @@ namespace Dogo
 		
 		virtual bool InitContext() override 
 		{ 
-			GraphicsContext::Create(RenderAPI::OpenGL, display, vi);
+			GraphicsContext::Create(RenderAPI::OpenGL, display, visual, screen, window);
 			m_Context = GraphicsContext::Get();
 			if (!m_Context->Init())
 				return false;
@@ -55,13 +55,13 @@ namespace Dogo
 		std::string m_Name{};
 		bool m_VSync{};
 		bool m_IsRunning = false;
-		Display* display;
+		Display* display = nullptr;
 		int screen;
 		Window root;
 		Window window;
 		XEvent event;
-		Visual* visual;
-		GraphicsContext* m_Context;
+		Visual* visual = nullptr;
+		GraphicsContext* m_Context = nullptr;
 
 	};
 }

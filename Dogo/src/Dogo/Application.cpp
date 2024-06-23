@@ -2,7 +2,7 @@
 #include "Dogo/Core.h"
 #include "Application.h"
 #include "Logger.h"
-#include "glad/glad.h"
+//#include "glad/glad.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
 #include "Platform/OpenGL/OpenGLIndexBuffer.h"
 #include "Platform/OpenGL/OpenGLVertexArrayBuffer.h"
@@ -200,11 +200,6 @@ namespace Dogo
 		m_Window->SetInstance(instance);
 		#endif
 		m_Window->Init();
-		if (!m_Window->InitContext())
-		{
-			DG_WARN("Failed to init context");
-			return;
-		}
 
 		float vertices[] = {
 			0.0f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f , 0.5f, 0.0f, // Red
@@ -347,7 +342,7 @@ namespace Dogo
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 			m_Window->OnUpdate();
-			//MemoryUsage::PrintUsage();
+			MemoryUsage::PrintUsage();
 		}
 	}
 

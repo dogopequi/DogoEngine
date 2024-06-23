@@ -1,9 +1,12 @@
 #pragma once
+#if DG_PLATFORM_WINDOWS
+#include <glad/glad.h>
+#endif
 #if DG_PLATFORM_LINUX
 #include <glad/gl.h>
 #include <glad/glx.h>
-
 #endif
+
 #include "Graphics/GraphicsContext.h"
 class DG_Window;
 
@@ -15,14 +18,11 @@ namespace Dogo
 #if DG_PLATFORM_WINDOWS
 		OpenGLContext(HWND* handle);
 #else
-		OpenGLContext(Display *dpy, XVisualInfo* vi);
+		OpenGLContext(Display *dpy, Visual* vi, int screen, const Window& window);
 		#endif
 		OpenGLContext();
 		~OpenGLContext();
 		bool Init() override;
-#if DG_PLATFORM_LINUX
-		bool Init(const Window& win) override;
-#endif
 		void SwapBuffer() override;
 		void Shutdown() override;
 		void ClearColor(float x, float y, float z, float a) override;
@@ -36,9 +36,11 @@ namespace Dogo
 		int32_t m_Format{};
 #endif
 #if DG_PLATFORM_LINUX
-		Display* display;
-		XVisualInfo* viinfo;
-		GLXContext* glc;
+		Display* display = nullptr;
+		int screen;
+		Window window;
+		Visual* visual = nullptr;
+		GLXContext context;
 #endif
 	};
 }

@@ -36,7 +36,8 @@
 	#include <dxgi1_2.h>
 	#include <winsdkver.h>
 	#include <sdkddkver.h>
-#include <d3dcompiler.h>
+	#include <d3dcompiler.h>
+	#include <glad/glad.h>
 #endif
 #ifdef DG_PLATFORM_LINUX
 	#include <X11/keysym.h>

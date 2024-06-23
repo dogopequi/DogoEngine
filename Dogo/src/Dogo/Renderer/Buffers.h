@@ -1,6 +1,12 @@
 #pragma once
 #include "Dogo/Logger.h"
-#include "glad/glad.h"
+#if DG_PLATFORM_WINDOWS
+#include <glad/glad.h>
+#endif
+#if DG_PLATFORM_LINUX
+#include <glad/gl.h>
+#include <glad/glx.h>
+#endif
 namespace Dogo {
 
 	enum class ShaderDataType

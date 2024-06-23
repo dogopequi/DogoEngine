@@ -1,7 +1,13 @@
 #pragma once
 #include "Dogo/Core.h"
-#include <glad/glad.h>
 #include "Dogo/Renderer/Texture.h"
+#if DG_PLATFORM_WINDOWS
+#include <glad/glad.h>
+#endif
+#if DG_PLATFORM_LINUX
+#include <glad/gl.h>
+#include <glad/glx.h>
+#endif
 namespace Dogo
 {
 	class OpenGLTexture: public Texture

@@ -1,6 +1,5 @@
 #include "dgpch.h"
 #include "OpenGLShader.h"
-#include <glad/glad.h>
 #include "Dogo/Logger.h"
 namespace Dogo
 {
