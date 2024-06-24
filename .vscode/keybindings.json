@@ -1,0 +1,23 @@
+// Place your key bindings in this file to override the defaults
+[
+        {
+            "key": "ctrl+shift+d",
+            "command": "workbench.action.tasks.runTask",
+            "args": "build debug"
+        },
+        {
+            "key": "ctrl+shift+r",
+            "command": "workbench.action.tasks.runTask",
+            "args": "build release"
+        },
+        {
+            "key": "ctrl+shift+f5",
+            "command": "workbench.action.tasks.runTask",
+            "args": "build and run debug"
+        },
+        {
+            "key": "ctrl+shift+f6",
+            "command": "workbench.action.tasks.runTask",
+            "args": "build and run release"
+        } 
+]
