@@ -52,7 +52,9 @@ namespace Dogo
 		InitContext();
 
 		// Select input events we are interested in
-		XSelectInput(display, window, ExposureMask | KeyPressMask);
+		XSelectInput(display, window, ExposureMask | KeyPressMask | KeyReleaseMask |
+                                ButtonPressMask | ButtonReleaseMask | PointerMotionMask | 
+                                StructureNotifyMask);
 		
 		m_IsRunning = true;
 		return true;
@@ -73,10 +75,61 @@ namespace Dogo
 			XEvent xev;
 			XNextEvent(display, &xev);
 
-			if (xev.type == KeyPress) 
-			{
-				quit = true;
-			}
+ 			switch (xev.type) {
+                case Expose:
+				{   // Handle window expose event (redraw)
+                    DG_INFO("Window exposed");
+				}
+                break;
+                case KeyPress:
+				{
+                    DG_INFO("Key pressed: %i",  XLookupKeysym(&xev.xkey, 0));
+                    if (XLookupKeysym(&xev.xkey, 0) == XK_Escape) {
+                        quit = true;
+                    }
+				}
+                break;
+
+                case KeyRelease:
+                    {
+						DG_INFO("Key released: %i",  XLookupKeysym(&xev.xkey, 0));
+					}
+                    break;
+
+                case ButtonPress:
+				{
+                    DG_INFO("Button pressed: ", xev.xbutton.button);
+                    if (xev.xbutton.button == Button1) { // Left mouse button
+                        DG_INFO("Left mouse button pressed at %i, %i", xev.xbutton.x, xev.xbutton.y);
+                    } else if (xev.xbutton.button == Button4) { // Mouse wheel up
+                        DG_INFO("Mouse wheel up");
+                    } else if (xev.xbutton.button == Button5) { // Mouse wheel down
+                        DG_INFO("Mouse wheel down");
+                    }
+				}
+                    break;
+
+                case ButtonRelease:
+                { 
+					DG_INFO("Button released: %i", xev.xbutton.button);
+				}
+                    break;
+
+                case MotionNotify:
+				{
+                    DG_INFO("Mouse moved to: %i, %i", xev.xmotion.x, xev.xmotion.y);
+				}
+                    break;
+
+                case ConfigureNotify:
+				{
+                    DG_INFO("Window resized to %i, %i", xev.xconfigure.width, xev.xconfigure.height);
+				}
+                break;
+
+                default:
+                    break;
+            }
 		}
 		if (m_IsRunning)
 			m_Context->SwapBuffer();

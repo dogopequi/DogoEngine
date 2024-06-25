@@ -282,8 +282,8 @@ namespace Dogo
 		Renderable2D renderable2(glm::vec3(-1.0f, -0.0f, 1.0f), vertices, sizeof(vertices), indices, sizeof(indices), layout, Renderer.GetVertexShader());
    	 	std::filesystem::path cwd = std::filesystem::current_path();
 		DG_INFO(cwd.string().c_str()); DG_INFO("/Dogo/resources/awesomeface.png");
-		//std::shared_ptr<Texture> SmileyFace(Texture::Create(cwd.string() + "/Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
-		std::shared_ptr<Texture> SmileyFace(Texture::Create("../Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
+		std::shared_ptr<Texture> SmileyFace(Texture::Create(cwd.string() + "/Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
+		//std::shared_ptr<Texture> SmileyFace(Texture::Create("../Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
 		SmileyFace->Bind(0, "ourTexture");
 		Renderer.SetProjectionMatrixPerspective(fov, 1280.0f, 720.0f, 0.1f, 100.0f);
 		Renderer.SetViewMatrix(cameraPosition, cameraPosition + cameraFront, cameraUp);
