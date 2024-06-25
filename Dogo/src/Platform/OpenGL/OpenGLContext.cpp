@@ -24,6 +24,7 @@ namespace Dogo
 	}
 	OpenGLContext::~OpenGLContext()
 	{
+		Shutdown();
 		#if DG_PLATFORM_WINDOWS
 		delete windowHandle;
 		#endif
@@ -33,6 +34,9 @@ namespace Dogo
 	{
 		#if DG_PLATFORM_WINDOWS
 		SwapBuffers(m_HDC);
+		#endif
+		#if DG_PLATFORM_LINUX
+		glXSwapBuffers(display, window);
 		#endif
 	}
 	bool OpenGLContext::Init()
@@ -67,8 +71,8 @@ namespace Dogo
 		GLXFBConfig* fbc = glXChooseFBConfig(display, screen, visual_attributes, &num_fbc);
 
 		GLint context_attributes[] = {
-		GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-		 GLX_CONTEXT_MINOR_VERSION_ARB, 3,
+		GLX_CONTEXT_MAJOR_VERSION_ARB, 4,
+		 GLX_CONTEXT_MINOR_VERSION_ARB, 6,
 		 GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
 		None
 		};
@@ -114,6 +118,11 @@ namespace Dogo
 			ReleaseDC(*windowHandle, m_HDC);
 			m_HDC = NULL;
 		}
+#endif
+#if DG_PLATFORM_LINUX
+		glXMakeCurrent(display, 0, 0);
+		glXDestroyContext(display, context);
+		gladLoaderUnloadGLX();
 #endif
 
 	}

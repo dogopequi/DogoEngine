@@ -34,7 +34,7 @@ namespace Dogo
 		root = RootWindow(display, screen);
 		visual = DefaultVisual(display, screen);
 
-		Colormap colormap = XCreateColormap(display, root, visual, AllocNone);
+		colormap = XCreateColormap(display, root, visual, AllocNone);
 		XSetWindowAttributes attributes;
 		attributes.event_mask = ExposureMask | KeyPressMask | KeyReleaseMask;
 		attributes.colormap = colormap;
@@ -53,39 +53,33 @@ namespace Dogo
 
 		// Select input events we are interested in
 		XSelectInput(display, window, ExposureMask | KeyPressMask);
-//		
+		
 		m_IsRunning = true;
 		return true;
 	}
 	
 	void LinuxWindow::Shutdown()
 	{
-//		glXMakeCurrent(display, 0, 0);
-////		glXDestroyContext(display, context);
-//
-//		XDestroyWindow(display, *window);
-////		XFreeColormap(display, colormap);
-//		XCloseDisplay(display);
-//
-//		gladLoaderUnloadGLX();
+		XDestroyWindow(display, window);
+		XFreeColormap(display, colormap);
+		XCloseDisplay(display);
 	}
 	
 	void LinuxWindow::OnUpdate()
 	{
-//		bool quit = false;
-//		while (XPending(display)) {
-//			XEvent xev;
-//			XNextEvent(display, &xev);
-//
-//			if (xev.type == KeyPress) {
-//				quit = true;
-//			}
-//		}
-//
-//		glClearColor(0.8, 0.6, 0.7, 1.0);
-//		glClear(GL_COLOR_BUFFER_BIT);
-//
-//		glXSwapBuffers(display, *window);
+		bool quit = false;
+		while (XPending(display)) 
+		{
+			XEvent xev;
+			XNextEvent(display, &xev);
+
+			if (xev.type == KeyPress) 
+			{
+				quit = true;
+			}
+		}
+		if (m_IsRunning)
+			m_Context->SwapBuffer();
 	}
 	
 	void LinuxWindow::WindowSleep(float ms) const

@@ -8,23 +8,36 @@ namespace Dogo
 {
 	OpenGLTexture::OpenGLTexture(const std::string& filepath, ImageType imageType, TextureType textureType, const std::string& name) : m_Name(name)
 	{
-		switch (imageType)
+		int width, height, channels;
+		unsigned char* data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
+		switch (channels)
 		{
-		case ImageType::JPG:
-			m_ImageType = GL_RGB;
-			break;
-		case ImageType::JPEG:
-			m_ImageType = GL_RGB;
-			break;
-		case ImageType::PNG:
+		case 4:
 			m_ImageType = GL_RGBA;
 			break;
-		case ImageType::PPM:
+		case 3:
 			m_ImageType = GL_RGB;
 			break;
 		default:
 			DG_FATAL("Unknown Image Type");
 		}
+		// switch (imageType)
+		// {
+		// case ImageType::JPG:
+		// 	m_ImageType = GL_RGB;
+		// 	break;
+		// case ImageType::JPEG:
+		// 	m_ImageType = GL_RGB;
+		// 	break;
+		// case ImageType::PNG:
+		// 	m_ImageType = GL_RGBA;
+		// 	break;
+		// case ImageType::PPM:
+		// 	m_ImageType = GL_RGB;
+		// 	break;
+		// default:
+		// 	DG_FATAL("Unknown Image Type");
+		// }
 		switch (textureType)
 		{
 		case TextureType::oneD:
@@ -45,8 +58,6 @@ namespace Dogo
 		glTexParameteri(m_TextureType, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(m_TextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(m_TextureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		int width, height, channels;
-		unsigned char* data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
 		if (data)
 		{
 			glTexImage2D(m_TextureType, 0, GL_RGB, width, height, 0, m_ImageType, GL_UNSIGNED_BYTE, data);

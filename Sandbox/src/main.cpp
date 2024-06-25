@@ -6,7 +6,7 @@ class Sandbox : public Dogo::Application
 public:
 	Sandbox()
 	{
-		DG_INFO("Hello Window");
+		DG_TRACE("Hello Window");
 	}
 	~Sandbox()
 	{

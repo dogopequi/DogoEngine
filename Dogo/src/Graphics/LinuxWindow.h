@@ -42,7 +42,7 @@ namespace Dogo
 		}
 		virtual bool isRunning() const override{ return m_IsRunning;}
 		virtual bool Init() override{}
-		virtual void ClearColor(float x, float y, float z, float a) override{}
+		virtual void ClearColor(float x, float y, float z, float a) override{m_Context->ClearColor(x, y, z, a);}
 		virtual void SetEventCallback(const EventCallbackFn& callback) override{}
 		virtual GraphicsContext* GetContext() const override{}
 
@@ -61,6 +61,7 @@ namespace Dogo
 		Window window;
 		XEvent event;
 		Visual* visual = nullptr;
+		Colormap colormap;
 		GraphicsContext* m_Context = nullptr;
 
 	};

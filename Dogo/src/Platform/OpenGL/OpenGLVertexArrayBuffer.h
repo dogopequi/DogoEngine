@@ -24,7 +24,7 @@ namespace Dogo
 		void Draw(uint32_t count);
 
 	private:
-		GLuint m_RendererID{};
+		GLuint m_RendererID{0};
 		std::vector<std::shared_ptr<OpenGLBuffer>> m_VertexBuffers;
 	};
 }

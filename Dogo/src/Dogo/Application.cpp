@@ -199,150 +199,149 @@ namespace Dogo
 		#if DG_PLATFORM_WINDOWS
 		m_Window->SetInstance(instance);
 		#endif
-		m_Window->Init();
 
 		float vertices[] = {
 			0.0f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f , 0.5f, 0.0f, // Red
 			0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 0.0f , 1.0f, 1.0f, // Green
 			-0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f , 0.0f, 1.0f // Blue
 		};
-//		uint32_t indices[] = {
-//			0, 2, 1
-//		};
-//
-//		BufferLayout layout =
-//		{
-//			{ShaderDataType::Float3, "POSITION"},
-//			{ShaderDataType::Float3, "COLOR"},
-//			{ShaderDataType::Float2, "TEXCOORD"}
-//		};
-//		std::string vertexSrc = R"(
-//			#version 330 core
-//			
-//			layout(location = 0) in vec3 a_Position;
-//			layout(location = 1) in vec3 a_Color;
-//			layout(location = 2) in vec2 a_Texture;
-//
-//			uniform mat4 model;
-//			uniform mat4 view;
-//			uniform mat4 projection;
-//			//uniform mat4 MVP;
-//
-//			out vec3 v_Position;
-//			out vec3 v_Color;
-//			out vec2 v_Texture;
-//
-//			void main()
-//			{
-//				v_Color = a_Color;
-//				v_Position = a_PositclTabCtrlion;
-//				v_Texture = a_Texture;
-//				gl_Position = projection * view * model * vec4(a_Position, 1.0);
-//				//gl_Position = MVP * vec4(a_Position, 1.0);
-//			}
-//		)";
-//
-//		std::string fragmentSrc = R"(
-//			#version 330 core
-//			
-//			layout(location = 0) out vec4 color;
-//			in vec3 v_Position;
-//			in vec3 v_Color;
-//			in vec2 v_Texture;
-//
-//			uniform sampler2D ourTexture;
-//			//uniform sampler2D ourTexture1;
-//			void main()
-//			{
-//				//color = mix(texture(ourTexture, v_Texture), texture(ourTexture1, v_Texture), 0.2);
-//				color = texture(ourTexture, v_Texture);
-//				//color = vec4(1.0, 1.0, 1.0, 1.0);
-//			}
-//		)";
-//
-//		SimpleRenderer2D Renderer;
-//
-//		struct MatrixPass
-//		{
-//			glm::mat4 model;
-//			glm::mat4 view;
-//			glm::mat4 projection;
-//			glm::mat4 transform;
-//	};
-//		MatrixPass stack;
-//
-//#if OPENGL
-//		Renderer.SetVertexAndPixelShader(vertexSrc, fragmentSrc);
-//#endif
-//#if DX11
-//		Renderer.SetVertexAndPixelShader(L"../Dogo/resources/Shaders/vert.hlsl", L"../Dogo/resources/Shaders/pixel.hlsl");
-//#endif
-//
-//		Renderable2D renderable1(glm::vec3(1.0f, -0.5f, 5.0f), vertices, sizeof(vertices), indices, sizeof(indices), layout, Renderer.GetVertexShader());
-//		Renderable2D renderable2(glm::vec3(-1.0f, -0.0f, 1.0f), vertices, sizeof(vertices), indices, sizeof(indices), layout, Renderer.GetVertexShader());
-//
-//		std::shared_ptr<Texture> SmileyFace(Texture::Create("../Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
-//		SmileyFace->Bind(0, "ourTexture");
-//		Renderer.SetProjectionMatrixPerspective(fov, 1280.0f, 720.0f, 0.1f, 100.0f);
-//		Renderer.SetViewMatrix(cameraPosition, cameraPosition + cameraFront, cameraUp);
-//		Renderer.SetModelMatrix(glm::mat4(1.0f));
-//		Renderer.SetTransformMatrix(glm::mat4(1.0f));
-//
-//
-//		Timer timer;
-//		
-//		float deltaTime{ 0.0f };
-//		float lastFrame{ 0.0f };
-//		float y = 0;
+		uint32_t indices[] = {
+			0, 2, 1
+		};
+
+		BufferLayout layout =
+		{
+			{ShaderDataType::Float3, "POSITION"},
+			{ShaderDataType::Float3, "COLOR"},
+			{ShaderDataType::Float2, "TEXCOORD"}
+		};
+		std::string vertexSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec3 a_Color;
+			layout(location = 2) in vec2 a_Texture;
+
+			uniform mat4 model;
+			uniform mat4 view;
+			uniform mat4 projection;
+			//uniform mat4 MVP;
+
+			out vec3 v_Position;
+			out vec3 v_Color;
+			out vec2 v_Texture;
+
+			void main()
+			{
+				v_Color = a_Color;
+				v_Position = a_Position;
+				v_Texture = a_Texture;
+				gl_Position = projection * view * model * vec4(a_Position, 1.0);
+				//gl_Position = MVP * vec4(a_Position, 1.0);
+			}
+		)";
+
+		std::string fragmentSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) out vec4 color;
+			in vec3 v_Position;
+			in vec3 v_Color;
+			in vec2 v_Texture;
+
+			uniform sampler2D ourTexture;
+			//uniform sampler2D ourTexture1;
+			void main()
+			{
+				//color = mix(texture(ourTexture, v_Texture), texture(ourTexture1, v_Texture), 0.2);
+				color = texture(ourTexture, v_Texture);
+				//color = vec4(1.0, 1.0, 1.0, 1.0);
+			}
+		)";
+
+		SimpleRenderer2D Renderer;
+
+		struct MatrixPass
+		{
+			glm::mat4 model;
+			glm::mat4 view;
+			glm::mat4 projection;
+			glm::mat4 transform;
+	};
+		MatrixPass stack;
+
+#if OPENGL
+		Renderer.SetVertexAndPixelShader(vertexSrc, fragmentSrc);
+#endif
+#if DX11
+		Renderer.SetVertexAndPixelShader(L"../Dogo/resources/Shaders/vert.hlsl", L"../Dogo/resources/Shaders/pixel.hlsl");
+#endif
+
+		Renderable2D renderable1(glm::vec3(1.0f, -0.5f, 5.0f), vertices, sizeof(vertices), indices, sizeof(indices), layout, Renderer.GetVertexShader());
+		Renderable2D renderable2(glm::vec3(-1.0f, -0.0f, 1.0f), vertices, sizeof(vertices), indices, sizeof(indices), layout, Renderer.GetVertexShader());
+   	 	std::filesystem::path cwd = std::filesystem::current_path();
+		std::shared_ptr<Texture> SmileyFace(Texture::Create(cwd.string() + "/Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
+		SmileyFace->Bind(0, "ourTexture");
+		Renderer.SetProjectionMatrixPerspective(fov, 1280.0f, 720.0f, 0.1f, 100.0f);
+		Renderer.SetViewMatrix(cameraPosition, cameraPosition + cameraFront, cameraUp);
+		Renderer.SetModelMatrix(glm::mat4(1.0f));
+		Renderer.SetTransformMatrix(glm::mat4(1.0f));
+
+
+		Timer timer;
+		
+		float deltaTime{ 0.0f };
+		float lastFrame{ 0.0f };
+		float y = 0;
 		MemoryUsage::PrintUsage();
 		while (m_Window->isRunning() && m_Window != nullptr)
 		{
-//			m_Window->ClearColor(0.2f, 1.0f, 1.0f, 1.0f);
-//			float currentFrame = timer.elapsed();
-//			deltaTime = currentFrame - lastFrame;
-//			lastFrame = currentFrame;
-//			Renderer.Submit(renderable1);
-//			Renderer.Submit(renderable2);
-//			Renderer.SetProjectionMatrixPerspective(fov,1280.0f, 720.0f, 0.1f, 100.0f);
-//			processInput(cameraPosition, cameraFront, cameraUp, deltaTime);
-//			Renderer.SetViewMatrix(cameraPosition, cameraPosition + cameraFront, cameraUp);
-//			changetexture("../Dogo/resources/CARDIGA.jpg", ImageType::JPG, TextureType::twoD, *SmileyFace);
-//			SmileyFace->Bind(0, "ourTexture");
-//			Renderer.Flush();
+			m_Window->ClearColor(0.2f, 1.0f, 1.0f, 1.0f);
+			float currentFrame = timer.elapsed();
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+			Renderer.Submit(renderable1);
+			Renderer.Submit(renderable2);
+			Renderer.SetProjectionMatrixPerspective(fov,1280.0f, 720.0f, 0.1f, 100.0f);
+			// processInput(cameraPosition, cameraFront, cameraUp, deltaTime);
+			Renderer.SetViewMatrix(cameraPosition, cameraPosition + cameraFront, cameraUp);
+			// changetexture("../Dogo/resources/CARDIGA.jpg", ImageType::JPG, TextureType::twoD, *SmileyFace);
+			SmileyFace->Bind(0, "ourTexture");
+			Renderer.Flush();
 			//DG_TRACE("running");
-//#if OPENGL
-//			GLenum err;
-//			while ((err = glGetError()) != GL_NO_ERROR) {
-//				switch (err) {
-//				case GL_INVALID_ENUM:
-//					std::cout << "OpenGL Error: GL_INVALID_ENUM" << std::endl;
-//					break;
-//				case GL_INVALID_VALUE:
-//					std::cout << "OpenGL Error: GL_INVALID_VALUE" << std::endl;
-//					break;
-//				case GL_INVALID_OPERATION:
-//					std::cout << "OpenGL Error: GL_INVALID_OPERATION" << std::endl;
-//					break;
-//				case GL_STACK_OVERFLOW:
-//					std::cout << "OpenGL Error: GL_STACK_OVERFLOW" << std::endl;
-//					break;
-//				case GL_STACK_UNDERFLOW:
-//					std::cout << "OpenGL Error: GL_STACK_UNDERFLOW" << std::endl;
-//					break;
-//				case GL_OUT_OF_MEMORY:
-//					std::cout << "OpenGL Error: GL_OUT_OF_MEMORY" << std::endl;
-//					break;
-//					// Add more cases as needed
-//				default:
-//					std::cout << "Unknown OpenGL Error" << std::endl;
-//					break;
-//				}
-//			}
-//#endif
+#if OPENGL
+			GLenum err;
+			while ((err = glGetError()) != GL_NO_ERROR) {
+				switch (err) {
+				case GL_INVALID_ENUM:
+					std::cout << "OpenGL Error: GL_INVALID_ENUM" << std::endl;
+					break;
+				case GL_INVALID_VALUE:
+					std::cout << "OpenGL Error: GL_INVALID_VALUE" << std::endl;
+					break;
+				case GL_INVALID_OPERATION:
+					std::cout << "OpenGL Error: GL_INVALID_OPERATION" << std::endl;
+					break;
+				case GL_STACK_OVERFLOW:
+					std::cout << "OpenGL Error: GL_STACK_OVERFLOW" << std::endl;
+					break;
+				case GL_STACK_UNDERFLOW:
+					std::cout << "OpenGL Error: GL_STACK_UNDERFLOW" << std::endl;
+					break;
+				case GL_OUT_OF_MEMORY:
+					std::cout << "OpenGL Error: GL_OUT_OF_MEMORY" << std::endl;
+					break;
+					// Add more cases as needed
+				default:
+					std::cout << "Unknown OpenGL Error" << std::endl;
+					break;
+				}
+			}
+#endif
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 			m_Window->OnUpdate();
-			MemoryUsage::PrintUsage();
+		// 	// MemoryUsage::PrintUsage();
 		}
 	}
 

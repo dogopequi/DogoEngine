@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include",
+                "/usr/local/include"
+            ],
+            "defines": ["DG_BUILD_STATIC", "DG_PLATFORM_LINUX", "DG_BUILD_DEBUG", "DG_BUILD_RELEASE"],
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "forcedInclude": [
+                "${workspaceFolder}/Dogo/src/dgpch.h"
+            ]
+            
+        }
+    ],
+    "version": 4
+}

@@ -38,6 +38,6 @@ int main(int argc, char** argv)
 //    SetConsoleMode(hOut, dwMode);
 	auto app = Dogo::CreateApplication();
 	app->Run();
-	delete app;
+	// delete app;
 }
 //#endif
