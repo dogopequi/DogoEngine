@@ -46,6 +46,9 @@ namespace Dogo
 		virtual void SetEventCallback(const EventCallbackFn& callback) override{}
 		virtual GraphicsContext* GetContext() const override{}
 
+		inline Display* GetDisplay() const {return display;}
+		inline Window GetRoot() const {return root;}
+
 	private:
 		virtual bool Init(const WindowAttrib& attrib);
 		virtual void Shutdown();
@@ -63,6 +66,12 @@ namespace Dogo
 		Visual* visual = nullptr;
 		Colormap colormap;
 		GraphicsContext* m_Context = nullptr;
+
+		static std::map<const char* , LinuxWindow*> s_Handles;
+
+		public:
+		static LinuxWindow* GetWindowClass(const char* handle);
+		static void RegisterWindowClass(const char* handle, LinuxWindow* window);
 
 	};
 }

@@ -10,6 +10,20 @@ namespace Dogo
 	{
 		return new LinuxWindow(attrib);
 	}
+
+	std::map<const char* , LinuxWindow*> s_Handles;
+
+	LinuxWindow* LinuxWindow::GetWindowClass(const char*  handle)
+	{
+		if (handle == nullptr)
+			return s_Handles.begin()->second;
+
+		return s_Handles[handle];
+	}
+	void LinuxWindow::RegisterWindowClass(const char*  handle, LinuxWindow* window)
+	{
+		s_Handles[handle] = window;
+	}
 	
 	LinuxWindow::LinuxWindow(const WindowAttrib& attrib)
 	{
@@ -55,6 +69,8 @@ namespace Dogo
 		XSelectInput(display, window, ExposureMask | KeyPressMask | KeyReleaseMask |
                                 ButtonPressMask | ButtonReleaseMask | PointerMotionMask | 
                                 StructureNotifyMask);
+
+		RegisterWindowClass(attrib.Name.c_str(), this);
 		
 		m_IsRunning = true;
 		return true;
