@@ -320,6 +320,8 @@
 		frequency = 1.0 / (float)f.QuadPart;
 		QueryPerformanceCounter(&startTime);
 
+		InitContext();
+
 		return true;
 	}
 

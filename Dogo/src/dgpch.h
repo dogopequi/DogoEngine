@@ -23,7 +23,6 @@
 #include <codecvt>
 #include <locale>
 #include <deque>
-#include <unistd.h>
 
 #ifdef DG_PLATFORM_WINDOWS
 	#include "Windows.h"

@@ -50,7 +50,14 @@ namespace Dogo
 
 		m_HRC = wglCreateContext(m_HDC);
 		wglMakeCurrent(m_HDC, m_HRC);
+
+		if (!gladLoadGL()) {
+			DG_WARN("Failed to initialize Glad!");
+			return false;
+		}
+
 #endif
+#if DG_PLATFORM_LINUX
 		int glx_version = gladLoaderLoadGLX(display, screen);
 		if (!glx_version)
 		{
@@ -97,6 +104,7 @@ namespace Dogo
 		XWindowAttributes gwa;
 		XGetWindowAttributes(display, window, &gwa);
 		glViewport(0, 0, gwa.width, gwa.height);
+#endif
 
 
 		DG_INFO("OpenGL Info:");
