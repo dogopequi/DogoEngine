@@ -73,37 +73,36 @@ namespace Dogo
 	{
 		m_LayerStack.PushOverlay(layer);
 	}
-
-
 #if DG_PLATFORM_WINDOWS
 	void Application::SetWindowsInstance(HINSTANCE instance)
 	{
 		this->instance = instance;
 	}
+#endif
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		/*DG_TRACE(e.ToString().c_str());*/
+		DG_TRACE(e.ToString().c_str());
 		m_IsRunning = false;
 		return true;
 	}
 	bool Application::KeyPressedCallBack(KeyPressedEvent& e)
 	{
-		//DG_TRACE(e.ToString().c_str());
-		if(e.GetKeyCode() == DG_KEY_ESCAPE)
-			ClipCursor(nullptr);
+		DG_TRACE(e.ToString().c_str());
+		// if(e.GetKeyCode() == DG_KEY_ESCAPE)
+		// 	ClipCursor(nullptr);
 		return true;
 	}
 	bool Application::KeyReleasedCallBack(KeyReleasedEvent& e)
 	{
-		/*DG_TRACE(e.ToString().c_str());*/
+		DG_TRACE(e.ToString().c_str());
 		return true;
 	}
 	bool Application::MouseMovedCallBack(MouseMovedEvent& e)
 	{
 		//TODO fix bug, the reset of the position is triggering the camera look.
-		//DG_TRACE(e.ToString().c_str());
-		if (Input::GetKey() == DG_KEY_ESCAPE)
-			return false;
+		DG_TRACE(e.ToString().c_str());
+		// if (Input::GetKey() == DG_KEY_ESCAPE)
+		// 	return false;
 		/*RECT rect;
 		WindowsWindow* window = (WindowsWindow*)m_Window;
 		GetClientRect(window->GetHandle(), &rect);
@@ -126,51 +125,51 @@ namespace Dogo
 		rect.bottom = lr.y;*/
 
 
-		float xpos = static_cast<float>(Input::GetMouseX());
-		float ypos = static_cast<float>(Input::GetMouseY());
+		// float xpos = static_cast<float>(Input::GetMouseX());
+		// float ypos = static_cast<float>(Input::GetMouseY());
 
-		if (firstMouse)
-		{
-			lastX = xpos;
-			lastY = ypos;
-			firstMouse = false;
-		}
+		// if (firstMouse)
+		// {
+		// 	lastX = xpos;
+		// 	lastY = ypos;
+		// 	firstMouse = false;
+		// }
 
-		float xoffset = xpos - lastX;
-		float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-		lastX = xpos;
-		lastY = ypos;
+		// float xoffset = xpos - lastX;
+		// float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+		// lastX = xpos;
+		// lastY = ypos;
 
-		//ClipCursor(&rect);
-		//SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
+		// //ClipCursor(&rect);
+		// //SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
 
-		float sensitivity = 0.1f; // change this value to your liking
-		xoffset *= sensitivity;
-		yoffset *= sensitivity;
+		// float sensitivity = 0.1f; // change this value to your liking
+		// xoffset *= sensitivity;
+		// yoffset *= sensitivity;
 
-		yaw += xoffset;
-		pitch += yoffset;
+		// yaw += xoffset;
+		// pitch += yoffset;
 
-		// make sure that when pitch is out of bounds, screen doesn't get flipped
-		if (pitch > 89.0f)
-			pitch = 89.0f;
-		if (pitch < -89.0f)
-			pitch = -89.0f;
-		glm::vec3 front;
-		front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-		front.y = sin(glm::radians(pitch));
-		front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-		cameraFront = glm::normalize(front);
+		// // make sure that when pitch is out of bounds, screen doesn't get flipped
+		// if (pitch > 89.0f)
+		// 	pitch = 89.0f;
+		// if (pitch < -89.0f)
+		// 	pitch = -89.0f;
+		// glm::vec3 front;
+		// front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+		// front.y = sin(glm::radians(pitch));
+		// front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+		// cameraFront = glm::normalize(front);
 		return true;
 	}
 	bool Application::MouseButtonPressedCallBack(MouseButtonPressedEvent& e)
 	{
-		/*DG_TRACE(e.ToString().c_str());*/
+		DG_TRACE(e.ToString().c_str());
 		return true;
 	}
 	bool Application::MouseButtonReleasedCallBack(MouseButtonReleasedEvent& e)
 	{
-		/*DG_TRACE(e.ToString().c_str());*/
+		DG_TRACE(e.ToString().c_str());
 		return true;
 	}
 	bool Application::MouseScrolledCallBack(MouseScrolledEvent& e)
@@ -180,10 +179,9 @@ namespace Dogo
 			fov = 1.0f;
 		if (fov > 90.0f)
 			fov = 90.0f;
-		/*DG_TRACE(e.ToString().c_str());*/
+		DG_TRACE(e.ToString().c_str());
 		return true;
 	}
-#endif
 
 	void changetexture(const std::string& filepath, ImageType imageType, TextureType textureType, Texture& texture)
 	{
@@ -351,13 +349,13 @@ namespace Dogo
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-//		dispatcher.Dispatch<WindowCloseEvent>(DG_BIND_EVENT_FN(Application::OnWindowClose));
-//		dispatcher.Dispatch<KeyPressedEvent>(DG_BIND_EVENT_FN(Application::KeyPressedCallBack));
-//		dispatcher.Dispatch<KeyReleasedEvent>(DG_BIND_EVENT_FN(Application::KeyReleasedCallBack));
-//		dispatcher.Dispatch<MouseMovedEvent>(DG_BIND_EVENT_FN(Application::MouseMovedCallBack));
-//		dispatcher.Dispatch<MouseButtonPressedEvent>(DG_BIND_EVENT_FN(Application::MouseButtonPressedCallBack));
-//		dispatcher.Dispatch<MouseButtonReleasedEvent>(DG_BIND_EVENT_FN(Application::MouseButtonReleasedCallBack));
-//		dispatcher.Dispatch<MouseScrolledEvent>(DG_BIND_EVENT_FN(Application::MouseScrolledCallBack));
+		dispatcher.Dispatch<WindowCloseEvent>(DG_BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<KeyPressedEvent>(DG_BIND_EVENT_FN(Application::KeyPressedCallBack));
+		dispatcher.Dispatch<KeyReleasedEvent>(DG_BIND_EVENT_FN(Application::KeyReleasedCallBack));
+		dispatcher.Dispatch<MouseMovedEvent>(DG_BIND_EVENT_FN(Application::MouseMovedCallBack));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(DG_BIND_EVENT_FN(Application::MouseButtonPressedCallBack));
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(DG_BIND_EVENT_FN(Application::MouseButtonReleasedCallBack));
+		dispatcher.Dispatch<MouseScrolledEvent>(DG_BIND_EVENT_FN(Application::MouseScrolledCallBack));
 	}
 
 }

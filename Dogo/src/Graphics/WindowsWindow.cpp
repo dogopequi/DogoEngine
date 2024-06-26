@@ -115,7 +115,6 @@
 			int32_t xPos = GET_X_LPARAM(lparam);
 			int32_t yPos = GET_Y_LPARAM(lparam);
 			Input::ProcessMouseScroll(std::make_pair(xPos, yPos));
-
 			MouseScrolledEvent e(xPos, yPos);
 			window->GetEventCallback()(e);
 			//if (delta > 0) {

@@ -41,13 +41,14 @@ namespace Dogo
 			return true;
 		}
 		virtual bool isRunning() const override{ return m_IsRunning;}
-		virtual bool Init() override{}
+		virtual bool Init() override{return true;}
 		virtual void ClearColor(float x, float y, float z, float a) override{m_Context->ClearColor(x, y, z, a);}
-		virtual void SetEventCallback(const EventCallbackFn& callback) override{}
-		virtual GraphicsContext* GetContext() const override{}
+		virtual void SetEventCallback(const EventCallbackFn& callback) override;
+		virtual GraphicsContext* GetContext() const override{return m_Context;}
 
 		inline Display* GetDisplay() const {return display;}
 		inline Window GetRoot() const {return root;}
+		EventCallbackFn GetEventCallback() const { return EventCallback; }
 
 	private:
 		virtual bool Init(const WindowAttrib& attrib);
@@ -66,6 +67,7 @@ namespace Dogo
 		Visual* visual = nullptr;
 		Colormap colormap;
 		GraphicsContext* m_Context = nullptr;
+		EventCallbackFn EventCallback;
 
 		static std::map<const char* , LinuxWindow*> s_Handles;
 
