@@ -19,8 +19,10 @@ namespace Dogo
 		void Submit(const Renderable2D& renderable);
 		void Flush();
 
-		inline void SetViewMatrix(const glm::vec3& pos, const glm::vec3& dir, const glm::vec3& up) 
-		{ glm::mat4 view = glm::lookAtRH(pos, dir, up); MVP->view = view; }
+		inline void SetViewMatrix(glm::mat4 view) 
+		{
+			MVP->view = view;
+		}
 		inline void SetModelMatrix(const glm::mat4& model) 
 		{ MVP->model = model; }
 		inline void SetProjectionMatrixPerspective(float FOV, float width, float height, float minDepth, float maxDepth)

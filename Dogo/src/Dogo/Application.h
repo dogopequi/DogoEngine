@@ -8,6 +8,7 @@
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
 #include "Graphics/WindowsWindow.h"
+#include "Renderer/Camera.h"
 namespace Dogo
 {
 	#if DG_PLATFORM_WINDOWS
@@ -44,16 +45,13 @@ namespace Dogo
 
 		//temp
 		bool firstMouse = true;
-		float yaw = 90.0f;
-		float pitch = 0.0f;
 		float lastX = 800.0f / 2.0;
 		float lastY = 600.0 / 2.0;
-		float fov = 45.0f;
 
+		//temp
+		void processInput(float time);
 		
-		glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, -5.0f);
-		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, 1.0f);
-		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+		std::shared_ptr<Camera> m_Camera;
 #if DG_PLATFORM_WINDOWS
 		HINSTANCE instance;
 #endif

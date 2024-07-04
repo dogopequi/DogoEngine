@@ -35,23 +35,23 @@ namespace Dogo
 			DG_INFO("row:  %f, %f, %f, %f", ptr[i * 4 + 0], ptr[i * 4 + 1], ptr[i * 4 + 2], ptr[i * 4 + 3]);
 		}
 	}
-	void processInput(glm::vec3& pos, glm::vec3& front, glm::vec3& up, float time)
+	void Application::processInput(float time)
 	{
-//		WindowsWindow* window = WindowsWindow::GetWindowClass(NULL);
-//		const float cameraSpeed = 2.5f * time; // adjust accordingly
-//		if (Input::IsKeyPressed(DG_KEY_W))
-//			pos += cameraSpeed * front;
-//		if (Input::IsKeyPressed(DG_KEY_S))
-//			pos -= cameraSpeed * front;
-//		if (Input::IsKeyPressed(DG_KEY_A))
-//			pos -= glm::normalize(glm::cross(front, up)) * cameraSpeed;
-//		if (Input::IsKeyPressed(DG_KEY_D))
-//			pos += glm::normalize(glm::cross(front, up)) * cameraSpeed;
-//
-//		if (Input::IsKeyPressed(DG_KEY_L))
-//			window->LockCursor();
-//		if (Input::IsKeyPressed(DG_KEY_U))
-//			window->UnlockCursor();
+		WindowsWindow* window = WindowsWindow::GetWindowClass(NULL);
+		const float cameraSpeed = m_Camera->GetSpeed() * time; // adjust accordingly
+		if (Input::IsKeyPressed(DG_KEY_W))
+			m_Camera->SetPosition(m_Camera->GetPosition() + m_Camera->GetSpeed() * m_Camera->GetFront());
+		if (Input::IsKeyPressed(DG_KEY_S))
+			m_Camera->SetPosition(m_Camera->GetPosition() - m_Camera->GetSpeed() * m_Camera->GetFront());
+		if (Input::IsKeyPressed(DG_KEY_A))
+			m_Camera->SetPosition(m_Camera->GetPosition() - m_Camera->GetSpeed() * m_Camera->GetRight());
+		if (Input::IsKeyPressed(DG_KEY_D))
+			m_Camera->SetPosition(m_Camera->GetPosition() + m_Camera->GetSpeed() * m_Camera->GetRight());
+
+		if (Input::IsKeyPressed(DG_KEY_L))
+			window->LockCursor();
+		if (Input::IsKeyPressed(DG_KEY_U))
+			window->UnlockCursor();
 	}
 	
 	Application::Application()
@@ -100,7 +100,7 @@ namespace Dogo
 	bool Application::MouseMovedCallBack(MouseMovedEvent& e)
 	{
 		//TODO fix bug, the reset of the position is triggering the camera look.
-		DG_TRACE(e.ToString().c_str());
+		//DG_TRACE(e.ToString().c_str());
 		// if (Input::GetKey() == DG_KEY_ESCAPE)
 		// 	return false;
 		/*RECT rect;
@@ -125,41 +125,38 @@ namespace Dogo
 		rect.bottom = lr.y;*/
 
 
-		// float xpos = static_cast<float>(Input::GetMouseX());
-		// float ypos = static_cast<float>(Input::GetMouseY());
+		 float xpos = static_cast<float>(Input::GetMouseX());
+		 float ypos = static_cast<float>(Input::GetMouseY());
 
-		// if (firstMouse)
-		// {
-		// 	lastX = xpos;
-		// 	lastY = ypos;
-		// 	firstMouse = false;
-		// }
+		 if (firstMouse)
+		 {
+		 	lastX = xpos;
+		 	lastY = ypos;
+		 	firstMouse = false;
+		 }
 
-		// float xoffset = xpos - lastX;
-		// float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-		// lastX = xpos;
-		// lastY = ypos;
+		 float xoffset = xpos - lastX;
+		 float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+		 lastX = xpos;
+		 lastY = ypos;
 
-		// //ClipCursor(&rect);
-		// //SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
+		 //ClipCursor(&rect);
+		 //SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
+		 xoffset *= m_Camera->GetSensitivity();
+		 yoffset *= m_Camera->GetSensitivity();
 
-		// float sensitivity = 0.1f; // change this value to your liking
-		// xoffset *= sensitivity;
-		// yoffset *= sensitivity;
+		 m_Camera->SetYaw(m_Camera->GetYaw() + xoffset);
+		 m_Camera->SetPitch(m_Camera->GetPitch() + yoffset);
 
-		// yaw += xoffset;
-		// pitch += yoffset;
-
-		// // make sure that when pitch is out of bounds, screen doesn't get flipped
-		// if (pitch > 89.0f)
-		// 	pitch = 89.0f;
-		// if (pitch < -89.0f)
-		// 	pitch = -89.0f;
-		// glm::vec3 front;
-		// front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-		// front.y = sin(glm::radians(pitch));
-		// front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-		// cameraFront = glm::normalize(front);
+		 // make sure that when pitch is out of bounds, screen doesn't get flipped
+		 if (true) // future a constrain pitch boolean
+		 {
+			 if (m_Camera->GetPitch() > 89.0f)
+				 m_Camera->SetPitch(89.0f);
+			 if (m_Camera->GetPitch() < -89.0f)
+				 m_Camera->SetPitch(-89.0f);
+		 }
+		 m_Camera->UpdateVectors();
 		return true;
 	}
 	bool Application::MouseButtonPressedCallBack(MouseButtonPressedEvent& e)
@@ -174,12 +171,12 @@ namespace Dogo
 	}
 	bool Application::MouseScrolledCallBack(MouseScrolledEvent& e)
 	{
-		fov -= Input::GetScrollDelta();
-		if (fov < 1.0f)
-			fov = 1.0f;
-		if (fov > 90.0f)
-			fov = 90.0f;
-		DG_TRACE(e.ToString().c_str());
+		m_Camera->SetZoom(m_Camera->GetZoom() - Input::GetScrollDelta());
+		if ((m_Camera->GetZoom() < 1.0f))
+			m_Camera->SetZoom(1.0f);
+		if ((m_Camera->GetZoom() > 90.0f))
+			m_Camera->SetZoom(90.0f);
+		//DG_TRACE(e.ToString().c_str());
 		return true;
 	}
 
@@ -260,15 +257,6 @@ namespace Dogo
 
 		SimpleRenderer2D Renderer;
 
-		struct MatrixPass
-		{
-			glm::mat4 model;
-			glm::mat4 view;
-			glm::mat4 projection;
-			glm::mat4 transform;
-	};
-		MatrixPass stack;
-
 #if OPENGL
 		Renderer.SetVertexAndPixelShader(vertexSrc, fragmentSrc);
 #endif
@@ -276,15 +264,17 @@ namespace Dogo
 		Renderer.SetVertexAndPixelShader(L"../Dogo/resources/Shaders/vert.hlsl", L"../Dogo/resources/Shaders/pixel.hlsl");
 #endif
 
+		m_Camera.reset(new Camera());
+
 		Renderable2D renderable1(glm::vec3(1.0f, -0.5f, 5.0f), vertices, sizeof(vertices), indices, sizeof(indices), layout, Renderer.GetVertexShader());
 		Renderable2D renderable2(glm::vec3(-1.0f, -0.0f, 1.0f), vertices, sizeof(vertices), indices, sizeof(indices), layout, Renderer.GetVertexShader());
    	 	std::filesystem::path cwd = std::filesystem::current_path();
 		DG_INFO(cwd.string().c_str()); DG_INFO("/Dogo/resources/awesomeface.png");
-		std::shared_ptr<Texture> SmileyFace(Texture::Create(cwd.string() + "/Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
-		//std::shared_ptr<Texture> SmileyFace(Texture::Create("../Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
+		//std::shared_ptr<Texture> SmileyFace(Texture::Create(cwd.string() + "/Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
+		std::shared_ptr<Texture> SmileyFace(Texture::Create("../Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
 		SmileyFace->Bind(0, "ourTexture");
-		Renderer.SetProjectionMatrixPerspective(fov, 1280.0f, 720.0f, 0.1f, 100.0f);
-		Renderer.SetViewMatrix(cameraPosition, cameraPosition + cameraFront, cameraUp);
+		Renderer.SetProjectionMatrixPerspective(m_Camera->GetZoom(), 1280.0f, 720.0f, 0.1f, 100.0f);
+		Renderer.SetViewMatrix(m_Camera->GetViewMatrix());
 		Renderer.SetModelMatrix(glm::mat4(1.0f));
 		Renderer.SetTransformMatrix(glm::mat4(1.0f));
 
@@ -303,9 +293,9 @@ namespace Dogo
 			lastFrame = currentFrame;
 			Renderer.Submit(renderable1);
 			Renderer.Submit(renderable2);
-			Renderer.SetProjectionMatrixPerspective(fov,1280.0f, 720.0f, 0.1f, 100.0f);
-			// processInput(cameraPosition, cameraFront, cameraUp, deltaTime);
-			Renderer.SetViewMatrix(cameraPosition, cameraPosition + cameraFront, cameraUp);
+			Renderer.SetProjectionMatrixPerspective(m_Camera->GetZoom(),1280.0f, 720.0f, 0.1f, 100.0f);
+			processInput(deltaTime);
+			Renderer.SetViewMatrix(m_Camera->GetViewMatrix());
 			// changetexture("../Dogo/resources/CARDIGA.jpg", ImageType::JPG, TextureType::twoD, *SmileyFace);
 			SmileyFace->Bind(0, "ourTexture");
 			Renderer.Flush();
