@@ -196,78 +196,87 @@ namespace Dogo
 		m_Window->Init();
 		#endif
 
-		float vertices[] = {
+		float triangleVertices[] = {
 			0.0f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f , 0.5f, 0.0f, // Red
 			0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 0.0f , 1.0f, 1.0f, // Green
 			-0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f , 0.0f, 1.0f // Blue
 		};
-		uint32_t indices[] = {
+		uint32_t triangleIndices[] = {
 			0, 2, 1
 		};
 
-		BufferLayout layout =
+		BufferLayout triangleLayout =
 		{
 			{ShaderDataType::Float3, "POSITION"},
 			{ShaderDataType::Float3, "COLOR"},
 			{ShaderDataType::Float2, "TEXCOORD"}
 		};
-		std::string vertexSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec3 a_Color;
-			layout(location = 2) in vec2 a_Texture;
 
-			uniform mat4 model;
-			uniform mat4 view;
-			uniform mat4 projection;
-			//uniform mat4 MVP;
+		float cubeVertices[] =
+		{
+		-0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		0.5f,  0.5f, -0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f,  0.5f,
+		0.5f, -0.5f,  0.5f,
+		0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
 
-			out vec3 v_Position;
-			out vec3 v_Color;
-			out vec2 v_Texture;
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		0.5f, -0.5f, -0.5f,
+		0.5f,  0.5f, -0.5f,
+		0.5f,  0.5f,  0.5f,
+		0.5f, -0.5f,  0.5f,
 
-			void main()
-			{
-				v_Color = a_Color;
-				v_Position = a_Position;
-				v_Texture = a_Texture;
-				gl_Position = projection * view * model * vec4(a_Position, 1.0);
-				//gl_Position = MVP * vec4(a_Position, 1.0);
-			}
-		)";
-
-		std::string fragmentSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) out vec4 color;
-			in vec3 v_Position;
-			in vec3 v_Color;
-			in vec2 v_Texture;
-
-			uniform sampler2D ourTexture;
-			//uniform sampler2D ourTexture1;
-			void main()
-			{
-				//color = mix(texture(ourTexture, v_Texture), texture(ourTexture1, v_Texture), 0.2);
-				color = texture(ourTexture, v_Texture);
-				//color = vec4(1.0, 1.0, 1.0, 1.0);
-			}
-		)";
+		-0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
+		0.5f,  0.5f, -0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f,  0.5f,  0.5f,
+		0.5f,  0.5f,  0.5f
+		};
+		GLuint cubeIndices[] = {
+			// front and back
+			0, 3, 2,
+			2, 1, 0,
+			4, 5, 6,
+			6, 7 ,4,
+			// left and right
+			11, 8, 9,
+			9, 10, 11,
+			12, 13, 14,
+			14, 15, 12,
+			// bottom and top
+			16, 17, 18,
+			18, 19, 16,
+			20, 21, 22,
+			22, 23, 20
+		};
+		BufferLayout cubeLayout =
+		{
+			{ShaderDataType::Float3, "POSITION"}
+		};
 
 		SimpleRenderer2D Renderer;
 
 #if OPENGL
-		Renderer.SetVertexAndPixelShader(vertexSrc, fragmentSrc);
+		std::wstring vertexShader = L"../Dogo/resources/Shaders/vert.glsl";
+		std::wstring pixelShader = L"../Dogo/resources/Shaders/pixel.glsl";
 #endif
 #if DX11
-		Renderer.SetVertexAndPixelShader(L"../Dogo/resources/Shaders/vert.hlsl", L"../Dogo/resources/Shaders/pixel.hlsl");
+		std::wstring vertexShader = L"../Dogo/resources/Shaders/vert.hlsl";
+		std::wstring pixelShader = L"../Dogo/resources/Shaders/pixel.hlsl";
 #endif
-
 		m_Camera.reset(new Camera());
 
-		Renderable2D renderable1(glm::vec3(1.0f, -0.5f, 5.0f), vertices, sizeof(vertices), indices, sizeof(indices), layout, Renderer.GetVertexShader());
-		Renderable2D renderable2(glm::vec3(-1.0f, -0.0f, 1.0f), vertices, sizeof(vertices), indices, sizeof(indices), layout, Renderer.GetVertexShader());
+		Renderable2D renderable1(glm::vec3(1.0f, -0.5f, 5.0f), triangleVertices, sizeof(triangleVertices), triangleIndices, sizeof(triangleIndices), triangleLayout, vertexShader, pixelShader);
+		Renderable2D renderable2(glm::vec3(-1.0f, -0.0f, 1.0f), triangleVertices, sizeof(triangleVertices), triangleIndices, sizeof(triangleIndices), triangleLayout, vertexShader, pixelShader);
    	 	std::filesystem::path cwd = std::filesystem::current_path();
 		DG_INFO(cwd.string().c_str()); DG_INFO("/Dogo/resources/awesomeface.png");
 		//std::shared_ptr<Texture> SmileyFace(Texture::Create(cwd.string() + "/Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));

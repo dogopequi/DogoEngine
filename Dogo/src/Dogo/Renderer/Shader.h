@@ -17,7 +17,6 @@ namespace Dogo
 		static Shader* Create(const std::wstring& filepath, ShaderType type);
 		static Shader* Create(const std::string& filepath, ShaderType type);
 		static Shader* Create(const std::wstring& filepath, const std::wstring& filepath2);
-		static Shader* Create(const std::string& filepath, const std::string& filepath2);
 		virtual void SetUniform1i(const std::string& name, int32_t value, uint8_t index = 0) = 0;
 		virtual void SetUniform2i(const std::string& name, glm::ivec2 value, uint8_t index = 0) = 0;
 		virtual void SetUniform3i(const std::string& name, glm::ivec3 value, uint8_t index = 0) = 0;

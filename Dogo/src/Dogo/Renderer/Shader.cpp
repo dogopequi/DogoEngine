@@ -35,32 +35,7 @@ namespace Dogo
 			}
 		}
     }
-	Shader* Shader::Create(const std::string& filepath, const std::string& filepath2)
-	{
-		RenderAPI api = GraphicsContext::GetAPI();
-		{
-			switch (api)
-			{
-			case Dogo::RenderAPI::API_NONE:
-				DG_FATAL("No API specified");
-				break;
-			case Dogo::RenderAPI::OpenGL:
-				return new OpenGLShader(filepath, filepath2);
-				break;
-			case Dogo::RenderAPI::VULKAN:
-				DG_FATAL("Not Implemented");
-				break;
-			case Dogo::RenderAPI::D3D11:
-				break;
-			case Dogo::RenderAPI::D3D12:
-				DG_FATAL("Not Implemented");
-				break;
-			default:
-				DG_FATAL("No API specified");
-				break;
-			}
-		}
-	}
+	
 	Shader* Shader::Create(const std::wstring& filepath, const std::wstring& filepath2)
 	{
 		RenderAPI api = GraphicsContext::GetAPI();

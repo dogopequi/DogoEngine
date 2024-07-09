@@ -17,9 +17,10 @@ namespace Dogo
 	class Renderable2D
 	{
 	public:
-		Renderable2D(const glm::vec3& pos, float* vertices, size_t vertSize, uint32_t* indices, size_t indiceSize, BufferLayout& layout, std::shared_ptr<Shader> shader)
+		Renderable2D(const glm::vec3& pos, float* vertices, size_t vertSize, uint32_t* indices, size_t indiceSize, BufferLayout& layout, const std::wstring& vertex, const std::wstring& pixel)
 			: m_Position(pos)
 		{
+			SetVertexAndPixelShader(vertex, pixel);
 			m_Layout = std::make_shared<BufferLayout>(layout);
 			m_VertexArray.reset(VertexArray::Create());
 			m_VertexArray->Bind();
@@ -37,7 +38,7 @@ namespace Dogo
 #if DG_PLATFORM_WINDOWS
 			case RenderAPI::D3D11:
 			{
-				SetLayout(shader);
+				SetLayout(m_VertexShader);
 			}
 #endif
 			break;
@@ -47,7 +48,34 @@ namespace Dogo
 			m_VertexArray->AddBuffer(m_VertexBuffer);
 		}
 
-
+		inline void SetVertexAndPixelShader(const std::wstring& vertex, const std::wstring& pixel)
+		{
+			RenderAPI api = GraphicsContext::GetAPI();
+			switch (api)
+			{
+			case RenderAPI::API_NONE:
+				DG_FATAL("Invalid render API");
+				break;
+			case RenderAPI::OpenGL:
+				m_VertexShader.reset(Shader::Create(vertex, pixel));
+				break;
+			case RenderAPI::D3D11:
+				m_VertexShader.reset(Shader::Create(vertex, ShaderType::VERTEX));
+				m_PixelShader.reset(Shader::Create(vertex, ShaderType::FRAGMENT));
+				break;
+			case RenderAPI::D3D12:
+				DG_FATAL("Not implemented");
+				break;
+			case RenderAPI::VULKAN:
+				DG_FATAL("Not implemented");
+				break;
+			default:
+			{
+				DG_FATAL("Invalid render API, defaulted to OPENGL SPEC");
+			}
+			break;
+			}
+		}
 
 		inline glm::vec3 GetPosition() const { return m_Position; }
 
@@ -65,12 +93,18 @@ namespace Dogo
 		inline void SetLayout() const { m_VertexBuffer->SetLayout(*m_Layout); }
 
 
+		inline std::shared_ptr<Shader> GetVertexShader() const { return m_VertexShader; }
+		inline std::shared_ptr<Shader> GetPixelShader() const { return m_PixelShader; }
+
+
 	protected:
 		glm::vec3 m_Position;
 		std::shared_ptr<VertexArray> m_VertexArray;
 		std::shared_ptr<VertexBuffer> m_VertexBuffer;
 		std::shared_ptr<IndexBuffer> m_IndexBuffer;
 		std::shared_ptr<BufferLayout> m_Layout;
+		std::shared_ptr<Shader> m_VertexShader;
+		std::shared_ptr<Shader> m_PixelShader;
 	};
 
 	

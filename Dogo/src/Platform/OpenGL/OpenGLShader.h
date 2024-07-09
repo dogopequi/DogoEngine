@@ -20,8 +20,7 @@ namespace Dogo
 	public:
 		OpenGLShader(const std::wstring& shaderSource, ShaderType type);
 		OpenGLShader(const std::string& shaderSource, ShaderType type);
-		OpenGLShader(const std::string& vertSource, const std::string& fragSource);
-		OpenGLShader(const std::wstring& vertSource, const std::wstring& fragSource);
+		OpenGLShader(const std::wstring& vertfilepath, const std::wstring& fragfilepath);
 		~OpenGLShader();
 
 		bool GetIsValid() const { return isValid; }
@@ -31,7 +30,6 @@ namespace Dogo
 		void Unbind();
 
 		void CreateShader(const std::string& shaderSource, ShaderType type);
-		void CreateShader(const std::wstring& shaderSource, ShaderType type);
 
 		void SetUniform1i(const std::string& name, int32_t value, uint8_t index = 0) override;
 		void SetUniform2i(const std::string& name, glm::ivec2 value, uint8_t index = 0) override;
@@ -47,6 +45,32 @@ namespace Dogo
 
 		void SetUniformMatrix3f(const std::string& name, glm::mat3 value, uint8_t index = 0) override;
 		void SetUniformMatrix4f(const std::string& name, glm::mat4 value, uint8_t index = 0) override;
+
+		inline std::string readFile(const std::wstring& filepath)
+		{
+			std::ifstream file(filepath, std::ios::binary);
+			file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+			std::stringstream buffer;
+			buffer << file.rdbuf();
+			return buffer.str();
+		}
+
+		void printShaderSource(const std::string& shaderName, const std::string& shaderCode)
+		{
+			std::cout << "Shader: " << shaderName << "\n";
+			std::cout << "------------------------------------\n";
+			std::cout << shaderCode << "\n";
+			std::cout << "------------------------------------\n";
+		}
+
+		void printShaderSource(const char* shaderName, const char* shaderCode)
+		{
+			std::cout << "Shader: " << shaderName << "\n";
+			std::cout << "------------------------------------\n";
+			std::cout << shaderCode << "\n";
+			std::cout << "------------------------------------\n";
+		}
 
 	private:
 		uint32_t m_RendererID{};

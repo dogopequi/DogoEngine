@@ -62,46 +62,9 @@ namespace Dogo
 		inline glm::mat4 GetProjectionMatrix() const { return MVP->projection; }
 		inline glm::mat4 GetTransformMatrix() const { return MVP->transform; }
 
-		inline std::shared_ptr<Shader> GetVertexShader() const {return m_VertexShader;}
-		inline std::shared_ptr<Shader> GetPixelShader() const { return m_PixelShader; }
-		inline void SetVertexAndPixelShader(const std::wstring& vertex, const std::wstring& pixel)
-		{ 
-			RenderAPI api = GraphicsContext::GetAPI();
-			switch (api)
-			{
-			case RenderAPI::API_NONE:
-				DG_FATAL("Invalid render API");
-				break;
-			case RenderAPI::OpenGL:
-				m_VertexShader.reset(Shader::Create(vertex, pixel));
-				break;
-			case RenderAPI::D3D11:
-				m_VertexShader.reset(Shader::Create(vertex, ShaderType::VERTEX));
-				m_PixelShader.reset(Shader::Create(vertex, ShaderType::FRAGMENT));
-				break;
-			case RenderAPI::D3D12:
-				DG_FATAL("Not implemented");
-				break;
-			case RenderAPI::VULKAN:
-				DG_FATAL("Not implemented");
-				break;
-			default:
-			{
-				DG_FATAL("Invalid render API, defaulted to OPENGL SPEC");
-			}
-			break;
-			}
-		}
-		inline void SetVertexAndPixelShader(const std::string& vertex, const std::string& pixel)
-		{
-			m_VertexShader.reset(Shader::Create(vertex, pixel));
-		}
-
 	private:
 		std::deque<const Renderable2D*> m_RenderQueue;
 		std::unique_ptr<MatrixPass> MVP;
-		std::shared_ptr<Shader> m_VertexShader;
-		std::shared_ptr<Shader> m_PixelShader;
 
 
 	};

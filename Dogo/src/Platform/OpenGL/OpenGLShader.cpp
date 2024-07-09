@@ -93,7 +93,6 @@ namespace Dogo
 			std::vector<GLchar> infoLog(maxLength);
 			glGetShaderInfoLog(m_RendererID, maxLength, &maxLength, &infoLog[0]);
 
-			// We don't need the shader anymore.
 			glDeleteShader(m_RendererID);
 
 			DG_ERROR((const char*)infoLog.data());
@@ -103,11 +102,33 @@ namespace Dogo
 		}
 		isValid = true;
 	}
-	OpenGLShader::OpenGLShader(const std::string& vertSource, const std::string& fragSource)
+	OpenGLShader::OpenGLShader(const std::wstring& vertfilepath, const std::wstring& fragfilepath)
 	{
 		m_RendererID = glCreateProgram();
-		CreateShader(vertSource, ShaderType::VERTEX);
-		CreateShader(fragSource, ShaderType::FRAGMENT);
+
+		std::string vertCode;
+		std::string fragCode;
+
+		try
+		{
+			vertCode = readFile(vertfilepath);
+		}
+		catch (std::ifstream::failure& e)
+		{
+			DG_ERROR("ERROR::VERTEX_SHADER::FILE_NOT_SUCCESSFULLY_READ: %s", e.what());
+		}
+
+		try
+		{
+			fragCode = readFile(fragfilepath);
+		}
+		catch (std::ifstream::failure& e)
+		{
+			DG_ERROR("ERROR::FRAG_SHADER::FILE_NOT_SUCCESSFULLY_READ: %s", e.what());
+		}
+
+		CreateShader(vertCode, ShaderType::VERTEX);
+		CreateShader(fragCode, ShaderType::FRAGMENT);
 		glLinkProgram(m_RendererID);
 		GLint isLinked = 0;
 		glGetProgramiv(m_RendererID, GL_LINK_STATUS, (int*)&isLinked);
@@ -129,32 +150,7 @@ namespace Dogo
 		}
 
 	}
-	OpenGLShader::OpenGLShader(const std::wstring& vertSource, const std::wstring& fragSource)
-	{
-		m_RendererID = glCreateProgram();
-		CreateShader(vertSource, ShaderType::VERTEX);
-		CreateShader(fragSource, ShaderType::FRAGMENT);
-		glLinkProgram(m_RendererID);
-		GLint isLinked = 0;
-		glGetProgramiv(m_RendererID, GL_LINK_STATUS, (int*)&isLinked);
-		if (isLinked == GL_FALSE)
-		{
-			GLint maxLength = 0;
-			glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &maxLength);
 
-
-			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(m_RendererID, maxLength, &maxLength, &infoLog[0]);
-
-
-			glDeleteProgram(m_RendererID);
-
-			DG_ERROR((const char*)infoLog.data());
-			DG_ASSERT_MSG(false, "Shader link failure!");
-			return;
-		}
-
-	}
 	OpenGLShader::~OpenGLShader()
 	{
 		glDeleteProgram(m_RendererID);
@@ -173,19 +169,24 @@ namespace Dogo
 	void OpenGLShader::CreateShader(const std::string& shaderSource, ShaderType type)
 	{
 		GLenum Type;
+		std::string shadertype;
 		switch (type)
 		{
 		case ShaderType::COMPUTE:
 			Type = GL_COMPUTE_SHADER;
+			shadertype = "Compute";
 			break;
 		case ShaderType::FRAGMENT:
 			Type = GL_FRAGMENT_SHADER;
+			shadertype = "Fragment";
 			break;
 		case ShaderType::VERTEX:
 			Type = GL_VERTEX_SHADER;
+			shadertype = "Vertex";
 			break;
 		case ShaderType::GEOMETRY:
 			Type = GL_GEOMETRY_SHADER;
+			shadertype = "Geometry";
 			break;
 		default:
 			DG_FATAL("Unknown Shader");
@@ -212,9 +213,9 @@ namespace Dogo
 
 			// We don't need the shader anymore.
 			glDeleteShader(shader);
-
+			std::string msg = shadertype + " Shader compilation failure!";
 			DG_ERROR((const char*)infoLog.data());
-			DG_ASSERT_MSG(false, "Vertex shader compilation failure!");
+			DG_ASSERT_MSG(false, msg.c_str());
 			isValid = false;
 			return;
 		}
@@ -222,57 +223,6 @@ namespace Dogo
 		glAttachShader(m_RendererID, shader);
 	}
 
-	void OpenGLShader::CreateShader(const std::wstring& shaderSource, ShaderType type)
-	{
-		GLenum Type;
-		switch (type)
-		{
-		case ShaderType::COMPUTE:
-			Type = GL_COMPUTE_SHADER;
-			break;
-		case ShaderType::FRAGMENT:
-			Type = GL_FRAGMENT_SHADER;
-			break;
-		case ShaderType::VERTEX:
-			Type = GL_VERTEX_SHADER;
-			break;
-		case ShaderType::GEOMETRY:
-			Type = GL_GEOMETRY_SHADER;
-			break;
-		default:
-			DG_FATAL("Unknown Shader");
-		}
-
-
-		GLuint shader = glCreateShader(Type);
-
-
-		const GLchar* source = (const GLchar*)shaderSource.c_str();
-		glShaderSource(shader, 1, &source, 0);
-
-		glCompileShader(shader);
-
-		GLint isCompiled = 0;
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-		if (isCompiled == GL_FALSE)
-		{
-			GLint maxLength = 0;
-			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
-
-			std::vector<GLchar> infoLog(maxLength);
-			glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
-
-			// We don't need the shader anymore.
-			glDeleteShader(shader);
-
-			DG_ERROR((const char*)infoLog.data());
-			DG_ASSERT_MSG(false, "Vertex shader compilation failure!");
-			isValid = false;
-			return;
-		}
-		isValid = true;
-		glAttachShader(m_RendererID, shader);
-	}
 
 	void OpenGLShader::SetUniform1i(const std::string& name, int32_t value, uint8_t index)
 	{
