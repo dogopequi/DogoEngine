@@ -14,6 +14,13 @@
 #include "Dogo/Logger.h"
 namespace Dogo
 {
+	struct Material
+	{
+		glm::vec3 ambient;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
+		float shininess;
+	};
 	class Renderable2D
 	{
 	public:
@@ -58,10 +65,11 @@ namespace Dogo
 				break;
 			case RenderAPI::OpenGL:
 				m_VertexShader.reset(Shader::Create(vertex, pixel));
+				m_PixelShader = m_VertexShader;
 				break;
 			case RenderAPI::D3D11:
 				m_VertexShader.reset(Shader::Create(vertex, ShaderType::VERTEX));
-				m_PixelShader.reset(Shader::Create(vertex, ShaderType::FRAGMENT));
+				m_PixelShader.reset(Shader::Create(pixel, ShaderType::FRAGMENT));
 				break;
 			case RenderAPI::D3D12:
 				DG_FATAL("Not implemented");
@@ -78,6 +86,8 @@ namespace Dogo
 		}
 
 		inline glm::vec3 GetPosition() const { return m_Position; }
+		inline glm::vec3 GetColor() const { return m_Color; }
+		inline void SetColor(const glm::vec3& color) { m_Color = color; }
 
 		inline std::shared_ptr<VertexArray> GetVAO() const { return m_VertexArray; }
 		inline std::shared_ptr<VertexBuffer> GetVBO() const { return m_VertexBuffer; }
@@ -97,14 +107,27 @@ namespace Dogo
 		inline std::shared_ptr<Shader> GetPixelShader() const { return m_PixelShader; }
 
 
+		inline void SetMaterial(const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess)
+		{
+			m_Material.ambient = ambient;
+			m_Material.diffuse = diffuse;
+			m_Material.specular = specular;
+			m_Material.shininess = shininess;
+		}
+
+		inline Material GetMaterial() const { return m_Material; }
+
+
 	protected:
 		glm::vec3 m_Position;
+		glm::vec3 m_Color;
 		std::shared_ptr<VertexArray> m_VertexArray;
 		std::shared_ptr<VertexBuffer> m_VertexBuffer;
 		std::shared_ptr<IndexBuffer> m_IndexBuffer;
 		std::shared_ptr<BufferLayout> m_Layout;
 		std::shared_ptr<Shader> m_VertexShader;
 		std::shared_ptr<Shader> m_PixelShader;
+		Material m_Material;
 	};
 
 	

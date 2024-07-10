@@ -230,15 +230,15 @@ namespace Dogo
 	}
 	void OpenGLShader::SetUniform2i(const std::string& name, glm::ivec2 value, uint8_t index)
 	{
-		glUniform2iv(glGetUniformLocation(m_RendererID, name.c_str()), 2, glm::value_ptr(value));
+		glUniform2iv(glGetUniformLocation(m_RendererID, name.c_str()), 1, glm::value_ptr(value));
 	}
 	void OpenGLShader::SetUniform3i(const std::string& name, glm::ivec3 value, uint8_t index)
 	{
-		glUniform3iv(glGetUniformLocation(m_RendererID, name.c_str()), 3, glm::value_ptr(value));
+		glUniform3iv(glGetUniformLocation(m_RendererID, name.c_str()), 1, glm::value_ptr(value));
 	}
 	void OpenGLShader::SetUniform4i(const std::string& name, glm::ivec4 value, uint8_t index)
 	{
-		glUniform4iv(glGetUniformLocation(m_RendererID, name.c_str()), 4, glm::value_ptr(value));
+		glUniform4iv(glGetUniformLocation(m_RendererID, name.c_str()), 1, glm::value_ptr(value));
 	}
 	void OpenGLShader::SetUniformBool(const std::string& name, bool value, uint8_t index)
 	{
@@ -250,15 +250,15 @@ namespace Dogo
 	}
 	void OpenGLShader::SetUniform2f(const std::string& name, glm::vec2 value, uint8_t index)
 	{
-		glUniform2fv(glGetUniformLocation(m_RendererID, name.c_str()), 2, glm::value_ptr(value));
+		glUniform2fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, glm::value_ptr(value));
 	}
 	void OpenGLShader::SetUniform3f(const std::string& name, glm::vec3 value, uint8_t index)
 	{
-		glUniform3fv(glGetUniformLocation(m_RendererID, name.c_str()), 3, glm::value_ptr(value));
+		glUniform3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, glm::value_ptr(value));
 	}
 	void OpenGLShader::SetUniform4f(const std::string& name, glm::vec4 value, uint8_t index)
 	{
-		glUniform4fv(glGetUniformLocation(m_RendererID, name.c_str()), 4, glm::value_ptr(value));
+		glUniform4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, glm::value_ptr(value));
 	}
 	void OpenGLShader::SetUniformMatrix3f(const std::string& name, glm::mat3 value, uint8_t index)
 	{

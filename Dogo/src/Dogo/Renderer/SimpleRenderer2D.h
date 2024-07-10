@@ -3,6 +3,13 @@
 #include "Dogo/Core.h"
 namespace Dogo
 {
+	struct Light {
+		glm::vec3 position;
+
+		glm::vec3 ambient;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
+	};
 	struct MatrixPass
 	{
 		glm::mat4 model;
@@ -62,9 +69,25 @@ namespace Dogo
 		inline glm::mat4 GetProjectionMatrix() const { return MVP->projection; }
 		inline glm::mat4 GetTransformMatrix() const { return MVP->transform; }
 
+
+		//temp
+		inline void SetLight(const glm::vec3& position, const glm::vec3& ambient, const glm::vec3& diffuse, glm::vec3& specular)
+		{ 
+			m_Light.position = position;
+			m_Light.ambient = ambient;
+			m_Light.diffuse = diffuse;
+			m_Light.specular = specular;
+		}
+		inline void SetViewPos(glm::vec3 pos) { m_ViewPos = pos; }
+
 	private:
 		std::deque<const Renderable2D*> m_RenderQueue;
 		std::unique_ptr<MatrixPass> MVP;
+
+
+		//temp
+		Light m_Light;
+		glm::vec3 m_ViewPos;
 
 
 	};

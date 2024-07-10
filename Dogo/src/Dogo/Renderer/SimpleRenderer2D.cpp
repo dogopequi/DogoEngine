@@ -54,6 +54,17 @@ void Dogo::SimpleRenderer2D::Flush()
 		}
 		renderable->GetVertexShader()->SetUniformMatrix4f("view", MVP->view, 1);
 		renderable->GetVertexShader()->SetUniformMatrix4f("projection", MVP->projection, 2);
+		renderable->GetPixelShader()->SetUniform3f("objcolor", renderable->GetColor());
+		renderable->GetPixelShader()->SetUniform3f("viewPos", m_ViewPos);
+		renderable->GetPixelShader()->SetUniform3f("material.ambient", renderable->GetMaterial().ambient);
+		renderable->GetPixelShader()->SetUniform3f("material.diffuse", renderable->GetMaterial().diffuse);
+		renderable->GetPixelShader()->SetUniform3f("material.specular", renderable->GetMaterial().specular);
+		renderable->GetPixelShader()->SetUniform1f("material.shininess", renderable->GetMaterial().shininess);
+
+		renderable->GetPixelShader()->SetUniform3f("light.position", m_Light.position);
+		renderable->GetPixelShader()->SetUniform3f("light.ambient", m_Light.ambient);
+		renderable->GetPixelShader()->SetUniform3f("light.diffuse", m_Light.diffuse);
+		renderable->GetPixelShader()->SetUniform3f("light.specular", m_Light.specular);
 
 		renderable->GetVAO()->Bind();
 		MVP->transform = glm::mat4(1.0f);
