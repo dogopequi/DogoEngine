@@ -56,9 +56,21 @@ void Dogo::SimpleRenderer2D::Flush()
 		renderable->GetVertexShader()->SetUniformMatrix4f("projection", MVP->projection, 2);
 		renderable->GetPixelShader()->SetUniform3f("objcolor", renderable->GetColor());
 		renderable->GetPixelShader()->SetUniform3f("viewPos", m_ViewPos);
-		renderable->GetPixelShader()->SetUniform3f("material.ambient", renderable->GetMaterial().ambient);
-		renderable->GetPixelShader()->SetUniform3f("material.diffuse", renderable->GetMaterial().diffuse);
-		renderable->GetPixelShader()->SetUniform3f("material.specular", renderable->GetMaterial().specular);
+		if(renderable->GetMaterial().diffuse != nullptr)
+		{
+			renderable->GetMaterial().diffuse->Bind(0, "material.diffuse");
+			renderable->GetPixelShader()->SetUniform1i("material.diffuse", 0);
+		}
+		if (renderable->GetMaterial().specular != nullptr)
+		{
+			renderable->GetMaterial().specular->Bind(1, "material.specular");
+			renderable->GetPixelShader()->SetUniform1i("material.specular", 1);
+		}
+		if (renderable->GetMaterial().emission != nullptr)
+		{
+			renderable->GetMaterial().emission->Bind(2, "material.emission");
+			renderable->GetPixelShader()->SetUniform1i("material.emission", 2);
+		}
 		renderable->GetPixelShader()->SetUniform1f("material.shininess", renderable->GetMaterial().shininess);
 
 		renderable->GetPixelShader()->SetUniform3f("light.position", m_Light.position);

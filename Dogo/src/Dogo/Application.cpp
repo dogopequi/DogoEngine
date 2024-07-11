@@ -212,36 +212,36 @@ namespace Dogo
 			{ShaderDataType::Float2, "TEXCOORD"}
 		};
 		float cubeVertices[] = {
-			// Positions            // Normals
-			-0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,
-			 0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,
-			 0.5f,  0.5f, -0.5f,     0.0f,  0.0f, -1.0f,
-			-0.5f,  0.5f, -0.5f,     0.0f,  0.0f, -1.0f,
+			// Positions            // Normals          // Texture Coords
+			-0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,   0.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,   1.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,     0.0f,  0.0f, -1.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f,     0.0f,  0.0f, -1.0f,   0.0f, 1.0f,
 
-			-0.5f, -0.5f,  0.5f,     0.0f,  0.0f,  1.0f,
-			 0.5f, -0.5f,  0.5f,     0.0f,  0.0f,  1.0f,
-			 0.5f,  0.5f,  0.5f,     0.0f,  0.0f,  1.0f,
-			-0.5f,  0.5f,  0.5f,     0.0f,  0.0f,  1.0f,
+			-0.5f, -0.5f,  0.5f,     0.0f,  0.0f,  1.0f,   0.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,     0.0f,  0.0f,  1.0f,   1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,     0.0f,  0.0f,  1.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,     0.0f,  0.0f,  1.0f,   0.0f, 1.0f,
 
-			-0.5f,  0.5f, -0.5f,    -1.0f,  0.0f,  0.0f,
-			-0.5f, -0.5f, -0.5f,    -1.0f,  0.0f,  0.0f,
-			-0.5f, -0.5f,  0.5f,    -1.0f,  0.0f,  0.0f,
-			-0.5f,  0.5f,  0.5f,    -1.0f,  0.0f,  0.0f,
+			-0.5f,  0.5f, -0.5f,    -1.0f,  0.0f,  0.0f,   0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,    -1.0f,  0.0f,  0.0f,   0.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f,    -1.0f,  0.0f,  0.0f,   1.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f,    -1.0f,  0.0f,  0.0f,   1.0f, 1.0f,
 
-			 0.5f, -0.5f, -0.5f,     1.0f,  0.0f,  0.0f,
-			 0.5f,  0.5f, -0.5f,     1.0f,  0.0f,  0.0f,
-			 0.5f,  0.5f,  0.5f,     1.0f,  0.0f,  0.0f,
-			 0.5f, -0.5f,  0.5f,     1.0f,  0.0f,  0.0f,
+			 0.5f, -0.5f, -0.5f,     1.0f,  0.0f,  0.0f,   0.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,     1.0f,  0.0f,  0.0f,   0.0f, 1.0f,
+			 0.5f,  0.5f,  0.5f,     1.0f,  0.0f,  0.0f,   1.0f, 1.0f,
+			 0.5f, -0.5f,  0.5f,     1.0f,  0.0f,  0.0f,   1.0f, 0.0f,
 
-			-0.5f, -0.5f, -0.5f,     0.0f, -1.0f,  0.0f,
-			 0.5f, -0.5f, -0.5f,     0.0f, -1.0f,  0.0f,
-			 0.5f, -0.5f,  0.5f,     0.0f, -1.0f,  0.0f,
-			-0.5f, -0.5f,  0.5f,     0.0f, -1.0f,  0.0f,
+			-0.5f, -0.5f, -0.5f,     0.0f, -1.0f,  0.0f,   0.0f, 1.0f,
+			 0.5f, -0.5f, -0.5f,     0.0f, -1.0f,  0.0f,   1.0f, 1.0f,
+			 0.5f, -0.5f,  0.5f,     0.0f, -1.0f,  0.0f,   1.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f,     0.0f, -1.0f,  0.0f,   0.0f, 0.0f,
 
-			 0.5f,  0.5f, -0.5f,     0.0f,  1.0f,  0.0f,
-			-0.5f,  0.5f, -0.5f,     0.0f,  1.0f,  0.0f,
-			-0.5f,  0.5f,  0.5f,     0.0f,  1.0f,  0.0f,
-			 0.5f,  0.5f,  0.5f,     0.0f,  1.0f,  0.0f
+			 0.5f,  0.5f, -0.5f,     0.0f,  1.0f,  0.0f,   1.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f,     0.0f,  1.0f,  0.0f,   0.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,     0.0f,  1.0f,  0.0f,   0.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,     0.0f,  1.0f,  0.0f,   1.0f, 0.0f
 		};
 		GLuint cubeIndices[] = {
 			// front and back
@@ -263,7 +263,8 @@ namespace Dogo
 		BufferLayout cubeLayout =
 		{
 			{ShaderDataType::Float3, "POSITION"},
-			{ShaderDataType::Float3, "NORMAL"}
+			{ShaderDataType::Float3, "NORMAL"},
+			{ShaderDataType::Float2, "TEXCOORD"}
 		};
 
 		SimpleRenderer2D Renderer;
@@ -291,8 +292,10 @@ namespace Dogo
    	 	std::filesystem::path cwd = std::filesystem::current_path();
 		DG_INFO(cwd.string().c_str()); DG_INFO("/Dogo/resources/awesomeface.png");
 		//std::shared_ptr<Texture> SmileyFace(Texture::Create(cwd.string() + "/Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
-		std::shared_ptr<Texture> SmileyFace(Texture::Create("../Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
-		SmileyFace->Bind(0, "ourTexture");
+		//std::shared_ptr<Texture> SmileyFace(Texture::Create("../Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
+		std::shared_ptr<Texture> brick(Texture::Create("../Dogo/resources/container2.png", ImageType::PNG, TextureType::twoD, "container2.png"));
+		std::shared_ptr<Texture> brickSpec(Texture::Create("../Dogo/resources/container2_specular.png", ImageType::PNG, TextureType::twoD, "container2_specular.png"));
+		std::shared_ptr<Texture> light(Texture::Create("../Dogo/resources/matrix.jpg", ImageType::JPG, TextureType::twoD, "matrix.jpg"));
 		Renderer.SetProjectionMatrixPerspective(m_Camera->GetZoom(), 1280.0f, 720.0f, 0.1f, 100.0f);
 		Renderer.SetViewMatrix(m_Camera->GetViewMatrix());
 		Renderer.SetModelMatrix(glm::mat4(1.0f));
@@ -304,10 +307,10 @@ namespace Dogo
 		renderable2.SetColor(objcolor);
 
 		renderable2.SetMaterial(
-			glm::vec3(1.0f, 0.5f, 0.31f),
-			glm::vec3(1.0f, 0.5f, 0.31f),
-			glm::vec3(0.5f, 0.5f, 0.5f),
-			32.0f
+			brick,
+			brickSpec,
+			light,
+			100.0f
 		);
 		Renderer.SetLight(
 			renderable1.GetPosition(),
@@ -336,7 +339,6 @@ namespace Dogo
 			processInput(deltaTime);
 			Renderer.SetViewMatrix(m_Camera->GetViewMatrix());
 			// changetexture("../Dogo/resources/CARDIGA.jpg", ImageType::JPG, TextureType::twoD, *SmileyFace);
-			SmileyFace->Bind(0, "ourTexture");
 			Renderer.Flush();
 			//DG_TRACE("running");
 #if OPENGL

@@ -7,18 +7,20 @@
 #include "Platform/OpenGL/OpenGLIndexBuffer.h"
 #include "Platform/OpenGL/OpenGLVertexArrayBuffer.h"
 #include "Platform/OpenGL/OpenGLShader.h"
+#include "Platform/OpenGL/OpenGLTexture.h"
 #include "Dogo/Renderer/Buffers.h"
 #include "Platform/DX11/DX11IndexBuffer.h"
 #include "Platform/DX11/DX11VertexBuffer.h"
 #include "Platform/DX11/DX11Shader.h"
+#include "Platform/DX11/DX11Texture.h"
 #include "Dogo/Logger.h"
 namespace Dogo
 {
 	struct Material
 	{
-		glm::vec3 ambient;
-		glm::vec3 diffuse;
-		glm::vec3 specular;
+		std::shared_ptr<Texture> diffuse;
+		std::shared_ptr<Texture> specular;
+		std::shared_ptr<Texture> emission;
 		float shininess;
 	};
 	class Renderable2D
@@ -107,11 +109,11 @@ namespace Dogo
 		inline std::shared_ptr<Shader> GetPixelShader() const { return m_PixelShader; }
 
 
-		inline void SetMaterial(const glm::vec3& ambient, const glm::vec3& diffuse, const glm::vec3& specular, float shininess)
+		inline void SetMaterial(const std::shared_ptr<Texture>& diffuse, const std::shared_ptr<Texture>& specular, const std::shared_ptr<Texture>& emission, float shininess)
 		{
-			m_Material.ambient = ambient;
 			m_Material.diffuse = diffuse;
 			m_Material.specular = specular;
+			m_Material.emission = emission;
 			m_Material.shininess = shininess;
 		}
 
