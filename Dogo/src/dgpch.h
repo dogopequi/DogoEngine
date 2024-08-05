@@ -28,10 +28,6 @@
 #ifdef DG_PLATFORM_WINDOWS
 	#include "Windows.h"
 	#include "windowsx.h"
-	#include <directxmath.h>
-	#include <directXPackedVector.h>
-	#include <directXColors.h>
-	#include <directXCollision.h>
 	#include <wrl/client.h>
 	#include <d3d11_1.h>
 	#include <dxgi1_2.h>
