@@ -19,6 +19,7 @@
 #include "Dogo/Renderer/Renderable2D.h"
 #include "Dogo/Renderer/SimpleRenderer2D.h"
 #include "Dogo/DogoMemory.h"
+#include "DogoECS.h"
 //#include <assimp/Importer.hpp>
 //#include <assimp/scene.h>
 //#include <assimp/postprocess.h>
@@ -59,6 +60,17 @@ namespace Dogo
 		m_Window = DG_Window::Create();
 		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Application::OnEvent));
 		m_IsRunning = true;
+
+
+		DogoECS::Entity* E1 = DogoECS::DG_EntityManager::CreateEntity();
+
+		DogoECS::DG_ComponentManager::RegisterComponent<DogoECS::TransformComponent>();
+
+		DogoECS::TransformComponent* TC = E1->AddComponent<DogoECS::TransformComponent>();
+
+		TC->SetX(1.0f);
+		TC->SetY(1.0f);
+		TC->SetZ(1.0f);
 	}
 	Application::~Application()
 	{
@@ -340,6 +352,8 @@ namespace Dogo
 			Renderer.SetViewMatrix(m_Camera->GetViewMatrix());
 			// changetexture("../Dogo/resources/CARDIGA.jpg", ImageType::JPG, TextureType::twoD, *SmileyFace);
 			Renderer.Flush();
+
+			DogoECS::DG_ComponentManager::Update();
 			//DG_TRACE("running");
 #if OPENGL
 			GLenum err;

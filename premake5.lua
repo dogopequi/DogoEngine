@@ -13,8 +13,10 @@ workspace "Dogo"
     GLMinclude = "vendor/glm/include"
     IncludeDir = {}
     IncludeDir["glad"] = "Dogo/vendor/glad/include"
+    IncludeDir["DogoECS"] = "Dogo/vendor/DogoECS/include"
     
     include "Dogo/vendor/glad"
+    include "Dogo/vendor/DogoECS"
 
 project "Dogo"
     location "Dogo"
@@ -41,6 +43,7 @@ project "Dogo"
         STBinclude,
         GLMinclude,
         "%{IncludeDir.glad}",
+        "%{IncludeDir.DogoECS}"
        -- "D:/Dev/assimp/Assimp/include"
     }
 
@@ -50,6 +53,7 @@ project "Dogo"
     --}
     links
     {
+        "DogoECS",
         "glad",
 		"opengl32.lib",
         --"assimp-vc143-mt.lib"
@@ -139,7 +143,8 @@ project "Sandbox"
         "Dogo/src",
         STBinclude,
         GLMinclude,
-        "%{IncludeDir.glad}"
+        "%{IncludeDir.glad}",
+        "%{IncludeDir.DogoECS}"
         --"D:/Dev/assimp/Assimp/include"
     }
 
@@ -152,7 +157,8 @@ project "Sandbox"
     {
         --"assimp-vc143-mt.lib",
         "Dogo",
-        "glad"
+        "glad",
+        "DogoECS"
     }
     
     filter "system:windows"
