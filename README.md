@@ -23,6 +23,18 @@ It's made to create a VS2022 solution file on Windows and makefiles on Linux by 
 - Reasonably performant
 - Easy to use
 
+## Dependencies
+The licenses can be found in their respective folder.
+- [Premake](https://premake.github.io/)
+- [assimp](https://github.com/assimp/assimp)
+- [stb](https://github.com/nothings/stb)
+- [glm](https://github.com/icaven/glm)
+- [glad](https://github.com/Dav1dde/glad)
+- [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
+- [DogoECS](https://github.com/dogopequi/DogoECS)
+
+
+
 ## Implementation details
 
 To be added soon.
