@@ -23,6 +23,8 @@
 //#include <assimp/Importer.hpp>
 //#include <assimp/scene.h>
 //#include <assimp/postprocess.h>
+#include "Renderer/Mesh.h"
+#include "Renderer/MeshRenderer.h"
 
 
 namespace Dogo
@@ -208,128 +210,27 @@ namespace Dogo
 		m_Window->Init();
 		#endif
 
-		float triangleVertices[] = {
-			0.0f, 0.5f, 1.0f, 1.0f, 0.3f, 0.8f, 0.5f, 0.0f, // Red
-			0.5f, -0.5f, 1.0f, 1.0f, 0.3f, 0.8f , 1.0f, 1.0f, // Green
-			-0.5f, -0.5f, 1.0f, 1.0f, 0.3f, 0.8f , 0.0f, 1.0f // Blue
-		};
-		uint32_t triangleIndices[] = {
-			0, 2, 1
-		};
-
-		BufferLayout triangleLayout =
-		{
-			{ShaderDataType::Float3, "POSITION"},
-			{ShaderDataType::Float3, "COLOR"},
-			{ShaderDataType::Float2, "TEXCOORD"}
-		};
-		float cubeVertices[] = {
-			// Positions            // Normals          // Texture Coords
-			-0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,   0.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,   1.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,     0.0f,  0.0f, -1.0f,   1.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,     0.0f,  0.0f, -1.0f,   0.0f, 1.0f,
-
-			-0.5f, -0.5f,  0.5f,     0.0f,  0.0f,  1.0f,   0.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,     0.0f,  0.0f,  1.0f,   1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,     0.0f,  0.0f,  1.0f,   1.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,     0.0f,  0.0f,  1.0f,   0.0f, 1.0f,
-
-			-0.5f,  0.5f, -0.5f,    -1.0f,  0.0f,  0.0f,   0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,    -1.0f,  0.0f,  0.0f,   0.0f, 0.0f,
-			-0.5f, -0.5f,  0.5f,    -1.0f,  0.0f,  0.0f,   1.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,    -1.0f,  0.0f,  0.0f,   1.0f, 1.0f,
-
-			 0.5f, -0.5f, -0.5f,     1.0f,  0.0f,  0.0f,   0.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,     1.0f,  0.0f,  0.0f,   0.0f, 1.0f,
-			 0.5f,  0.5f,  0.5f,     1.0f,  0.0f,  0.0f,   1.0f, 1.0f,
-			 0.5f, -0.5f,  0.5f,     1.0f,  0.0f,  0.0f,   1.0f, 0.0f,
-
-			-0.5f, -0.5f, -0.5f,     0.0f, -1.0f,  0.0f,   0.0f, 1.0f,
-			 0.5f, -0.5f, -0.5f,     0.0f, -1.0f,  0.0f,   1.0f, 1.0f,
-			 0.5f, -0.5f,  0.5f,     0.0f, -1.0f,  0.0f,   1.0f, 0.0f,
-			-0.5f, -0.5f,  0.5f,     0.0f, -1.0f,  0.0f,   0.0f, 0.0f,
-
-			 0.5f,  0.5f, -0.5f,     0.0f,  1.0f,  0.0f,   1.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,     0.0f,  1.0f,  0.0f,   0.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,     0.0f,  1.0f,  0.0f,   0.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,     0.0f,  1.0f,  0.0f,   1.0f, 0.0f
-		};
-		GLuint cubeIndices[] = {
-			// front and back
-			0, 3, 2,
-			2, 1, 0,
-			4, 5, 6,
-			6, 7 ,4,
-			// left and right
-			11, 8, 9,
-			9, 10, 11,
-			12, 13, 14,
-			14, 15, 12,
-			// bottom and top
-			16, 17, 18,
-			18, 19, 16,
-			20, 21, 22,
-			22, 23, 20
-		};
-		BufferLayout cubeLayout =
+		BufferLayout layout =
 		{
 			{ShaderDataType::Float3, "POSITION"},
 			{ShaderDataType::Float3, "NORMAL"},
 			{ShaderDataType::Float2, "TEXCOORD"}
 		};
 
-		SimpleRenderer2D Renderer;
+		MeshRenderer Renderer;
 
-#if OPENGL
-		std::wstring vertexShader = L"../Dogo/resources/Shaders/vert.glsl";
-		std::wstring pixelShader = L"../Dogo/resources/Shaders/pixel.glsl";
+		std::wstring vertexShader = L"../Dogo/resources/Shaders/meshVERT.glsl";
+		std::wstring pixelShader = L"../Dogo/resources/Shaders/meshPIXEL.glsl";
 
-		std::wstring cubeVert = L"../Dogo/resources/Shaders/cubeVERT.glsl";
-		std::wstring pixelVert = L"../Dogo/resources/Shaders/cubePIXEL.glsl";
-
-		std::wstring lightVert = L"../Dogo/resources/Shaders/lightVert.glsl";
-		std::wstring lightPixel = L"../Dogo/resources/Shaders/lightPixel.glsl";
-#endif
-#if DX11
-		std::wstring vertexShader = L"../Dogo/resources/Shaders/vert.hlsl";
-		std::wstring pixelShader = L"../Dogo/resources/Shaders/pixel.hlsl";
-#endif
 		m_Camera.reset(new Camera());
 
-		//Renderable2D renderable1(glm::vec3(1.0f, -0.5f, 5.0f), triangleVertices, sizeof(triangleVertices), triangleIndices, sizeof(triangleIndices), triangleLayout, vertexShader, pixelShader);
-		Renderable2D renderable1(glm::vec3(1.0f, -0.5f, 5.0f), cubeVertices, sizeof(cubeVertices), cubeIndices, sizeof(cubeIndices), cubeLayout, lightVert, lightPixel);
-		//Renderable2D renderable2(glm::vec3(-1.0f, -0.0f, 1.0f), triangleVertices, sizeof(triangleVertices), triangleIndices, sizeof(triangleIndices), triangleLayout, vertexShader, pixelShader);
-		Renderable2D renderable2(glm::vec3(-1.0f, -0.0f, 1.0f), cubeVertices, sizeof(cubeVertices), cubeIndices, sizeof(cubeIndices), cubeLayout, cubeVert, pixelVert);
-   	 	std::filesystem::path cwd = std::filesystem::current_path();
-		DG_INFO(cwd.string().c_str()); DG_INFO("/Dogo/resources/awesomeface.png");
-		//std::shared_ptr<Texture> SmileyFace(Texture::Create(cwd.string() + "/Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
-		//std::shared_ptr<Texture> SmileyFace(Texture::Create("../Dogo/resources/awesomeface.png", ImageType::PNG, TextureType::twoD, "Smiley"));
-		std::shared_ptr<Texture> brick(Texture::Create("../Dogo/resources/container2.png", ImageType::PNG, TextureType::twoD, "container2.png"));
-		std::shared_ptr<Texture> brickSpec(Texture::Create("../Dogo/resources/container2_specular.png", ImageType::PNG, TextureType::twoD, "container2_specular.png"));
-		std::shared_ptr<Texture> light(Texture::Create("../Dogo/resources/matrix.jpg", ImageType::JPG, TextureType::twoD, "matrix.jpg"));
 		Renderer.SetProjectionMatrixPerspective(m_Camera->GetZoom(), 1280.0f, 720.0f, 0.1f, 100.0f);
 		Renderer.SetViewMatrix(m_Camera->GetViewMatrix());
 		Renderer.SetModelMatrix(glm::mat4(1.0f));
 		Renderer.SetTransformMatrix(glm::mat4(1.0f));
 
-		glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-		glm::vec3 objcolor(1.0f, 0.3f, 0.8f);
-
-		renderable2.SetColor(objcolor);
-
-		renderable2.SetMaterial(
-			brick,
-			brickSpec,
-			light,
-			100.0f
-		);
-		Renderer.SetLight(
-			renderable1.GetPosition(),
-			glm::vec3(0.2f, 0.2f, 0.2f),
-			glm::vec3(0.5f, 0.5f, 0.5f),
-			glm::vec3(1.0f, 1.0f, 1.0f)
-		);
+		Mesh mesh("../Dogo/resources/12140_Skull_v3_L2.obj", glm::vec3(1.0f, -0.5, 5.0f), layout, vertexShader, pixelShader);
+		Mesh mesh1("../Dogo/resources/12140_Skull_v3_L2.obj", glm::vec3(1.0f, -0.0, 1.0f), layout, vertexShader, pixelShader);
 
 
 		Timer timer;
@@ -344,17 +245,15 @@ namespace Dogo
 			float currentFrame = timer.elapsed();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
-			Renderer.Submit(renderable1);
-			Renderer.Submit(renderable2);
+			Renderer.Submit(mesh);
+			Renderer.Submit(mesh1);
 			Renderer.SetViewPos(m_Camera->GetPosition());
 			Renderer.SetProjectionMatrixPerspective(m_Camera->GetZoom(),1280.0f, 720.0f, 0.1f, 100.0f);
 			processInput(deltaTime);
 			Renderer.SetViewMatrix(m_Camera->GetViewMatrix());
-			// changetexture("../Dogo/resources/CARDIGA.jpg", ImageType::JPG, TextureType::twoD, *SmileyFace);
 			Renderer.Flush();
 
-			DogoECS::DG_ComponentManager::Update();
-			//DG_TRACE("running");
+			//DogoECS::DG_ComponentManager::Update();
 #if OPENGL
 			GLenum err;
 			while ((err = glGetError()) != GL_NO_ERROR) {

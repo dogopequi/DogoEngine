@@ -1,5 +1,3 @@
-Right now I only have assimp linked locally, I have not used it yet, once I have something I will link it.
-
 Open Asset Import Library (assimp)
 
 Copyright (c) 2006-2021, assimp team

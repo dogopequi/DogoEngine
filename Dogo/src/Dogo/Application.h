@@ -12,7 +12,7 @@
 namespace Dogo
 {
 	#if DG_PLATFORM_WINDOWS
-	using namespace DirectX;
+	 
 	#endif
 	class DG_API Application
 	{

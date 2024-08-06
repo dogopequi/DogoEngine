@@ -5,8 +5,8 @@
 
 	namespace Dogo
 	{
-		using namespace DirectX;
-		using namespace PackedVector;
+		 
+		 
 		using Microsoft::WRL::ComPtr;
 		class DX11Context : public GraphicsContext
 		{

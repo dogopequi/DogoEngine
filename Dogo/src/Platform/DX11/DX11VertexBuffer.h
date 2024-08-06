@@ -5,8 +5,8 @@
 #include "Dogo/Renderer/Buffers.h"
 namespace Dogo
 {
-	using namespace DirectX;
-	using namespace PackedVector;
+	 
+	 
 	using Microsoft::WRL::ComPtr;
 	class DX11VertexBuffer : public VertexBuffer
 	{

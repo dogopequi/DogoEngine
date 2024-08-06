@@ -10,7 +10,10 @@ workspace "Dogo"
 
     outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
     STBinclude = "vendor/stb_image"
+    TOLinclude = "Dogo/vendor/tinyobjloader/include"
     GLMinclude = "vendor/glm/include"
+    ASSIMPinclude = "vendor/assimp/include"
+    ASSIMPlib = "vendor/assimp/lib/x64"
     IncludeDir = {}
     IncludeDir["glad"] = "Dogo/vendor/glad/include"
     IncludeDir["DogoECS"] = "Dogo/vendor/DogoECS/include"
@@ -43,20 +46,21 @@ project "Dogo"
         STBinclude,
         GLMinclude,
         "%{IncludeDir.glad}",
-        "%{IncludeDir.DogoECS}"
-       -- "D:/Dev/assimp/Assimp/include"
+        "%{IncludeDir.DogoECS}",
+        ASSIMPinclude,
+        TOLinclude
     }
 
-    --libdirs
-    --{
-        --"D:/Dev/assimp/Assimp/lib/x64"
-    --}
+    libdirs
+    {
+        ASSIMPlib
+    }
     links
     {
         "DogoECS",
         "glad",
 		"opengl32.lib",
-        --"assimp-vc143-mt.lib"
+        "assimp-vc143-mt.lib"
     }
 
     filter "system:windows"
