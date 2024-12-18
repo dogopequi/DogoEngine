@@ -6,7 +6,7 @@
 #include "Platform/OpenGL/OpenGLTexture.h"
 namespace Dogo
 {
-    Texture* Texture::Create(const std::string& filepath, ImageType imageType, TextureType textureType, const std::string& name)
+    Texture* Texture::Create(const std::string& filepath, const std::string& imageType, TextureType textureType, const std::string& name)
     {
 		RenderAPI api = GraphicsContext::Get()->GetAPI();
 		switch (api)
@@ -16,7 +16,7 @@ namespace Dogo
 			break;
 #if DG_PLATFORM_WINDOWS
 		case RenderAPI::D3D11:
-			return new DX11Texture(filepath, textureType, name);
+			return new DX11Texture(filepath, imageType, textureType, name);
 			break;
 		case RenderAPI::D3D12:
 			DG_FATAL("Not implemented");

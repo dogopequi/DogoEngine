@@ -24,11 +24,11 @@ project "DogoECS"
 
     files
     {
-        "include/Components.h",
         "include/DG_Component.h",
         "include/dgpch.h",
         "include/Entity.h",
         "include/UUID.h",
+        "include/DogoECS.h",
         "src/DG_Component.cpp",
         "src/Entity.cpp"
     }

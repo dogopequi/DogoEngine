@@ -6,8 +6,9 @@
 
 namespace Dogo
 {
-	OpenGLTexture::OpenGLTexture(const std::string& filepath, ImageType imageType, TextureType textureType, const std::string& name) : m_Name(name)
+	OpenGLTexture::OpenGLTexture(const std::string& filepath, const std::string& imageType, TextureType textureType, const std::string& name) : m_Name(name), m_Type(imageType), m_FilePath(filepath)
 	{
+		stbi_set_flip_vertically_on_load(true);
 		int width, height, channels;
 		unsigned char* data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
 		switch (channels)
@@ -68,13 +69,12 @@ namespace Dogo
 			DG_WARN("Failed to load texture: %s", stbi_failure_reason());
 		}
 		stbi_image_free(data);
-		stbi_set_flip_vertically_on_load(true);
 	}
 	OpenGLTexture::~OpenGLTexture()
 	{
 		glDeleteTextures(1, &m_RendererID);
 	}
-	void OpenGLTexture::Bind(uint32_t textureUnit, const std::string& name) const
+	void OpenGLTexture::Bind(uint32_t textureUnit, const std::string& name = "") const
 	{
 		glActiveTexture(GL_TEXTURE0 + textureUnit);
 		glBindTexture(m_TextureType, m_RendererID);
@@ -84,9 +84,9 @@ namespace Dogo
 		glActiveTexture(GL_TEXTURE0 + textureUnit);
 		glBindTexture(m_TextureType, NULL);
 	}
-	void OpenGLTexture::UpdateTexture(const std::string& filepath, ImageType imageType, TextureType textureType)
+	void OpenGLTexture::UpdateTexture(const std::string& filepath, const std::string& imageType, TextureType textureType)
 	{
-		switch (imageType)
+		/*switch (imageType)
 		{
 		case ImageType::JPG:
 			m_ImageType = GL_RGB;
@@ -102,7 +102,7 @@ namespace Dogo
 			break;
 		default:
 			DG_FATAL("Unknown Image Type");
-		}
+		}*/
 		switch (textureType)
 		{
 		case TextureType::oneD:

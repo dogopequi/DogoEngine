@@ -18,10 +18,10 @@ namespace Dogo
         float shininess;
     };
 
-	class Mesh
+	class OldMesh
 	{
 	public:
-        Mesh(const std::string& inputfile, const glm::vec3 pos, BufferLayout& layout, const std::wstring& vertex, const std::wstring& pixel) : m_Position(pos)
+        OldMesh(const std::string& inputfile, const glm::vec3 pos, BufferLayout& layout, const std::wstring& vertex, const std::wstring& pixel) : m_Position(pos)
 		{
             LoadFromFile(inputfile);
 
@@ -63,10 +63,9 @@ namespace Dogo
             }
             m_VertexArray->AddBuffer(m_VertexBuffer);
 		}
-		~Mesh(){}
+		~OldMesh(){}
 
         inline glm::vec3 GetPosition() const { return m_Position; }
-        inline glm::vec3 GetColor() const { return colors; }
 
         inline void SetVertexAndPixelShader(const std::wstring& vertex, const std::wstring& pixel)
         {
@@ -171,10 +170,6 @@ namespace Dogo
                         vertex.texCoords = glm::vec2(0.0f, 0.0f); // Default texture coordinates
                     }
 
-
-
-                    colors = { 1.0f, 1.0f, 1.0f };
-
                     if (uniqueVertices.count(vertex) == 0) {
                         uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
                         vertices.push_back(vertex);
@@ -183,8 +178,6 @@ namespace Dogo
                     indices.push_back(uniqueVertices[vertex]);
                 }
             }
-            //printVerticesToFile(vertices, "verticesLOG.txt");
-            //printIndicesToFile(indices, "indicesLOG.txt");
         }
 
 
@@ -234,7 +227,6 @@ namespace Dogo
         }
 
         std::vector<Vertex> vertices{};
-        glm::vec3 colors;
 
         std::shared_ptr<VertexArray> m_VertexArray;
         std::shared_ptr<VertexBuffer> m_VertexBuffer;

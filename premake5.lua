@@ -70,7 +70,8 @@ project "Dogo"
         defines
         {
             "DG_PLATFORM_WINDOWS",
-            "DG_BUILD_STATIC"
+            "DG_BUILD_STATIC",
+            "ASSIMP_STATIC"
         }
 
         links
@@ -96,7 +97,8 @@ project "Dogo"
         defines
         {
             "DG_PLATFORM_LINUX",
-            "DG_BUILD_STATIC"
+            "DG_BUILD_STATIC",
+            "ASSIMP_STATIC"
         }
 
         libdirs

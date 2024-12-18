@@ -6,7 +6,7 @@
 #include "stb/stb_image.h"
 namespace Dogo
 {
-	DX11Texture::DX11Texture(const std::string& filepath, TextureType textureType, const std::string& name) : m_Name(name)
+	DX11Texture::DX11Texture(const std::string& filepath, const std::string& imageType, TextureType textureType, const std::string& name) : m_Name(name), m_Type(imageType), m_FilePath(filepath)
 	{
 
 		switch (textureType)
@@ -104,7 +104,7 @@ namespace Dogo
 		DX11Context::GetContext()->GetDeviceContext().Get()->PSSetShaderResources(0 + textureUnit, 1, nullSRV);
 		DX11Context::GetContext()->GetDeviceContext().Get()->PSSetSamplers(0 + textureUnit, 1, nullST);
 	}
-	void DX11Texture::UpdateTexture(const std::string& filepath, ImageType imageType, TextureType textureType)
+	void DX11Texture::UpdateTexture(const std::string& filepath, const std::string& imageType, TextureType textureType)
 	{
 
 		switch (textureType)

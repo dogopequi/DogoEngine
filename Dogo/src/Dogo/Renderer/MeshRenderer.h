@@ -34,7 +34,7 @@ namespace Dogo
 		}
 		~MeshRenderer(){}
 
-		void Submit(const Mesh& renderable)
+		void Submit(const OldMesh& renderable)
 		{
 			m_RenderQueue.push_back(&renderable);
 		}
@@ -42,7 +42,7 @@ namespace Dogo
 		{
 			while (!m_RenderQueue.empty())
 			{
-				const Mesh* renderable = m_RenderQueue.front();
+				const OldMesh* renderable = m_RenderQueue.front();
 				RenderAPI api = GraphicsContext::GetAPI();
 				{
 					switch (api)
@@ -95,8 +95,6 @@ namespace Dogo
 					//renderable->GetPixelShader()->SetUniform3f("light.diffuse", m_Light.diffuse);
 					//renderable->GetPixelShader()->SetUniform3f("light.specular", m_Light.specular);
 				}
-
-				renderable->GetPixelShader()->SetUniform3f("MeshColor", renderable->GetColor());
 
 				renderable->GetVAO()->Bind();
 				MVP->transform = glm::mat4(1.0f);
@@ -169,7 +167,7 @@ namespace Dogo
 			inline void SetViewPos(glm::vec3 pos) { m_ViewPos = pos; }
 
 		private:
-			std::deque<const Mesh*> m_RenderQueue;
+			std::deque<const OldMesh*> m_RenderQueue;
 			std::unique_ptr<MatrixPass1> MVP;
 
 

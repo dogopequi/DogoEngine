@@ -19,29 +19,103 @@
 #include "Dogo/Renderer/Renderable2D.h"
 #include "Dogo/Renderer/SimpleRenderer2D.h"
 #include "Dogo/DogoMemory.h"
-#include "DogoECS.h"
-//#include <assimp/Importer.hpp>
-//#include <assimp/scene.h>
-//#include <assimp/postprocess.h>
 #include "Renderer/Mesh.h"
 #include "Renderer/MeshRenderer.h"
+#include "Renderer/AssimpModel.h"
+#include "Renderer/AssimpRenderer.h"
+#include "DogoECS.h"
 
+
+class TransformComponent : public DogoECS::DG_Component
+{
+public:
+	TransformComponent(uint64_t id) : DogoECS::DG_Component(id) { /*std::cout << "Transform Component created" << std::endl;*/ }
+	TransformComponent() : DogoECS::DG_Component() {}
+	~TransformComponent() override {/* std::cout << "Transform Component deleted" << std::endl;*/ }
+
+
+	void Update() override
+	{
+		std::cout << "TRANSFORM --------------------------------------------------" << std::endl;
+		std::cout << "X: " << x << std::endl;
+		std::cout << "Y: " << y << std::endl;
+		std::cout << "Z: " << z << std::endl;
+		std::cout << "ID: " << m_ComponentID.GetUUID_ui64() << std::endl;
+	}
+
+	void SetX(float x) { this->x = x; }
+	void SetY(float y) { this->y = y; }
+	void SetZ(float z) { this->z = z; }
+
+	float GetX() { return x; }
+	float GetY() { return y; }
+	float GetZ() { return z; }
+
+private:
+	float x, y, z;
+
+};
+namespace DogoECS
+{
+	template<>
+	REGISTER_COMPONENT_TEMPLATE(TransformComponent)
+
+		template<>
+	ADD_COMPONENT_TEMPLATE(TransformComponent)
+
+		template <>
+	REMOVE_COMPONENT_TEMPLATE(TransformComponent)
+
+		template<>
+	UPDATE_COMPONENTS_TEMPLATE(TransformComponent)
+
+}
+ class AudioComponent : public DogoECS::DG_Component
+    {
+    public:
+        AudioComponent(uint64_t id) : DogoECS::DG_Component(id) {}
+        AudioComponent() : DogoECS::DG_Component() {}
+
+        ~AudioComponent() override { }
+
+
+        void Update() override
+        {
+
+            std::cout << "AUDIO --------------------------------------------------- " << std::endl;
+            std::cout << "Name: " << name << std::endl;
+            std::cout << "ID: " << m_ComponentID.GetUUID_ui64() << std::endl;
+        }
+
+        void SetName(std::string name) { this->name = name; }
+        std::string GetName() const { return name; }
+
+    private:
+        std::string name;
+    };
+
+	namespace DogoECS
+	{
+    template<>
+    REGISTER_COMPONENT_TEMPLATE(AudioComponent)
+
+        template<>
+    ADD_COMPONENT_TEMPLATE(AudioComponent)
+
+        template <>
+    REMOVE_COMPONENT_TEMPLATE(AudioComponent)
+
+        template<>
+    UPDATE_COMPONENTS_TEMPLATE(AudioComponent)
+
+}
 
 namespace Dogo
 {
-	void PrintMatrix(const glm::mat4& matrix, const std::string& name)
-	{
-		DG_TRACE("Matrix %s:", name.c_str());
-		const float* ptr = glm::value_ptr(matrix);
-		for (int i = 0; i < 4; ++i)
-		{
-			DG_INFO("row:  %f, %f, %f, %f", ptr[i * 4 + 0], ptr[i * 4 + 1], ptr[i * 4 + 2], ptr[i * 4 + 3]);
-		}
-	}
 	void Application::processInput(float time)
 	{
 		WindowsWindow* window = WindowsWindow::GetWindowClass(NULL);
-		const float cameraSpeed = m_Camera->GetSpeed() * time; // adjust accordingly
+		const float cameraSpeed = m_Camera->GetSpeed() * time;
 		if (Input::IsKeyPressed(DG_KEY_W))
 			m_Camera->SetPosition(m_Camera->GetPosition() + m_Camera->GetSpeed() * m_Camera->GetFront());
 		if (Input::IsKeyPressed(DG_KEY_S))
@@ -62,17 +136,6 @@ namespace Dogo
 		m_Window = DG_Window::Create();
 		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Application::OnEvent));
 		m_IsRunning = true;
-
-
-		DogoECS::Entity* E1 = DogoECS::DG_EntityManager::CreateEntity();
-
-		DogoECS::DG_ComponentManager::RegisterComponent<DogoECS::TransformComponent>();
-
-		DogoECS::TransformComponent* TC = E1->AddComponent<DogoECS::TransformComponent>();
-
-		TC->SetX(1.0f);
-		TC->SetY(1.0f);
-		TC->SetZ(1.0f);
 	}
 	Application::~Application()
 	{
@@ -102,8 +165,8 @@ namespace Dogo
 	bool Application::KeyPressedCallBack(KeyPressedEvent& e)
 	{
 		DG_TRACE(e.ToString().c_str());
-		// if(e.GetKeyCode() == DG_KEY_ESCAPE)
-		// 	ClipCursor(nullptr);
+		 if(e.GetKeyCode() == DG_KEY_ESCAPE)
+		 	ClipCursor(nullptr);
 		return true;
 	}
 	bool Application::KeyReleasedCallBack(KeyReleasedEvent& e)
@@ -113,11 +176,12 @@ namespace Dogo
 	}
 	bool Application::MouseMovedCallBack(MouseMovedEvent& e)
 	{
-		//TODO fix bug, the reset of the position is triggering the camera look.
-		//DG_TRACE(e.ToString().c_str());
-		// if (Input::GetKey() == DG_KEY_ESCAPE)
-		// 	return false;
-		/*RECT rect;
+		DG_TRACE(e.ToString().c_str());
+
+		if (Input::GetKey() == DG_KEY_ESCAPE)
+			return false;
+
+		RECT rect;
 		WindowsWindow* window = (WindowsWindow*)m_Window;
 		GetClientRect(window->GetHandle(), &rect);
 
@@ -134,43 +198,43 @@ namespace Dogo
 
 		rect.left = ul.x;
 		rect.top = ul.y;
-
 		rect.right = lr.x;
-		rect.bottom = lr.y;*/
+		rect.bottom = lr.y;
 
+		float xpos = static_cast<float>(Input::GetMouseX());
+		float ypos = static_cast<float>(Input::GetMouseY());
 
-		 float xpos = static_cast<float>(Input::GetMouseX());
-		 float ypos = static_cast<float>(Input::GetMouseY());
+		if (firstMouse)
+		{
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
+		}
 
-		 if (firstMouse)
-		 {
-		 	lastX = xpos;
-		 	lastY = ypos;
-		 	firstMouse = false;
-		 }
+		float xoffset = xpos - lastX;
+		float yoffset = lastY - ypos;
 
-		 float xoffset = xpos - lastX;
-		 float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-		 lastX = xpos;
-		 lastY = ypos;
+		lastX = 1280 / 2;
+		lastY = 720 / 2;
 
-		 //ClipCursor(&rect);
-		 //SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
-		 xoffset *= m_Camera->GetSensitivity();
-		 yoffset *= m_Camera->GetSensitivity();
+		xoffset *= m_Camera->GetSensitivity();
+		yoffset *= m_Camera->GetSensitivity();
 
-		 m_Camera->SetYaw(m_Camera->GetYaw() + xoffset);
-		 m_Camera->SetPitch(m_Camera->GetPitch() + yoffset);
+	
+		m_Camera->SetYaw(m_Camera->GetYaw() + xoffset);
+		m_Camera->SetPitch(m_Camera->GetPitch() + yoffset);
 
-		 // make sure that when pitch is out of bounds, screen doesn't get flipped
-		 if (true) // future a constrain pitch boolean
-		 {
-			 if (m_Camera->GetPitch() > 89.0f)
-				 m_Camera->SetPitch(89.0f);
-			 if (m_Camera->GetPitch() < -89.0f)
-				 m_Camera->SetPitch(-89.0f);
-		 }
-		 m_Camera->UpdateVectors();
+		if (m_Camera->GetPitch() > 89.0f)
+			m_Camera->SetPitch(89.0f);
+		if (m_Camera->GetPitch() < -89.0f)
+			m_Camera->SetPitch(-89.0f);
+
+		m_Camera->UpdateVectors();
+
+		ClipCursor(&rect);
+
+		SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
+
 		return true;
 	}
 	bool Application::MouseButtonPressedCallBack(MouseButtonPressedEvent& e)
@@ -194,7 +258,7 @@ namespace Dogo
 		return true;
 	}
 
-	void changetexture(const std::string& filepath, ImageType imageType, TextureType textureType, Texture& texture)
+	void changetexture(const std::string& filepath, const std::string& imageType, TextureType textureType, Texture& texture)
 	{
 		if (Input::IsKeyPressed(DG_KEY_B))
 		{
@@ -217,7 +281,7 @@ namespace Dogo
 			{ShaderDataType::Float2, "TEXCOORD"}
 		};
 
-		MeshRenderer Renderer;
+		AssimpRenderer Renderer;
 
 		std::wstring vertexShader = L"../Dogo/resources/Shaders/meshVERT.glsl";
 		std::wstring pixelShader = L"../Dogo/resources/Shaders/meshPIXEL.glsl";
@@ -229,8 +293,8 @@ namespace Dogo
 		Renderer.SetModelMatrix(glm::mat4(1.0f));
 		Renderer.SetTransformMatrix(glm::mat4(1.0f));
 
-		Mesh mesh("../Dogo/resources/12140_Skull_v3_L2.obj", glm::vec3(1.0f, -0.5, 5.0f), layout, vertexShader, pixelShader);
-		Mesh mesh1("../Dogo/resources/12140_Skull_v3_L2.obj", glm::vec3(1.0f, -0.0, 1.0f), layout, vertexShader, pixelShader);
+		Model model("../Dogo/resources/Ratchet/Ratchet.obj", glm::vec3(0.0f, 0.0f, 0.0f), layout, vertexShader, pixelShader);
+		Model model1("../Dogo/resources/Ship/QuarkShuttle.obj", glm::vec3(0.0f, 0.0f, 100.0f), layout, vertexShader, pixelShader);
 
 
 		Timer timer;
@@ -239,21 +303,29 @@ namespace Dogo
 		float lastFrame{ 0.0f };
 		float y = 0;
 		MemoryUsage::PrintUsage();
+		DogoECS::Init();
+		DogoECS::DG_ComponentManager::RegisterComponent<TransformComponent>();
+		DogoECS::DG_ComponentManager::RegisterComponent<AudioComponent>();
+		DogoECS::Entity* e1 = DogoECS::DG_EntityManager::CreateEntity();
+		TransformComponent* tc1 = e1->AddComponent<TransformComponent>();
+		AudioComponent* ac1 = e1->AddComponent<AudioComponent>();
 		while (m_Window->isRunning() && m_Window != nullptr)
 		{
+			DogoECS::DG_ComponentManager::UpdateComponents<AudioComponent>();
+			DogoECS::DG_ComponentManager::UpdateComponents<TransformComponent>();
 			m_Window->ClearColor(0.2f, 1.0f, 1.0f, 1.0f);
 			float currentFrame = timer.elapsed();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
-			Renderer.Submit(mesh);
-			Renderer.Submit(mesh1);
+
+			Renderer.Submit(model);
+			Renderer.Submit(model1);
 			Renderer.SetViewPos(m_Camera->GetPosition());
 			Renderer.SetProjectionMatrixPerspective(m_Camera->GetZoom(),1280.0f, 720.0f, 0.1f, 100.0f);
 			processInput(deltaTime);
 			Renderer.SetViewMatrix(m_Camera->GetViewMatrix());
 			Renderer.Flush();
 
-			//DogoECS::DG_ComponentManager::Update();
 #if OPENGL
 			GLenum err;
 			while ((err = glGetError()) != GL_NO_ERROR) {

@@ -13,18 +13,25 @@ namespace Dogo
 	class OpenGLTexture: public Texture
 	{
 		public:
-			OpenGLTexture(const std::string& filepath, ImageType imageType, TextureType textureType, const std::string& name);
+			OpenGLTexture(const std::string& filepath, const std::string& imageType, TextureType textureType, const std::string& name);
 			~OpenGLTexture();
 
 			void Bind(uint32_t textureUnit, const std::string& name) const override;
 			void Unbind(uint32_t textureUnit) const override;
 
-			void UpdateTexture(const std::string& filepath, ImageType imageType, TextureType textureType) override;
+			void UpdateTexture(const std::string& filepath, const std::string& imageType, TextureType textureType) override;
 
-			std::string GetName() const { return m_Name; }
+			inline std::string GetName() const { return m_Name; }
+			inline void SetName(const std::string& name) { m_Name = name; }
+			inline std::string GetType() const { return m_Type; }
+			inline void SetType(const std::string& type) { m_Type = type; }
+
+			inline std::string GetFilePath() const { return m_FilePath; }
 
 	private:
 		std::string m_Name;
+		std::string m_Type;
+		std::string m_FilePath;
 		uint32_t m_RendererID{};
 		GLenum m_ImageType{};
 		GLenum m_TextureType{};
