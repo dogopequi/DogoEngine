@@ -10,6 +10,7 @@ workspace "Dogo"
 
     outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
     STBinclude = "vendor/stb_image"
+    PHYSXinclude = "D:/Dev/DogoEngine/vendor/PhysX/include"
     TOLinclude = "Dogo/vendor/tinyobjloader/include"
     GLMinclude = "vendor/glm/include"
     ASSIMPinclude = "vendor/assimp/include"
@@ -48,7 +49,8 @@ project "Dogo"
         "%{IncludeDir.glad}",
         "%{IncludeDir.DogoECS}",
         ASSIMPinclude,
-        TOLinclude
+        TOLinclude,
+        PHYSXinclude
     }
 
     libdirs
@@ -60,7 +62,7 @@ project "Dogo"
         "DogoECS",
         "glad",
 		"opengl32.lib",
-        "assimp-vc143-mt.lib"
+        "assimp-vc143-mt.lib",
     }
 
     filter "system:windows"
@@ -122,11 +124,27 @@ project "Dogo"
         defines "DG_BUILD_DEBUG"
         symbols "on"
         runtime "Debug"
+        links
+        {
+            "D:/Dev/DogoEngine/vendor/PhysX/lib/debug/**.lib"
+        }
+        defines
+        {
+            "_DEBUG"
+        }
 
     filter "configurations:Release"
         defines "DG_BUILD_RELEASE"
         optimize "on"
         runtime "Release"
+        links
+        {
+            "D:/Dev/DogoEngine/vendor/PhysX/lib/release/**.lib"
+        }
+        defines
+        {
+            "NDEBUG"
+        }
 
 project "Sandbox"
     location "Sandbox"
@@ -150,18 +168,13 @@ project "Sandbox"
         STBinclude,
         GLMinclude,
         "%{IncludeDir.glad}",
-        "%{IncludeDir.DogoECS}"
-        --"D:/Dev/assimp/Assimp/include"
+        "%{IncludeDir.DogoECS}",
+        PHYSXinclude
     }
 
-    --libdirs
-    --{
-        --"D:/Dev/assimp/Assimp/lib/x64"
-    --}
 
     links
     {
-        --"assimp-vc143-mt.lib",
         "Dogo",
         "glad",
         "DogoECS"
@@ -201,8 +214,24 @@ project "Sandbox"
         defines "DG_BUILD_DEBUG"
         symbols "on"
         runtime "Debug"
+        links
+        {
+            "D:/Dev/DogoEngine/vendor/PhysX/lib/debug/**.lib"
+        }
+        defines
+        {
+            "_DEBUG"
+        }
     
     filter "configurations:Release"
         defines "DG_BUILD_RELEASE"
         optimize "on"
         runtime "Release"
+        links
+        {
+            "D:/Dev/DogoEngine/vendor/PhysX/lib/release/**.lib"
+        }
+        defines
+        {
+            "NDEBUG"
+        }
