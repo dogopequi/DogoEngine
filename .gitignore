@@ -21,3 +21,8 @@ build-Release/
 *.jpg
 *.jpg
 *.png
+*.exe
+*.pdb
+*.map
+*.exp
+*.dll
