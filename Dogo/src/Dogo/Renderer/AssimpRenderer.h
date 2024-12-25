@@ -3,6 +3,7 @@
 #include "Dogo/Core.h"
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include "Line.h"
 namespace Dogo
 {
 	struct MatrixPass2
@@ -19,6 +20,7 @@ namespace Dogo
 		~AssimpRenderer() {}
 
 		void Submit(const Model& renderable);
+		void Submit(const Line& renderable);
 		void Flush();
 
 
@@ -71,6 +73,7 @@ namespace Dogo
 
 	private:
 		std::deque<const Model*> m_RenderQueue;
+		std::deque<const Line*> m_RenderQueueLines;
 		std::unique_ptr<MatrixPass2> MVP;
 
 		glm::vec3 m_ViewPos;

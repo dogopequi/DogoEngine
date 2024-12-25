@@ -22,6 +22,7 @@ namespace Dogo
 
 		void AddBuffer(std::shared_ptr<VertexBuffer>& buffer);
 		void Draw(uint32_t count);
+		void DrawArrays();
 
 	private:
 		GLuint m_RendererID{0};

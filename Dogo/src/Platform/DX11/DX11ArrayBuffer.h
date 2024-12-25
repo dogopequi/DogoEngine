@@ -15,6 +15,7 @@ namespace Dogo
 
 		void AddBuffer(std::shared_ptr<VertexBuffer>& buffer);
 		void Draw(uint32_t count);
+		void DrawArrays();
 
 	private:
 		std::vector<std::shared_ptr<DX11VertexBuffer>> m_VertexBuffers;

@@ -9,11 +9,6 @@
 #include "Events/MouseEvent.h"
 #include "Graphics/WindowsWindow.h"
 #include "Renderer/Camera.h"
-#include "PxPhysicsAPI.h"
-#include "SnippetPrint.h"
-#include "SnippetPVD.h"
-#include "SnippetUtils.h"
-#include "foundation/PxPhysicsVersion.h"
 
 namespace Dogo
 {
@@ -61,34 +56,6 @@ namespace Dogo
 #if DG_PLATFORM_WINDOWS
 		HINSTANCE instance;
 #endif
-
-
-
-
-		//////////PHYX STUFF FOR TEST
-
-		physx::PxDefaultAllocator gAllocator;
-		physx::PxDefaultErrorCallback gErrorCallback;
-		physx::PxFoundation* gFoundation = NULL;
-		physx::PxPhysics* gPhysics = NULL;
-		physx::PxDefaultCpuDispatcher* gDispatcher = NULL;
-		physx::PxScene* gScene = NULL;
-		physx::PxMaterial* gMaterial = NULL;
-		physx::PxPvd* gPvd = NULL;
-		physx::PxReal stackZ = 10.0f;
-
-		physx::PxRigidDynamic* createDynamic(const physx::PxTransform& t, const physx::PxGeometry& geometry, const physx::PxVec3& velocity);
-
-		void createStack(const physx::PxTransform& t, physx::PxU32 size, physx::PxReal halfExtent);
-
-		void initPhysics(bool interactive);
-
-		void stepPhysics(bool /*interactive*/);
-
-		void cleanupPhysics(bool /*interactive*/);
-
-		void keyPress(unsigned char key, const physx::PxTransform& camera);
-		int snippetMain();
 	};
 	Application* CreateApplication();
 }

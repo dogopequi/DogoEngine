@@ -198,6 +198,7 @@ namespace Dogo {
 
 		virtual void AddBuffer(std::shared_ptr<VertexBuffer>& buffer) = 0;
 		virtual void Draw(uint32_t count) = 0;
+		virtual void DrawArrays() = 0;
 
 		static VertexArray* Create();
 	};

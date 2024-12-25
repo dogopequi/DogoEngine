@@ -52,4 +52,16 @@ namespace Dogo
 			buffer->Unbind();
 		}
 	}
+	void OpenGLVertexArrayBuffer::DrawArrays()
+	{
+		for (size_t i = 0; i < m_VertexBuffers.size(); i++)
+		{
+			std::shared_ptr<OpenGLBuffer> buffer = (std::shared_ptr<OpenGLBuffer>)m_VertexBuffers[i];
+			buffer->Bind();
+
+			glDrawArrays(GL_LINES, 0, 2);
+
+			buffer->Unbind();
+		}
+	}
 }
