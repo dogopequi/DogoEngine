@@ -5,18 +5,22 @@
 namespace Dogo
 {
 	class TransformComponent;
+	class StaticMeshComponent;
 	class Actor
 	{
 	public:
-		Actor(Model* model);
+		Actor();
 		~Actor();
 
+		void AddModel(Model* model);
+		void Update();
+		
+		TransformComponent* GetTC() { return TC; }
 
 	private:
 		DogoECS::Entity* m_Entity;
 		TransformComponent* TC;
+		StaticMeshComponent* SMC;
 		PxShape* m_Shape;
-		PxRigidStatic* m_StaticBody;
-		Model* model;
 	};
 }

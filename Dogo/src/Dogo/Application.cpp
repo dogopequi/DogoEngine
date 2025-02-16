@@ -75,25 +75,25 @@ namespace Dogo
 #endif
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		DG_TRACE(e.ToString().c_str());
+		/*DG_TRACE(e.ToString().c_str());*/
 		m_IsRunning = false;
 		return true;
 	}
 	bool Application::KeyPressedCallBack(KeyPressedEvent& e)
 	{
-		DG_TRACE(e.ToString().c_str());
+		/*DG_TRACE(e.ToString().c_str());*/
 		 if(e.GetKeyCode() == DG_KEY_ESCAPE)
 		 	ClipCursor(nullptr);
 		return true;
 	}
 	bool Application::KeyReleasedCallBack(KeyReleasedEvent& e)
 	{
-		DG_TRACE(e.ToString().c_str());
+		/*DG_TRACE(e.ToString().c_str());*/
 		return true;
 	}
 	bool Application::MouseMovedCallBack(MouseMovedEvent& e)
 	{
-		DG_TRACE(e.ToString().c_str());
+		/*DG_TRACE(e.ToString().c_str());*/
 
 		if (Input::GetKey() == DG_KEY_ESCAPE)
 			return false;
@@ -156,12 +156,12 @@ namespace Dogo
 	}
 	bool Application::MouseButtonPressedCallBack(MouseButtonPressedEvent& e)
 	{
-		DG_TRACE(e.ToString().c_str());
+		/*DG_TRACE(e.ToString().c_str());*/
 		return true;
 	}
 	bool Application::MouseButtonReleasedCallBack(MouseButtonReleasedEvent& e)
 	{
-		DG_TRACE(e.ToString().c_str());
+		/*DG_TRACE(e.ToString().c_str());*/
 		return true;
 	}
 	bool Application::MouseScrolledCallBack(MouseScrolledEvent& e)
@@ -190,6 +190,7 @@ namespace Dogo
 		DogoECS::Init();
 		DG_Physics::InitPhysics(glm::vec3(0.0f, -9.81f, 0.0f));
 		DogoECS::DG_ComponentManager::RegisterComponent<TransformComponent>();
+		DogoECS::DG_ComponentManager::RegisterComponent<StaticMeshComponent>();
 
 		#if DG_PLATFORM_WINDOWS
 		m_Window->SetInstance(instance);
@@ -215,19 +216,22 @@ namespace Dogo
 		Renderer.SetModelMatrix(glm::mat4(1.0f));
 		Renderer.SetTransformMatrix(glm::mat4(1.0f));
 
-		Model* model =  new Model("../Dogo/resources/Ratchet/Ratchet.obj", glm::vec3(0.0f, 0.0f, 0.0f), layout, vertexShader, pixelShader);
-		Model* model1 = new Model("../Dogo/resources/Ship/QuarkShuttle.obj", glm::vec3(0.0f, 0.0f, 0.01f), layout, vertexShader, pixelShader);
+		Model* model =  new Model("../Dogo/resources/Ratchet/Ratchet.obj", glm::vec3(20.0f, 0.0f, 0.0f), layout, vertexShader, pixelShader);
+		Model* model1 = new Model("../Dogo/resources/Ship/QuarkShuttle.obj", glm::vec3(0.0f, 0.0f, 0.0f), layout, vertexShader, pixelShader);
 
-		Actor actor(model);
-		Actor actor1(model1);
+		Actor actor;
+		Actor actor1;
+		actor.AddModel(model);
+		actor1.AddModel(model1);
 		DogoECS::DG_ComponentManager::UpdateComponents<TransformComponent>();
 
 
 		std::wstring vertexShader1 = L"../Dogo/resources/Shaders/linesVERT.glsl";
 		std::wstring pixelShader1 = L"../Dogo/resources/Shaders/linesFRAG.glsl";
 		Line line1(glm::vec3(0, 0, 0), glm::vec3(1, 0, 0), glm::vec3(1, 0, 0), vertexShader1, pixelShader1);
-		Line line2(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0), vertexShader1, pixelShader1);
-		Line line3(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 0, 1), vertexShader1, pixelShader1);
+		Line line2(glm::vec3(1, 0, 0), glm::vec3(1, 1, 0), glm::vec3(0, 1, 0), vertexShader1, pixelShader1);
+		Line line3(glm::vec3(1, 1, 0), glm::vec3(0, 1, 0), glm::vec3(0, 0, 1), vertexShader1, pixelShader1);
+		Line line4(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 0), vertexShader1, pixelShader1);
 
 		Timer timer;
 		
@@ -244,11 +248,12 @@ namespace Dogo
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 			DG_Physics::StepPhysics(deltaTime);
-			Renderer.Submit(*model);
-			Renderer.Submit(*model1);
+			//Renderer.Submit(*model);
+			//Renderer.Submit(*model1);
 			Renderer.Submit(line1);
 			Renderer.Submit(line2);
 			Renderer.Submit(line3);
+			Renderer.Submit(line4);
 			Renderer.SetViewPos(m_Camera->GetPosition());
 			Renderer.SetProjectionMatrixPerspective(m_Camera->GetZoom(),1280.0f, 720.0f, 0.1f, 100.0f);
 			processInput(deltaTime);

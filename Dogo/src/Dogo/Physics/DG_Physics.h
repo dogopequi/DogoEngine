@@ -22,13 +22,13 @@ namespace Dogo
 		{
 			return gPhysics->createShape(physx::PxBoxGeometry(x, y, z), *gMaterial);
 		}
-		static PxRigidDynamic* GetRigidDynamic(const  physx::PxTransform& t, const  physx::PxTransform& q)
+		static PxRigidDynamic* GetRigidDynamic(const  physx::PxTransform& t)
 		{
-			return gPhysics->createRigidDynamic(t.transform(q));
+			return gPhysics->createRigidDynamic(t);
 		}
-		static PxRigidStatic* GetRigidStatic(const  physx::PxTransform& t, const  physx::PxTransform& q)
+		static PxRigidStatic* GetRigidStatic(const  physx::PxTransform& t)
 		{
-			return gPhysics->createRigidStatic(t.transform(q));
+			return gPhysics->createRigidStatic(t);
 		}
 		static void AddActor(physx::PxActor* actor)
 		{
