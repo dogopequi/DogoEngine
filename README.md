@@ -42,6 +42,11 @@ To be added soon.
 ## Usage
 Can render 3D Objects and Lines natively. No Physics, no batching, no editor yet.
 
+What it looks like:
+
+![image](https://github.com/user-attachments/assets/2ed5c1ed-5513-444a-b491-f7ce831189d3)
+
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
