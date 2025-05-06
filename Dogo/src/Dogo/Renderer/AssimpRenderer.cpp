@@ -42,13 +42,6 @@ namespace Dogo
 				case Dogo::RenderAPI::VULKAN:
 					DG_FATAL("Not Implemented");
 					break;
-				case Dogo::RenderAPI::D3D11:
-					renderable->GetVertexShader()->Bind();
-					renderable->GetPixelShader()->Bind();
-					break;
-				case Dogo::RenderAPI::D3D12:
-					DG_FATAL("Not Implemented");
-					break;
 				default:
 					DG_FATAL("No API specified");
 					break;
@@ -86,13 +79,6 @@ namespace Dogo
 				renderable->GetVertexShader()->Bind();
 				break;
 			case Dogo::RenderAPI::VULKAN:
-				DG_FATAL("Not Implemented");
-				break;
-			case Dogo::RenderAPI::D3D11:
-				renderable->GetVertexShader()->Bind();
-				renderable->GetPixelShader()->Bind();
-				break;
-			case Dogo::RenderAPI::D3D12:
 				DG_FATAL("Not Implemented");
 				break;
 			default:

@@ -227,12 +227,7 @@
 
 	bool WindowsWindow::InitContext()
 	{
-#if OPENGL
 		GraphicsContext::Create(&m_Hwnd, RenderAPI::OpenGL);
-#endif
-#if DX11
-		GraphicsContext::Create(&m_Hwnd, RenderAPI::D3D11);
-#endif
 		m_Context = GraphicsContext::Get();
 		if (!m_Context->Init())
 			return false;

@@ -30,13 +30,6 @@ namespace Dogo
             {
                 SetLayout();
             }break;
-#if DG_PLATFORM_WINDOWS
-            case RenderAPI::D3D11:
-            {
-                SetLayout(m_VertexShader);
-            }
-#endif
-            break;
             default:
                 DG_FATAL("API NOT SPECIFIED");
             }

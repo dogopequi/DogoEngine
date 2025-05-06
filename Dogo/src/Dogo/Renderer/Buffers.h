@@ -63,32 +63,6 @@ namespace Dogo {
 		DG_ASSERT_MSG(false, "Unknown ShaderDataType");
 		return 0;
 	}
-#if DG_PLATFORM_WINDOWS
-	static DXGI_FORMAT ShaderDataTypeToDX11(ShaderDataType type)
-	{
-		switch (type)
-		{
-		case ShaderDataType::Float:    return DXGI_FORMAT_R32_FLOAT;
-		case ShaderDataType::Float2:   return DXGI_FORMAT_R32G32_FLOAT;
-		case ShaderDataType::Float3:   return DXGI_FORMAT_R32G32B32_FLOAT;
-		case ShaderDataType::Float4:   return DXGI_FORMAT_R32G32B32A32_FLOAT;
-		//case ShaderDataType::Mat3:     return GL_FLOAT;
-		//case ShaderDataType::Mat4:     return GL_FLOAT;
-		//case ShaderDataType::Int:      return GL_INT;
-		//case ShaderDataType::Int2:     return GL_INT;
-		//case ShaderDataType::Int3:     return GL_INT;
-		//case ShaderDataType::Int4:     return GL_INT;
-		//case ShaderDataType::uInt:      return GL_UNSIGNED_INT;
-		//case ShaderDataType::uInt2:     return GL_UNSIGNED_INT;
-		//case ShaderDataType::uInt3:     return GL_UNSIGNED_INT;
-		//case ShaderDataType::uInt4:     return GL_UNSIGNED_INT;
-		//case ShaderDataType::Bool:     return GL_BOOL;
-		}
-
-		DG_ASSERT_MSG(false, "Unknown ShaderDataType");
-		return DXGI_FORMAT_R32_FLOAT;
-	}
-#endif
 	struct BufferElement
 	{
 		std::string Name;

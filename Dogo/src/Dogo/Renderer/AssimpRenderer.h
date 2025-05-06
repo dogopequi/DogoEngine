@@ -44,12 +44,6 @@ namespace Dogo
 			case RenderAPI::OpenGL:
 				proj = glm::perspectiveFovRH_NO(glm::radians(FOV), width, height, minDepth, maxDepth);
 				break;
-			case RenderAPI::D3D11:
-				proj = glm::perspectiveFovRH_ZO(glm::radians(FOV), width, height, minDepth, maxDepth);
-				break;
-			case RenderAPI::D3D12:
-				DG_FATAL("Not implemented");
-				break;
 			case RenderAPI::VULKAN:
 				DG_FATAL("Not implemented");
 				break;

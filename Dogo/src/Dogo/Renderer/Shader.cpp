@@ -1,6 +1,5 @@
 #include "dgpch.h"
 #include "Shader.h"
-#include "Platform/DX11/DX11Shader.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Graphics/GraphicsContext.h"
 #include "Dogo/Logger.h"
@@ -21,14 +20,6 @@ namespace Dogo
 			case Dogo::RenderAPI::VULKAN:
 				DG_FATAL("Not Implemented");
 				break;
-				#if DG_PLATFORM_WINDOWS
-			case Dogo::RenderAPI::D3D11:
-				return DX11Shader::Create(filepath, type);
-				break;
-			case Dogo::RenderAPI::D3D12:
-				DG_FATAL("Not Implemented");
-				break;
-				#endif
 			default:
 				DG_FATAL("No API specified");
 				break;
@@ -51,11 +42,6 @@ namespace Dogo
 			case Dogo::RenderAPI::VULKAN:
 				DG_FATAL("Not Implemented");
 				break;
-			case Dogo::RenderAPI::D3D11:
-				break;
-			case Dogo::RenderAPI::D3D12:
-				DG_FATAL("Not Implemented");
-				break;
 			default:
 				DG_FATAL("No API specified");
 				break;
@@ -75,11 +61,6 @@ namespace Dogo
 				return new OpenGLShader(filepath, type);
 				break;
 			case Dogo::RenderAPI::VULKAN:
-				DG_FATAL("Not Implemented");
-				break;
-			case Dogo::RenderAPI::D3D11:
-				break;
-			case Dogo::RenderAPI::D3D12:
 				DG_FATAL("Not Implemented");
 				break;
 			default:

@@ -23,4 +23,3 @@
 #define BIT(x) (1 << x)
 
 #define OPENGL 1
-#define DX11 0

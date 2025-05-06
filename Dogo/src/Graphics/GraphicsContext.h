@@ -11,7 +11,7 @@ namespace Dogo
 {
 	enum class RenderAPI
 	{
-		API_NONE, OpenGL, VULKAN, D3D11, D3D12
+		API_NONE, OpenGL, VULKAN
 	};
 	class GraphicsContext
 	{

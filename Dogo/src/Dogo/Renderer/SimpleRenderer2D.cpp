@@ -40,13 +40,6 @@ void Dogo::SimpleRenderer2D::Flush()
 			case Dogo::RenderAPI::VULKAN:
 				DG_FATAL("Not Implemented");
 				break;
-			case Dogo::RenderAPI::D3D11:
-				renderable->GetVertexShader()->Bind();
-				renderable->GetPixelShader()->Bind();
-				break;
-			case Dogo::RenderAPI::D3D12:
-				DG_FATAL("Not Implemented");
-				break;
 			default:
 				DG_FATAL("No API specified");
 				break;

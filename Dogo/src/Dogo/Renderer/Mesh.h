@@ -51,13 +51,6 @@ namespace Dogo
             {
                 SetLayout();
             }break;
-#if DG_PLATFORM_WINDOWS
-            case RenderAPI::D3D11:
-            {
-                SetLayout(m_VertexShader);
-            }
-#endif
-            break;
             default:
                 DG_FATAL("API NOT SPECIFIED");
             }
@@ -79,13 +72,6 @@ namespace Dogo
                 m_VertexShader.reset(Shader::Create(vertex, pixel));
                 m_PixelShader = m_VertexShader;
                 break;
-            case RenderAPI::D3D11:
-                m_VertexShader.reset(Shader::Create(vertex, ShaderType::VERTEX));
-                m_PixelShader.reset(Shader::Create(pixel, ShaderType::FRAGMENT));
-                break;
-            case RenderAPI::D3D12:
-                DG_FATAL("Not implemented");
-                break;
             case RenderAPI::VULKAN:
                 DG_FATAL("Not implemented");
                 break;
@@ -96,14 +82,6 @@ namespace Dogo
             break;
             }
         }
-#if DG_PLATFORM_WINDOWS
-        inline void SetLayout(std::shared_ptr<Shader> shader) const
-        {
-            std::shared_ptr<DX11VertexShader> dx11shader = std::static_pointer_cast<DX11VertexShader>(shader);
-            std::shared_ptr<DX11VertexBuffer> dx11vbo = std::static_pointer_cast<DX11VertexBuffer>(m_VertexBuffer);
-            dx11vbo->SetLayout(*m_Layout, dx11shader->GetBufferPointer(), dx11shader->GetBufferLength());
-        }
-#endif
         inline void SetLayout() const { m_VertexBuffer->SetLayout(*m_Layout); }
         void LoadFromFile(const std::string& inputfile)
         {

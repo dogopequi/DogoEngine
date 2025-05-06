@@ -29,11 +29,8 @@
 	#include "Windows.h"
 	#include "windowsx.h"
 	#include <wrl/client.h>
-	#include <d3d11_1.h>
-	#include <dxgi1_2.h>
 	#include <winsdkver.h>
 	#include <sdkddkver.h>
-	#include <d3dcompiler.h>
 	#include <glad/glad.h>
 #endif
 #ifdef DG_PLATFORM_LINUX

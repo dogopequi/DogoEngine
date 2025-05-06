@@ -9,12 +9,7 @@
 #include "Platform/OpenGL/OpenGLTexture.h"
 #include "Dogo/Timer.h"
 #include "Dogo/Input/WindowsInput.h"
-#include "Platform/DX11/DX11Context.h"
-#include "Platform//DX11/DX11Texture.h"
-#include "Platform/DX11/DX11IndexBuffer.h"
-#include "Platform/DX11/DX11VertexBuffer.h"
 #include <stb/stb_image.h>
-#include "Platform/DX11/DX11Shader.h"
 #include "Dogo/Renderer/Renderable2D.h"
 #include "Dogo/Renderer/SimpleRenderer2D.h"
 #include "Dogo/DogoMemory.h"
@@ -216,7 +211,7 @@ namespace Dogo
 		Renderer.SetModelMatrix(glm::mat4(1.0f));
 		Renderer.SetTransformMatrix(glm::mat4(1.0f));
 
-		Model* model =  new Model("../Dogo/resources/Ratchet/Ratchet.obj", glm::vec3(20.0f, 0.0f, 0.0f), layout, vertexShader, pixelShader);
+		Model* model =  new Model("../Dogo/resources/Ratchet/Ratchet.obj", glm::vec3(0.0f, 0.0f, 0.0f), layout, vertexShader, pixelShader);
 		Model* model1 = new Model("../Dogo/resources/Ship/QuarkShuttle.obj", glm::vec3(0.0f, 0.0f, 0.0f), layout, vertexShader, pixelShader);
 
 		Actor actor;
@@ -248,8 +243,8 @@ namespace Dogo
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 			DG_Physics::StepPhysics(deltaTime);
-			//Renderer.Submit(*model);
-			//Renderer.Submit(*model1);
+			Renderer.Submit(*model);
+			Renderer.Submit(*model1);
 			Renderer.Submit(line1);
 			Renderer.Submit(line2);
 			Renderer.Submit(line3);

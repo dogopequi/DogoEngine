@@ -6,8 +6,6 @@
 #include "Buffers.h"
 #include "Graphics/GraphicsContext.h"
 #include "Texture.h"
-#include "Platform/DX11/DX11VertexBuffer.h"
-#include "Platform/DX11/DX11Shader.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -20,14 +18,6 @@ namespace Dogo
         Mesh(const std::shared_ptr<BufferLayout> layout, const std::shared_ptr<Shader>& vertex, const std::shared_ptr<Shader>& pixel, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Texture*>& textures);
         ~Mesh() {}
 
-#if DG_PLATFORM_WINDOWS
-        inline void SetLayout(std::shared_ptr<Shader> shader) const
-        {
-            std::shared_ptr<DX11VertexShader> dx11shader = std::static_pointer_cast<DX11VertexShader>(shader);
-            std::shared_ptr<DX11VertexBuffer> dx11vbo = std::static_pointer_cast<DX11VertexBuffer>(m_VertexBuffer);
-            dx11vbo->SetLayout(*m_Layout, dx11shader->GetBufferPointer(), dx11shader->GetBufferLength());
-        }
-#endif
         inline void SetLayout() const { m_VertexBuffer->SetLayout(*m_Layout); }
 
 
@@ -92,13 +82,6 @@ namespace Dogo
             case RenderAPI::OpenGL:
                 m_VertexShader.reset(Shader::Create(vertex, pixel));
                 m_PixelShader = m_VertexShader;
-                break;
-            case RenderAPI::D3D11:
-                m_VertexShader.reset(Shader::Create(vertex, ShaderType::VERTEX));
-                m_PixelShader.reset(Shader::Create(pixel, ShaderType::FRAGMENT));
-                break;
-            case RenderAPI::D3D12:
-                DG_FATAL("Not implemented");
                 break;
             case RenderAPI::VULKAN:
                 DG_FATAL("Not implemented");

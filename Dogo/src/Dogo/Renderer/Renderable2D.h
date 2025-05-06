@@ -9,10 +9,6 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Platform/OpenGL/OpenGLTexture.h"
 #include "Dogo/Renderer/Buffers.h"
-#include "Platform/DX11/DX11IndexBuffer.h"
-#include "Platform/DX11/DX11VertexBuffer.h"
-#include "Platform/DX11/DX11Shader.h"
-#include "Platform/DX11/DX11Texture.h"
 #include "Dogo/Logger.h"
 namespace Dogo
 {
@@ -44,13 +40,6 @@ namespace Dogo
 			{
 				SetLayout();
 			}break;
-#if DG_PLATFORM_WINDOWS
-			case RenderAPI::D3D11:
-			{
-				SetLayout(m_VertexShader);
-			}
-#endif
-			break;
 			default:
 				DG_FATAL("API NOT SPECIFIED");
 			}
@@ -68,14 +57,7 @@ namespace Dogo
 			case RenderAPI::OpenGL:
 				m_VertexShader.reset(Shader::Create(vertex, pixel));
 				m_PixelShader = m_VertexShader;
-				break;
-			case RenderAPI::D3D11:
-				m_VertexShader.reset(Shader::Create(vertex, ShaderType::VERTEX));
-				m_PixelShader.reset(Shader::Create(pixel, ShaderType::FRAGMENT));
-				break;
-			case RenderAPI::D3D12:
-				DG_FATAL("Not implemented");
-				break;
+				break;;
 			case RenderAPI::VULKAN:
 				DG_FATAL("Not implemented");
 				break;
@@ -94,14 +76,6 @@ namespace Dogo
 		inline std::shared_ptr<VertexArray> GetVAO() const { return m_VertexArray; }
 		inline std::shared_ptr<VertexBuffer> GetVBO() const { return m_VertexBuffer; }
 		inline std::shared_ptr<IndexBuffer> GetIBO() const { return m_IndexBuffer; }
-		#if DG_PLATFORM_WINDOWS
-		inline void SetLayout(std::shared_ptr<Shader> shader) const
-		{ 
-			std::shared_ptr<DX11VertexShader> dx11shader = std::static_pointer_cast<DX11VertexShader>(shader);
-			std::shared_ptr<DX11VertexBuffer> dx11vbo = std::static_pointer_cast<DX11VertexBuffer>(m_VertexBuffer);
-			dx11vbo->SetLayout(*m_Layout, dx11shader->GetBufferPointer(), dx11shader->GetBufferLength());
-		}
-		#endif
 		inline void SetLayout() const { m_VertexBuffer->SetLayout(*m_Layout); }
 
 
