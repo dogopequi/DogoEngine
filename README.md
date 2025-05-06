@@ -43,6 +43,10 @@ Can render 3D Objects and Lines natively. No Physics, no batching, no editor yet
 
 What it looks like:
 
+Video:
+https://github.com/user-attachments/assets/17a483ba-5e7b-4b90-8f88-a6f86302f9d4
+
+Image and console:
 ![image](https://github.com/user-attachments/assets/2ed5c1ed-5513-444a-b491-f7ce831189d3)
 
 
