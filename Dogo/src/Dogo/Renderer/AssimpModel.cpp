@@ -72,10 +72,11 @@ namespace Dogo
             m_VertexArray->Draw(m_IndexBuffer->getComponentCount());
         }
 
-        Model::Model(const std::string& path, const glm::vec3 pos, BufferLayout& layout, const std::wstring& vertex, const std::wstring& pixel/*, const std::vector<Texture*>& textures*/) : m_Position(pos)
+        Model::Model(const std::string& path, BufferLayout& layout, const std::wstring& vertex, const std::wstring& pixel/*, const std::vector<Texture*>& textures*/)
         {
             m_Layout = std::make_shared<BufferLayout>(layout);
             SetVertexAndPixelShader(vertex, pixel);
+            TC = new TransformComponent();
             LoadModel(path);
         }
 

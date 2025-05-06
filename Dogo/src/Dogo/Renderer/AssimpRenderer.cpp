@@ -1,6 +1,7 @@
 #include "dgpch.h"
 #include "AssimpRenderer.h"
 
+
 namespace Dogo
 {
 	AssimpRenderer::AssimpRenderer()
@@ -16,9 +17,9 @@ namespace Dogo
 			glEnable(GL_DEPTH_TEST);
 	}
 
-	void AssimpRenderer::Submit(const Model& renderable)
+	void AssimpRenderer::Submit(const Actor& renderable)
 	{
-		m_RenderQueue.push_back(&renderable);
+		m_RenderQueue.push_back(std::make_pair(std::ref(*renderable.GetModel()), std::ref(*renderable.GetTC())));
 	}
 	void AssimpRenderer::Submit(const Line& renderable)
 	{
@@ -28,7 +29,7 @@ namespace Dogo
 	{
 		while (!m_RenderQueue.empty())
 		{
-			const Model* renderable = m_RenderQueue.front();
+			const auto renderable = m_RenderQueue.front();
 			RenderAPI api = GraphicsContext::GetAPI();
 			{
 				switch (api)
@@ -37,7 +38,7 @@ namespace Dogo
 					DG_FATAL("No API specified");
 					break;
 				case Dogo::RenderAPI::OpenGL:
-					renderable->GetVertexShader()->Bind();
+					renderable.first.GetVertexShader()->Bind();
 					break;
 				case Dogo::RenderAPI::VULKAN:
 					DG_FATAL("Not Implemented");
@@ -49,19 +50,20 @@ namespace Dogo
 			}
 
 			MVP->transform = glm::mat4(1.0f);
-			MVP->transform = glm::translate(MVP->transform, renderable->GetPosition());
+			glm::vec3 pos = glm::vec3(renderable.second.GetX(), renderable.second.GetY(), renderable.second.GetZ());
+			MVP->transform = glm::translate(MVP->transform, pos);
 			MVP->model = glm::mat4(1.0f);
-			if (renderable->GetPosition() == glm::vec3(0.0f, 0.0f, 0.01f))
-			{
-				glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.025f, 0.025f, 0.025f));
-				MVP->model = scaleMatrix * MVP->model;
-			}
+			//if (renderable->GetPosition() == glm::vec3(0.0f, 0.0f, 0.01f))
+			//{
+			//	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.025f, 0.025f, 0.025f));
+			//	MVP->model = scaleMatrix * MVP->model;
+			//}
 			MVP->model *= MVP->transform;
-			renderable->GetVertexShader()->SetUniformMatrix4f("view", MVP->view, 1);
-			renderable->GetVertexShader()->SetUniformMatrix4f("projection", MVP->projection, 2);
-			renderable->GetVertexShader()->SetUniformMatrix4f("model", MVP->model, 0);
+			renderable.first.GetVertexShader()->SetUniformMatrix4f("view", MVP->view, 1);
+			renderable.first.GetVertexShader()->SetUniformMatrix4f("projection", MVP->projection, 2);
+			renderable.first.GetVertexShader()->SetUniformMatrix4f("model", MVP->model, 0);
 
-			renderable->Draw();
+			renderable.first.Draw();
 
 			m_RenderQueue.pop_front();
 		}
@@ -94,7 +96,7 @@ namespace Dogo
 		renderable->GetVertexShader()->SetUniformMatrix4f("view", MVP->view, 1);
 		renderable->GetVertexShader()->SetUniformMatrix4f("projection", MVP->projection, 2);
 		renderable->GetVertexShader()->SetUniformMatrix4f("model", MVP->model, 0);
-
+				
 		renderable->Draw();
 
 		m_RenderQueueLines.pop_front();

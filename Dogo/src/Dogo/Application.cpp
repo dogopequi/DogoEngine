@@ -186,6 +186,7 @@ namespace Dogo
 		DG_Physics::InitPhysics(glm::vec3(0.0f, -9.81f, 0.0f));
 		DogoECS::DG_ComponentManager::RegisterComponent<TransformComponent>();
 		DogoECS::DG_ComponentManager::RegisterComponent<StaticMeshComponent>();
+		DogoECS::DG_ComponentManager::RegisterComponent<DynamicMeshComponent>();
 
 		#if DG_PLATFORM_WINDOWS
 		m_Window->SetInstance(instance);
@@ -211,13 +212,15 @@ namespace Dogo
 		Renderer.SetModelMatrix(glm::mat4(1.0f));
 		Renderer.SetTransformMatrix(glm::mat4(1.0f));
 
-		Model* model =  new Model("../Dogo/resources/Ratchet/Ratchet.obj", glm::vec3(0.0f, 0.0f, 0.0f), layout, vertexShader, pixelShader);
-		Model* model1 = new Model("../Dogo/resources/Ship/QuarkShuttle.obj", glm::vec3(0.0f, 0.0f, 0.0f), layout, vertexShader, pixelShader);
+		Model* model =  new Model("../Dogo/resources/Ratchet/Ratchet.obj", layout, vertexShader, pixelShader);
+		Model* model1 = new Model("../Dogo/resources/Ship/QuarkShuttle.obj", layout, vertexShader, pixelShader);
 
 		Actor actor;
 		Actor actor1;
-		actor.AddModel(model);
-		actor1.AddModel(model1);
+		actor.SetPosition(0.0f, 5.0f, 5.0f);
+		actor1.SetPosition(40.0f, 1.0f, 20.0f);
+		actor.AddDynamicModel(model);
+		actor1.AddStaticModel(model1);
 		DogoECS::DG_ComponentManager::UpdateComponents<TransformComponent>();
 
 
@@ -234,7 +237,7 @@ namespace Dogo
 		float lastFrame{ 0.0f };
 		float y = 0;
 		MemoryUsage::PrintUsage();
-
+		DG_Physics::CreatePlane(PxPlane(0, 1, 0, 5));
 		while (m_Window->isRunning() && m_Window != nullptr)
 		{
 			DogoECS::DG_ComponentManager::UpdateComponents<TransformComponent>();
@@ -242,9 +245,16 @@ namespace Dogo
 			float currentFrame = timer.elapsed();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
+			glm::vec3 pos = actor.GetPosition();
+			//actor1.SetPosition(pos.x + 0.001f, pos.y, pos.z);
+			glm::vec3 force(0.0f, 0.0f, 0.05f);
+			if (Input::IsKeyPressed(DG_KEY_V))
+			{
+				actor.AddImpulse(force);
+			}
 			DG_Physics::StepPhysics(deltaTime);
-			Renderer.Submit(*model);
-			Renderer.Submit(*model1);
+			Renderer.Submit(actor);
+			Renderer.Submit(actor1);
 			Renderer.Submit(line1);
 			Renderer.Submit(line2);
 			Renderer.Submit(line3);

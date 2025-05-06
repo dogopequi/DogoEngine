@@ -4,6 +4,7 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include "Line.h"
+#include "Dogo/Actors/Actor.h"
 namespace Dogo
 {
 	struct MatrixPass2
@@ -19,7 +20,7 @@ namespace Dogo
 		AssimpRenderer();
 		~AssimpRenderer() {}
 
-		void Submit(const Model& renderable);
+		void Submit(const Actor& renderable);
 		void Submit(const Line& renderable);
 		void Flush();
 
@@ -66,7 +67,7 @@ namespace Dogo
 		inline void SetViewPos(glm::vec3 pos) { m_ViewPos = pos; }
 
 	private:
-		std::deque<const Model*> m_RenderQueue;
+		std::deque<std::pair<const Model&, const TransformComponent&>> m_RenderQueue;
 		std::deque<const Line*> m_RenderQueueLines;
 		std::unique_ptr<MatrixPass2> MVP;
 

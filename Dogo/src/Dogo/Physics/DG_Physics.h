@@ -34,6 +34,12 @@ namespace Dogo
 		{
 			gScene->addActor(*actor);
 		}
+
+		static void CreatePlane(PxPlane& plane)
+		{
+			PxRigidStatic* groundplane = PxCreatePlane(*gPhysics, plane, *gMaterial);
+			gScene->addActor(*groundplane);
+		}
 	private:
 		inline void Cleanup()
 		{

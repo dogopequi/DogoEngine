@@ -42,8 +42,6 @@ namespace Dogo
 			pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
 		}
 		gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-		PxRigidStatic* groundPlane = PxCreatePlane(*gPhysics, PxPlane(0, 1, 0, 0), *gMaterial);
-		gScene->addActor(*groundPlane);
 	}
 
 	void DG_Physics::StepPhysics(float framerate)

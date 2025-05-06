@@ -9,7 +9,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-
+#include "Dogo/Component/Component.h"
 namespace Dogo
 {
     class Mesh
@@ -53,15 +53,16 @@ namespace Dogo
     class Model
     {
     public:
-        Model(const std::string& path, const glm::vec3 pos, BufferLayout& layout, const std::wstring& vertex, const std::wstring& pixel/*, const std::vector<Texture*>& textures*/);
+        Model(const std::string& path, BufferLayout& layout, const std::wstring& vertex, const std::wstring& pixel/*, const std::vector<Texture*>& textures*/);
 
         void Draw() const;
 
-        inline glm::vec3 GetPosition() const { return m_Position; }
-        inline void SetPosition(const glm::vec3& pos) { m_Position = pos; }
         inline std::shared_ptr<Shader> GetVertexShader() const { return m_VertexShader; }
         inline std::shared_ptr<Shader> GetPixelShader() const { return m_PixelShader; }
-
+        inline TransformComponent* GetTC() const
+        {
+            return TC;
+        }
         ~Model(){}
 
     private:
@@ -70,7 +71,6 @@ namespace Dogo
         void ProcessNode(aiNode* node, const aiScene* scene);
         Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
         std::vector<Texture*> LoadMaterialTextures(aiMaterial* material, aiTextureType type, const std::string& name);
-
         inline void SetVertexAndPixelShader(const std::wstring& vertex, const std::wstring& pixel)
         {
             RenderAPI api = GraphicsContext::GetAPI();
@@ -103,7 +103,7 @@ namespace Dogo
         std::shared_ptr<Shader> m_VertexShader;
         std::shared_ptr<Shader> m_PixelShader;
         std::shared_ptr<BufferLayout> m_Layout;
-        glm::vec3 m_Position;
+        TransformComponent* TC;
 
     };
 }

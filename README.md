@@ -2,7 +2,6 @@
 ## Why am I doing this?
 
 This is a game engine I'm writing for a better understanding of the architecture of a larger project, better C++ and graphics programming.
-Right now OpenGL and Direct3D11 are pretty much at the same stage, but I will drop Direct3D11 as it doesn't enable me to focus on what I really want from this project.
 Afer I get the engine in a good state with OpenGL I will introduce Vulkan to get my hands on a recent API.
 
 The engine is a static library, the editor will be a executable (once I get UI going) and the game will be a DLL so I can hot reload. Once it's time to build for distribuition the editor will be disregarded and the game will be built as an executable. At least that's the plan.
