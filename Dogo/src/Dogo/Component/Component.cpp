@@ -7,24 +7,23 @@
 #include "Dogo/Actors/Actor.h"
 namespace Dogo
 {
-    TransformComponent::TransformComponent(uint64_t id) : DogoECS::DG_Component(id) { }
-    TransformComponent::TransformComponent() : DogoECS::DG_Component() {
+    
+    void BaseComponent::AttachToComponent(BaseComponent* parent) {
+        m_Parent = parent;
+        parent->Init();
+        Init();
+    }
+    void BaseComponent::AttachActor(const Actor& actor) {
+        m_Parent = actor.GetTC();
+        Init();
+    }
+
+
+    TransformComponent::TransformComponent(uint64_t id) : BaseComponent(id) { }
+    TransformComponent::TransformComponent() : BaseComponent() {
     }
     TransformComponent::~TransformComponent() {}
-    void TransformComponent::AttachComponentToComponent(TransformComponent* parent)
-    {
-        m_Parent = parent;
-		m_ParentType = COMPONENT_TYPE::TRANSFORM;
-    }
-    void TransformComponent::AttachComponentToComponent(DynamicMeshComponent* parent)
-    {
-        m_Parent = parent;
-        m_ParentType = COMPONENT_TYPE::DYNAMIC_MESH;
-    }
-    void TransformComponent::AttachActorToComponent(const Actor& actor)
-    {
-        m_Parent = actor.GetTC();
-    }
+
     void TransformComponent::Update()
     {
         if (m_Parent != nullptr)
@@ -35,7 +34,9 @@ namespace Dogo
             {
                 auto* dyn = dynamic_cast<TransformComponent*>(m_Parent);
                 if (dyn)
+                {
                     m_Transform = dyn->GetTransform();
+                }
                 else
                     DG_WARN("Failed to cast to TransformComponent");
                 break;
@@ -53,50 +54,65 @@ namespace Dogo
                 DG_WARN("Parent type not registered");
                 break;
             }
-
-        }
+		}
     }
 
 
-    DynamicMeshComponent::DynamicMeshComponent(uint64_t id) : DogoECS::DG_Component(id) {  }
-    DynamicMeshComponent::DynamicMeshComponent() : DogoECS::DG_Component() {
+    DynamicMeshComponent::DynamicMeshComponent(uint64_t id) : BaseComponent(id) {
+    }
+    DynamicMeshComponent::DynamicMeshComponent() : BaseComponent() {
     }
     DynamicMeshComponent::~DynamicMeshComponent() {}
-    void DynamicMeshComponent::AttachComponentToComponent(TransformComponent* parent)
-    {
-        m_Parent = parent;
-        if (m_DynamicBody)
-            m_DynamicBody->setGlobalPose(parent->GetTransform());
-    }
 
-    void DynamicMeshComponent::AttachActorToComponent(const Actor& actor)
-    {
-        AttachComponentToComponent(actor.GetTC());
-    }
     void DynamicMeshComponent::Update()
     {
+        DG_INFO("UPDATE");
         if (m_Parent)
         {
-            m_DynamicBody->setGlobalPose(m_Parent->GetTransform());
+            auto* dyn = dynamic_cast<TransformComponent*>(m_Parent);
+            if (dyn)
+            {
+                PxTransform transform = dyn->GetTransform();
+                m_DynamicBody->setGlobalPose(transform);
+            }
+            else
+                DG_WARN("Failed to cast to TransformComponent");
         }
 
     }
 
-    StaticMeshComponent::StaticMeshComponent(uint64_t id) : DogoECS::DG_Component(id) { }
-    StaticMeshComponent::StaticMeshComponent() : DogoECS::DG_Component() { }
+    void DynamicMeshComponent::Init()
+    {
+        DG_INFO("StaticMeshComponent Init called.");
+        m_Shape = DG_Physics::GetShape(2.0f, 2.0f, 2.0f);
+        PxTransform t = PxTransform(PxVec3(10.0f, 0.0f, 10.0f));
+        m_DynamicBody = DG_Physics::GetRigidDynamic(t);
+        m_DynamicBody->attachShape(*m_Shape);
+        m_DynamicBody->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
+        DG_INFO("Creating dynamic mesh component1");
+        DG_Physics::AddActor(m_DynamicBody);
+    }
+
+    StaticMeshComponent::StaticMeshComponent(uint64_t id) : BaseComponent(id) { 
+    }
+    StaticMeshComponent::StaticMeshComponent() : BaseComponent() {
+    }
 
     StaticMeshComponent::~StaticMeshComponent() {}
-    void StaticMeshComponent::AttachComponentToComponent(TransformComponent* parent)
-    {
-        m_Parent = parent;
-    }
-    void StaticMeshComponent::AttachActorToComponent(const Actor& actor)
-    {
-        m_Parent = actor.GetTC();
-    }
+
     void StaticMeshComponent::Update()
     {
         if (m_Parent)
-            m_StaticBody->setGlobalPose(m_Parent->GetTransform());
+        {
+            auto* dyn = dynamic_cast<TransformComponent*>(m_Parent);
+            if (dyn)
+            {
+                PxTransform transform = dyn->GetTransform();
+                PxVec3 pos = transform.p;
+                m_StaticBody->setGlobalPose(transform);
+            }
+            else
+                DG_WARN("Failed to cast to TransformComponent");
+        }
     }
 }

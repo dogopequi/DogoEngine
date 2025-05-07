@@ -1,5 +1,6 @@
 #include "dgpch.h"
 #include "AssimpRenderer.h"
+#include "Dogo/Component/Component.h"
 
 
 namespace Dogo

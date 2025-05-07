@@ -12,9 +12,29 @@ namespace Dogo
 {
     class Model;
     class Actor;
+
+    class BaseComponent : public DogoECS::DG_Component
+    {
+
+    public:
+        BaseComponent::BaseComponent(uint64_t id) : DogoECS::DG_Component(id) {}
+        BaseComponent::BaseComponent() : DogoECS::DG_Component() {
+        }
+        virtual ~BaseComponent() = default;
+        virtual void AttachToComponent(BaseComponent* parent);
+        virtual void AttachActor(const Actor& actor);
+        virtual COMPONENT_TYPE GetParentType() { return m_ParentType; }
+		virtual void SetParentType(COMPONENT_TYPE type) { m_ParentType = type; }
+        virtual void Init() { DG_INFO("Base Init called."); };
+
+    protected:
+        BaseComponent* m_Parent = nullptr;
+        COMPONENT_TYPE m_ParentType;
+    };
+
     class TransformComponent;
     /////////////////////////////////////////////////////////////////////////
-    class StaticMeshComponent : public DogoECS::DG_Component
+    class StaticMeshComponent : public BaseComponent
     {
     public:
         StaticMeshComponent(uint64_t id);
@@ -22,18 +42,14 @@ namespace Dogo
 
         ~StaticMeshComponent() override;
         void Update() override;
-        void AddModel(Model* model)
-        {
-            this->model = model;
-        }
 
-        void AttachToParent(PxShape* parent)
-        {
-            m_StaticBody->attachShape(*parent);
-        }
-
-        void Init(const PxTransform& t) {
+        void Init() override{
+			DG_INFO("StaticMeshComponent Init called.");
+            m_Shape = DG_Physics::GetShape(2.0f, 2.0f, 2.0f);
+            PxTransform t = PxTransform(PxVec3(0.0f, 0.0f, 0.0f));
             m_StaticBody = DG_Physics::GetRigidStatic(t);
+            m_StaticBody->attachShape(*m_Shape);
+            DG_Physics::AddActor(m_StaticBody);
         }
 
         inline PxRigidStatic* GetBody() const
@@ -41,24 +57,13 @@ namespace Dogo
             return m_StaticBody;
         }
 
-		inline Model* GetModel() const
-		{
-			return model;
-		}
-
-        inline void SetName(std::string name) { this->m_Name = name; }
-        inline std::string GetName() const { return m_Name; }
-        void AttachComponentToComponent(TransformComponent* parent);
-        void AttachActorToComponent(const Actor& actor);
 
     private:
-        std::string m_Name;
-        TransformComponent* m_Parent = nullptr;
+        PxShape* m_Shape;
         PxRigidStatic* m_StaticBody;
-        Model* model;
     };
 
-    class DynamicMeshComponent : public DogoECS::DG_Component
+    class DynamicMeshComponent : public BaseComponent
     {
     public:
         DynamicMeshComponent(uint64_t id);
@@ -66,21 +71,8 @@ namespace Dogo
 
         ~DynamicMeshComponent() override;
         void Update() override;
-        void AddModel(Model* model)
-        {
-            this->model = model;
-        }
 
-        void AttachToParent(PxShape* parent)
-        {
-            m_DynamicBody->attachShape(*parent);
-        }
-
-        void Init(const PxTransform& t) {
-            m_DynamicBody = DG_Physics::GetRigidDynamic(t);
-            m_DynamicBody->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
-        }
-
+        void Init() override;
         void MoveTo(const PxTransform& t) {
             if (m_DynamicBody)
                 m_DynamicBody->setKinematicTarget(t);
@@ -91,23 +83,13 @@ namespace Dogo
             return m_DynamicBody;
         }
 
-        inline Model* GetModel() const
-        {
-            return model;
-        }
-        inline void SetName(std::string name) { this->m_Name = name; }
-        inline std::string GetName() const { return m_Name; }
-        void AttachComponentToComponent(TransformComponent* parent);
-        void AttachActorToComponent(const Actor& actor);
 
     private:
-        std::string m_Name;
-        TransformComponent* m_Parent = nullptr;
+        PxShape* m_Shape;
         PxRigidDynamic* m_DynamicBody;
-        Model* model;
     };
 
-    class TransformComponent : public DogoECS::DG_Component
+    class TransformComponent : public BaseComponent
     {
     public:
         TransformComponent(uint64_t id);
@@ -117,7 +99,7 @@ namespace Dogo
 
         void Update() override;
 
-
+        void Init() override { DG_INFO("TransformComponent Init called."); }
         inline float GetX() const { return m_Transform.p.x; }
         inline float GetY() const { return m_Transform.p.y; }
         inline float GetZ() const { return m_Transform.p.z; }
@@ -126,17 +108,8 @@ namespace Dogo
         inline void SetY(float y) { m_Transform = PxTransform(PxVec3(GetX(), y, GetZ())); }
         inline void SetZ(float z) { m_Transform = PxTransform(PxVec3(GetX(), GetY(), z)); }
         inline void SetTransform(const PxTransform& t) { m_Transform = t; }
-        void AttachComponentToComponent(TransformComponent* parent);
-        void AttachComponentToComponent(DynamicMeshComponent* parent);
-        void AttachActorToComponent(const Actor& actor);
-
-        inline void SetName(std::string name) { this->m_Name = name; }
-        inline std::string GetName() const { return m_Name; }
 
     private:
-        DG_Component* m_Parent = nullptr;
-        std::string m_Name;
         PxTransform m_Transform;
-        COMPONENT_TYPE m_ParentType;
     };
 }

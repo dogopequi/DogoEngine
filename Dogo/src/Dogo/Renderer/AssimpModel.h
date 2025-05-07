@@ -9,9 +9,13 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include "Dogo/Component/Component.h"
+#include "Entity.h"
 namespace Dogo
 {
+    class Entity;
+	class TransformComponent;
+	class DynamicMeshComponent;
+	class StaticMeshComponent;
     class Mesh
     {
     public:
@@ -59,11 +63,11 @@ namespace Dogo
 
         inline std::shared_ptr<Shader> GetVertexShader() const { return m_VertexShader; }
         inline std::shared_ptr<Shader> GetPixelShader() const { return m_PixelShader; }
-        inline TransformComponent* GetTC() const
-        {
-            return TC;
-        }
-        ~Model(){}
+        void AddStaticMeshComponent();
+        void AddDynamicMeshComponent();
+        StaticMeshComponent* GetStaticMeshComponent() const;
+        DynamicMeshComponent* GetDynamicMeshComponent() const;
+        ~Model();
 
     private:
         void LoadModel(const std::string& path);
@@ -103,7 +107,8 @@ namespace Dogo
         std::shared_ptr<Shader> m_VertexShader;
         std::shared_ptr<Shader> m_PixelShader;
         std::shared_ptr<BufferLayout> m_Layout;
-        TransformComponent* TC;
-
+		DogoECS::Entity* m_Entity;
+        DynamicMeshComponent* DMC;
+		StaticMeshComponent* SMC;
     };
 }

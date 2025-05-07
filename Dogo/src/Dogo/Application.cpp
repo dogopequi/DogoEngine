@@ -184,9 +184,10 @@ namespace Dogo
 		MemoryUsage::PrintUsage();
 		DogoECS::Init();
 		DG_Physics::InitPhysics(glm::vec3(0.0f, -9.81f, 0.0f));
+		DogoECS::DG_ComponentManager::RegisterComponent<BaseComponent>();
+		DogoECS::DG_ComponentManager::RegisterComponent<DynamicMeshComponent>();
 		DogoECS::DG_ComponentManager::RegisterComponent<TransformComponent>();
 		DogoECS::DG_ComponentManager::RegisterComponent<StaticMeshComponent>();
-		DogoECS::DG_ComponentManager::RegisterComponent<DynamicMeshComponent>();
 
 		#if DG_PLATFORM_WINDOWS
 		m_Window->SetInstance(instance);
@@ -221,7 +222,6 @@ namespace Dogo
 		actor1.SetPosition(40.0f, 1.0f, 20.0f);
 		actor.AddDynamicModel(model);
 		actor1.AddStaticModel(model1);
-		DogoECS::DG_ComponentManager::UpdateComponents<TransformComponent>();
 
 
 		std::wstring vertexShader1 = L"../Dogo/resources/Shaders/linesVERT.glsl";
@@ -245,8 +245,7 @@ namespace Dogo
 			float currentFrame = timer.elapsed();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
-			glm::vec3 pos = actor.GetPosition();
-			//actor1.SetPosition(pos.x + 0.001f, pos.y, pos.z);
+
 			glm::vec3 force(0.0f, 0.0f, 0.05f);
 			if (Input::IsKeyPressed(DG_KEY_V))
 			{

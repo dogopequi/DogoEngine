@@ -1,5 +1,6 @@
 #include "dgpch.h"
 #include "AssimpModel.h"
+#include "Dogo/Component/Component.h"
 
 namespace Dogo
 {
@@ -76,10 +77,33 @@ namespace Dogo
         {
             m_Layout = std::make_shared<BufferLayout>(layout);
             SetVertexAndPixelShader(vertex, pixel);
-            TC = new TransformComponent();
+			m_Entity = DogoECS::DG_EntityManager::CreateEntity();
             LoadModel(path);
         }
 
+        DynamicMeshComponent* Model::GetDynamicMeshComponent() const
+        {
+            return DMC;
+        }
+        StaticMeshComponent* Model::GetStaticMeshComponent() const
+        {
+            return SMC;
+        }
+		void Model::AddStaticMeshComponent()
+		{
+            SMC = m_Entity->AddComponent<StaticMeshComponent>();
+		}
+        void Model::AddDynamicMeshComponent()
+        {
+            DMC = m_Entity->AddComponent<DynamicMeshComponent>();
+        }
+        Model::~Model()
+        {
+            if(DMC)
+			    m_Entity->RemoveComponent<DynamicMeshComponent>(DMC->GetComponentID_ui64());
+            if(SMC)
+                m_Entity->RemoveComponent<StaticMeshComponent>(DMC->GetComponentID_ui64());
+        }
         void Model::Draw() const
         {
             for (int i = 0; i < m_Meshes.size(); i++)

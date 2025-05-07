@@ -5,6 +5,7 @@
 #include "SnippetPVD.h"
 #include "SnippetUtils.h"
 #include "foundation/PxPhysicsVersion.h"
+#include "Dogo/Logger.h"
 namespace Dogo
 {
 	using namespace physx;
@@ -32,6 +33,7 @@ namespace Dogo
 		}
 		static void AddActor(physx::PxActor* actor)
 		{
+			DG_INFO("Adding actor");
 			gScene->addActor(*actor);
 		}
 
