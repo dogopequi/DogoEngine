@@ -30,6 +30,7 @@ The licenses can be found in their respective folder.
 - [glm](https://github.com/icaven/glm)
 - [glad](https://github.com/Dav1dde/glad)
 - [PhysX](https://github.com/NVIDIA-Omniverse/PhysX)
+- [FreeType](https://freetype.org/)
 - [DogoECS](https://github.com/dogopequi/DogoECS)
 
 
