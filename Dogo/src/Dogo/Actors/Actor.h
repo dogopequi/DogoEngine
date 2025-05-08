@@ -10,7 +10,8 @@ namespace Dogo
 	class Actor
 	{
 	public:
-		Actor();
+		Actor() = delete;
+		Actor(float x, float y, float z);
 		~Actor();
 
 		void Update();
@@ -32,7 +33,7 @@ namespace Dogo
 		void AddForce(glm::vec3 force);
 		void AddImpulse(glm::vec3 force);
 
-	private:
+	protected:
 		DogoECS::Entity* m_Entity;
 		TransformComponent* TC;
 		Model* m_Model;

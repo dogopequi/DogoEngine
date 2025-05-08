@@ -3,10 +3,11 @@
 #include "Dogo/Component/Component.h"
 namespace Dogo
 {
-	Actor::Actor()
+	Actor::Actor(float x, float y, float z)
 	{
 		m_Entity = DogoECS::DG_EntityManager::CreateEntity();
 		TC = m_Entity->AddComponent<TransformComponent>();
+		TC->Init(glm::vec3(x, y, z));
 	}
 	Actor::~Actor()
 	{
@@ -14,16 +15,15 @@ namespace Dogo
 	}
 	void Actor::AddDynamicModel(Model* model)
 	{
-		model->AddDynamicMeshComponent();
+		model->AddDynamicMeshComponent(TC->GetPos());
 		TC->AttachToComponent(model->GetDynamicMeshComponent());
 		TC->SetParentType(COMPONENT_TYPE::DYNAMIC_MESH);
 		m_Model = model;
-
 	}
 
 	void Actor::AddStaticModel(Model* model)
 	{
-		model->AddStaticMeshComponent();
+		model->AddStaticMeshComponent(TC->GetPos());
 		model->GetStaticMeshComponent()->AttachToComponent(TC);
 		m_Model = model;
 
@@ -35,9 +35,7 @@ namespace Dogo
 
 	void Actor::SetPosition(float x, float y, float z)
 	{
-		TC->SetX(x);
-		TC->SetY(y);
-		TC->SetZ(z);
+		TC->SetPos(glm::vec3(x, y, z));
 	}
 
 	glm::vec3 Actor::GetPosition() const

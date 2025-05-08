@@ -25,7 +25,7 @@ namespace Dogo
         virtual void AttachActor(const Actor& actor);
         virtual COMPONENT_TYPE GetParentType() { return m_ParentType; }
 		virtual void SetParentType(COMPONENT_TYPE type) { m_ParentType = type; }
-        virtual void Init() { DG_INFO("Base Init called."); };
+        virtual void Init(const glm::vec3& pos) { DG_INFO("Base Init called."); };
 
     protected:
         BaseComponent* m_Parent = nullptr;
@@ -43,14 +43,7 @@ namespace Dogo
         ~StaticMeshComponent() override;
         void Update() override;
 
-        void Init() override{
-			DG_INFO("StaticMeshComponent Init called.");
-            m_Shape = DG_Physics::GetShape(2.0f, 2.0f, 2.0f);
-            PxTransform t = PxTransform(PxVec3(0.0f, 0.0f, 0.0f));
-            m_StaticBody = DG_Physics::GetRigidStatic(t);
-            m_StaticBody->attachShape(*m_Shape);
-            DG_Physics::AddActor(m_StaticBody);
-        }
+        void Init(const glm::vec3& pos) override;
 
         inline PxRigidStatic* GetBody() const
         {
@@ -72,7 +65,7 @@ namespace Dogo
         ~DynamicMeshComponent() override;
         void Update() override;
 
-        void Init() override;
+        void Init(const glm::vec3& pos) override;
         void MoveTo(const PxTransform& t) {
             if (m_DynamicBody)
                 m_DynamicBody->setKinematicTarget(t);
@@ -99,10 +92,12 @@ namespace Dogo
 
         void Update() override;
 
-        void Init() override { DG_INFO("TransformComponent Init called."); }
+        void Init(const glm::vec3& pos) override { DG_INFO("TransformComponent Init called."); SetPos(pos); }
         inline float GetX() const { return m_Transform.p.x; }
         inline float GetY() const { return m_Transform.p.y; }
         inline float GetZ() const { return m_Transform.p.z; }
+		inline glm::vec3 GetPos() const { return glm::vec3(m_Transform.p.x, m_Transform.p.y, m_Transform.p.z); }
+		inline void SetPos(const glm::vec3& pos) { m_Transform.p = PxVec3(pos.x, pos.y, pos.z); }
         inline const PxTransform& GetTransform() const { return m_Transform; }
         inline void SetX(float x) { m_Transform = PxTransform(PxVec3(x, GetY(), GetZ())); }
         inline void SetY(float y) { m_Transform = PxTransform(PxVec3(GetX(), y, GetZ())); }

@@ -10,12 +10,9 @@ namespace Dogo
     
     void BaseComponent::AttachToComponent(BaseComponent* parent) {
         m_Parent = parent;
-        parent->Init();
-        Init();
     }
     void BaseComponent::AttachActor(const Actor& actor) {
         m_Parent = actor.GetTC();
-        Init();
     }
 
 
@@ -81,11 +78,11 @@ namespace Dogo
 
     }
 
-    void DynamicMeshComponent::Init()
+    void DynamicMeshComponent::Init(const glm::vec3& pos)
     {
         DG_INFO("StaticMeshComponent Init called.");
         m_Shape = DG_Physics::GetShape(2.0f, 2.0f, 2.0f);
-        PxTransform t = PxTransform(PxVec3(10.0f, 0.0f, 10.0f));
+        PxTransform t = PxTransform(PxVec3(pos.x, pos.y, pos.z));
         m_DynamicBody = DG_Physics::GetRigidDynamic(t);
         m_DynamicBody->attachShape(*m_Shape);
         m_DynamicBody->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);
@@ -114,5 +111,14 @@ namespace Dogo
             else
                 DG_WARN("Failed to cast to TransformComponent");
         }
+    }
+    void StaticMeshComponent::Init(const glm::vec3& pos)
+    {
+        DG_INFO("StaticMeshComponent Init called.");
+        m_Shape = DG_Physics::GetShape(2.0f, 2.0f, 2.0f);
+        PxTransform t = PxTransform(PxVec3(pos.x, pos.y, pos.z));
+        m_StaticBody = DG_Physics::GetRigidStatic(t);
+        m_StaticBody->attachShape(*m_Shape);
+        DG_Physics::AddActor(m_StaticBody);
     }
 }

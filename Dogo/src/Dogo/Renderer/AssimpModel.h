@@ -63,8 +63,8 @@ namespace Dogo
 
         inline std::shared_ptr<Shader> GetVertexShader() const { return m_VertexShader; }
         inline std::shared_ptr<Shader> GetPixelShader() const { return m_PixelShader; }
-        void AddStaticMeshComponent();
-        void AddDynamicMeshComponent();
+        void AddStaticMeshComponent(const glm::vec3& pos);
+        void AddDynamicMeshComponent(const glm::vec3& pos);
         StaticMeshComponent* GetStaticMeshComponent() const;
         DynamicMeshComponent* GetDynamicMeshComponent() const;
         ~Model();

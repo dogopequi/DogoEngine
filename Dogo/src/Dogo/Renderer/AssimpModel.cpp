@@ -89,13 +89,15 @@ namespace Dogo
         {
             return SMC;
         }
-		void Model::AddStaticMeshComponent()
+		void Model::AddStaticMeshComponent(const glm::vec3& pos)
 		{
             SMC = m_Entity->AddComponent<StaticMeshComponent>();
+			SMC->Init(pos);
 		}
-        void Model::AddDynamicMeshComponent()
+        void Model::AddDynamicMeshComponent(const glm::vec3& pos)
         {
             DMC = m_Entity->AddComponent<DynamicMeshComponent>();
+            DMC->Init(pos);
         }
         Model::~Model()
         {

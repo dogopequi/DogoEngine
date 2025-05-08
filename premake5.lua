@@ -11,10 +11,12 @@ workspace "Dogo"
     outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
     STBinclude = "vendor/stb_image"
     PHYSXinclude = "D:/Dev/DogoEngine/vendor/PhysX/include"
-    TOLinclude = "Dogo/vendor/tinyobjloader/include"
     GLMinclude = "vendor/glm/include"
     ASSIMPinclude = "vendor/assimp/include"
     ASSIMPlib = "vendor/assimp/lib/x64"
+    FreeTypeInclude = "Dogo/vendor/FreeType/include"
+    FreeTypeLibDebug = "Dogo/vendor/FreeType/lib/debug/freetype.lib"
+    FreeTypeLibRelease = "Dogo/vendor/FreeType/lib/release/freetype.lib"
     IncludeDir = {}
     IncludeDir["glad"] = "Dogo/vendor/glad/include"
     IncludeDir["DogoECS"] = "Dogo/vendor/DogoECS/include"
@@ -49,8 +51,8 @@ project "Dogo"
         "%{IncludeDir.glad}",
         "%{IncludeDir.DogoECS}",
         ASSIMPinclude,
-        TOLinclude,
-        PHYSXinclude
+        PHYSXinclude,
+        FreeTypeInclude
     }
 
     libdirs
@@ -126,7 +128,8 @@ project "Dogo"
         runtime "Debug"
         links
         {
-            "D:/Dev/DogoEngine/vendor/PhysX/lib/debug/**.lib"
+            "D:/Dev/DogoEngine/vendor/PhysX/lib/debug/**.lib",
+            FreeTypeLibDebug
         }
         defines
         {
@@ -139,7 +142,8 @@ project "Dogo"
         runtime "Release"
         links
         {
-            "D:/Dev/DogoEngine/vendor/PhysX/lib/release/**.lib"
+            "D:/Dev/DogoEngine/vendor/PhysX/lib/release/**.lib",
+            FreeTypeLibRelease
         }
         defines
         {
