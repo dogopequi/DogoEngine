@@ -10,7 +10,7 @@ workspace "Dogo"
 
     outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
     STBinclude = "vendor/stb_image"
-    PHYSXinclude = "D:/Dev/DogoEngine/vendor/PhysX/include"
+    PHYSXinclude = "vendor/PhysX/include"
     GLMinclude = "vendor/glm/include"
     ASSIMPinclude = "vendor/assimp/include"
     ASSIMPlib = "vendor/assimp/lib/x64"
@@ -128,7 +128,7 @@ project "Dogo"
         runtime "Debug"
         links
         {
-            "D:/Dev/DogoEngine/vendor/PhysX/lib/debug/**.lib",
+            "vendor/PhysX/lib/debug/**.lib",
             FreeTypeLibDebug
         }
         defines
@@ -142,7 +142,7 @@ project "Dogo"
         runtime "Release"
         links
         {
-            "D:/Dev/DogoEngine/vendor/PhysX/lib/release/**.lib",
+            "vendor/PhysX/lib/release/**.lib",
             FreeTypeLibRelease
         }
         defines
@@ -220,7 +220,7 @@ project "Sandbox"
         runtime "Debug"
         links
         {
-            "D:/Dev/DogoEngine/vendor/PhysX/lib/debug/**.lib"
+            "vendor/PhysX/lib/debug/**.lib"
         }
         defines
         {
@@ -233,7 +233,7 @@ project "Sandbox"
         runtime "Release"
         links
         {
-            "D:/Dev/DogoEngine/vendor/PhysX/lib/release/**.lib"
+            "vendor/PhysX/lib/release/**.lib"
         }
         defines
         {

@@ -42,6 +42,7 @@ namespace Dogo
 	bool OpenGLContext::Init()
 	{
 #if DG_PLATFORM_WINDOWS
+	
 		m_HDC = GetDC(*windowHandle);
 
 		m_PFD = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, PFD_TYPE_RGBA, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 0, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
@@ -50,7 +51,6 @@ namespace Dogo
 
 		m_HRC = wglCreateContext(m_HDC);
 		wglMakeCurrent(m_HDC, m_HRC);
-
 		if (!gladLoadGL()) {
 			DG_WARN("Failed to initialize Glad!");
 			return false;
