@@ -1,6 +1,7 @@
 #pragma once
 #include "Dogo/Core.h"
 #include "Dogo/Renderer/Texture.h"
+#include "glm/glm.hpp"
 #if DG_PLATFORM_WINDOWS
 #include <glad/glad.h>
 #endif
@@ -10,6 +11,7 @@
 #endif
 namespace Dogo
 {
+
 	class OpenGLTexture: public Texture
 	{
 		public:
