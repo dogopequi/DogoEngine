@@ -13,7 +13,8 @@ namespace Dogo {
 		{
 			LARGE_INTEGER frequency;
 			QueryPerformanceFrequency(&frequency);
-			m_Frequency = 1.0 / frequency.QuadPart;
+			m_Frequency = 1.0 / static_cast<double>(frequency.QuadPart);
+
 			QueryPerformanceCounter(&m_Start);
 		}
 

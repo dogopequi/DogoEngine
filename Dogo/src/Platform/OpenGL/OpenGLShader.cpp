@@ -105,7 +105,6 @@ namespace Dogo
 	OpenGLShader::OpenGLShader(const std::wstring& vertfilepath, const std::wstring& fragfilepath)
 	{
 		m_RendererID = glCreateProgram();
-
 		std::string vertCode;
 		std::string fragCode;
 

@@ -7,20 +7,23 @@
 #include FT_FREETYPE_H
 namespace Dogo
 {
-	struct Character {
-		unsigned int TextureID; // ID handle of the glyph texture
-		glm::ivec2   Size;      // Size of glyph
-		glm::ivec2   Bearing;   // Offset from baseline to left/top of glyph
-		unsigned int Advance;   // Horizontal offset to advance to next glyph
-	};
+    struct Character {
+        unsigned int TextureID; // ID handle of the glyph texture
+        glm::ivec2   Size;      // size of glyph
+        glm::ivec2   Bearing;   // offset from baseline to left/top of glyph
+        unsigned int Advance;   // horizontal offset to advance to next glyph
+    };
 
-	struct TextRenderer
-	{
-		static unsigned int VAO, VBO;
-		static void Init();
-		static std::map<std::string, std::map<GLchar, Character>> FontCharacters;
-		static void RenderText(Shader& shader, std::string font, std::string text, float x, float y, float scale, glm::vec3 color);
-		static std::vector<std::string> GetAvailableFonts();
-	};
 
+    class TextRenderer
+    {
+    public:
+        std::map<char, Character> Characters;
+        Shader* m_TextShader;
+        TextRenderer(unsigned int width, unsigned int height);
+        void Load(std::string font, unsigned int fontSize);
+        void RenderText(std::string text, float x, float y, float scale, glm::vec3 color = glm::vec3(1.0f));
+    private:
+        unsigned int VAO, VBO;
+    };
 }

@@ -239,10 +239,8 @@ namespace Dogo
 		DG_Physics::CreatePlane(PxPlane(0, 1, 0, 5));
 
 
-		TextRenderer::Init();
-		Shader* shader = Shader::Create(L"../Dogo/resources/Shaders/freetypevertex.glsl",
-			L"../Dogo/resources/Shaders/freetypepixel.glsl");
-		
+		TextRenderer textRenderer(m_Window->GetWidth(), m_Window->GetHeight());
+		textRenderer.Load("../Dogo/resources/Fonts/arial.ttf", 48);
 		while (m_Window->isRunning() && m_Window != nullptr)
 		{
 
@@ -272,7 +270,7 @@ namespace Dogo
 
 			////////////////////////////////////////////////////////
 			//UI
-			TextRenderer::RenderText(*shader, "arial", "Dogo Engine", 25.0f, 570.0f, 1.0f, glm::vec3(0.8f, 0.3f, 0.9f));
+			textRenderer.RenderText("Dogo Engine", 25.0f, 570.0f, 1.0f, glm::vec3(0.8f, 0.3f, 0.9f));
 
 #if OPENGL
 			GLenum err;
