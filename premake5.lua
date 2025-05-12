@@ -9,11 +9,13 @@ workspace "Dogo"
     }
 
     outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
-    STBinclude = "vendor/stb_image"
-    PHYSXinclude = "vendor/PhysX/include"
-    GLMinclude = "vendor/glm/include"
-    ASSIMPinclude = "vendor/assimp/include"
-    ASSIMPlib = "vendor/assimp/lib/x64"
+    STBinclude = "Dogo/vendor/stb_image"
+    PHYSXinclude = "Dogo/vendor/PhysX/include"
+    PhysXLibDebug = "Dogo/vendor/PhysX/lib/debug/**.lib"
+    PhysXLibRlease = "Dogo/vendor/PhysX/lib/release/**.lib"
+    GLMinclude = "Dogo/vendor/glm/include"
+    ASSIMPinclude = "Dogo/vendor/assimp/include"
+    ASSIMPlib = "Dogo/vendor/assimp/lib/x64"
     FreeTypeInclude = "Dogo/vendor/FreeType/include"
     FreeTypeLibDebug = "Dogo/vendor/FreeType/lib/debug/freetype.lib"
     FreeTypeLibRelease = "Dogo/vendor/FreeType/lib/release/freetype.lib"
@@ -128,7 +130,7 @@ project "Dogo"
         runtime "Debug"
         links
         {
-            "vendor/PhysX/lib/debug/**.lib",
+            PhysXLibDebug,
             FreeTypeLibDebug
         }
         defines
@@ -142,7 +144,7 @@ project "Dogo"
         runtime "Release"
         links
         {
-            "vendor/PhysX/lib/release/**.lib",
+            PhysXLibRelease,
             FreeTypeLibRelease
         }
         defines
@@ -220,7 +222,7 @@ project "Sandbox"
         runtime "Debug"
         links
         {
-            "vendor/PhysX/lib/debug/**.lib"
+            PhysXLibDebug
         }
         defines
         {
@@ -233,7 +235,7 @@ project "Sandbox"
         runtime "Release"
         links
         {
-            "vendor/PhysX/lib/release/**.lib"
+            PhysXLibRelease
         }
         defines
         {

@@ -40,8 +40,10 @@ The licenses can be found in their respective folder.
 To be added soon.
 
 ## Usage
-Can render 3D Objects and Lines natively. PhysX is integrated.
-No batching, no editor yet.
+2D Batch Renderer which can render Quads and Lines. Will add other objects soon. Transformation stack is also implemented.
+3D Renderer can render 3D Objects and Lines natively, although it is not batched. I will develop a batched version when 2D Renderer is in a great spot and make a small game.
+PhysX is integrated, with more functionality to introduce.
+No Editor yet; Although with the 2D Renderer improving, I will start to be able to draw UI and start making the Editor.
 
 What it looks like:
 ![image](https://github.com/user-attachments/assets/2ed5c1ed-5513-444a-b491-f7ce831189d3)
