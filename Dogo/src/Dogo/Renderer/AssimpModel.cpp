@@ -4,7 +4,7 @@
 
 namespace Dogo
 {
-        Mesh::Mesh(const std::shared_ptr<BufferLayout> layout, const std::shared_ptr<Shader>& vertex, const std::shared_ptr<Shader>& pixel, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Texture*>& textures) : m_VertexShader(vertex), m_PixelShader(pixel), m_Indices(indices), m_Vertices(vertices)
+        Mesh::Mesh(const std::shared_ptr<BufferLayout> layout, const std::shared_ptr<Shader>& vertex, const std::shared_ptr<Shader>& pixel, const std::vector<assimpVertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Texture*>& textures) : m_VertexShader(vertex), m_PixelShader(pixel), m_Indices(indices), m_Vertices(vertices)
         {
             m_Layout = layout;
             m_VertexArray.reset(VertexArray::Create());
@@ -20,7 +20,7 @@ namespace Dogo
                 vertexData.push_back(vertex.texCoords.x);
                 vertexData.push_back(vertex.texCoords.y);
             }
-            m_VertexBuffer.reset(VertexBuffer::Create(m_Vertices.size() * sizeof(Vertex), sizeof(Vertex), vertexData.data()));
+            m_VertexBuffer.reset(VertexBuffer::Create(m_Vertices.size() * sizeof(assimpVertex), sizeof(assimpVertex), vertexData.data()));
             m_IndexBuffer.reset(IndexBuffer::Create(m_Indices.size() * sizeof(uint32_t), m_Indices.data(), m_Indices.size()));
             m_VertexBuffer->Bind();
             m_IndexBuffer->Bind();
@@ -145,13 +145,13 @@ namespace Dogo
         }
         Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
         {
-            std::vector<Vertex> vertices;
+            std::vector<assimpVertex> vertices;
             std::vector<uint32_t> indices;
             std::vector<Texture*> textures;
 
             for (uint32_t i = 0; i < mesh->mNumVertices; i++)
             {
-                Vertex vertex;
+                assimpVertex vertex;
                 glm::vec3 vectorV;
                 vectorV.x = mesh->mVertices[i].x;
                 vectorV.y = mesh->mVertices[i].y;

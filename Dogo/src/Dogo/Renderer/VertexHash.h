@@ -3,12 +3,12 @@
 #include <functional>
 
 namespace Dogo {
-    struct Vertex {
+    struct assimpVertex {
         glm::vec3 vertices;
         glm::vec3 normals;
         glm::vec2 texCoords;
 
-        bool operator==(const Vertex& other) const {
+        bool operator==(const assimpVertex& other) const {
             return vertices == other.vertices &&
                 normals == other.normals &&
                 texCoords == other.texCoords;
@@ -42,8 +42,8 @@ namespace std {
     };
 
     template <>
-    struct hash<Dogo::Vertex> {
-        size_t operator()(const Dogo::Vertex& vertex) const {
+    struct hash<Dogo::assimpVertex> {
+        size_t operator()(const Dogo::assimpVertex& vertex) const {
             size_t seed = 0;
             Dogo::hashCombine(seed, vertex.vertices, vertex.normals, vertex.texCoords);
             return seed;

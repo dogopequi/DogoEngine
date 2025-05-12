@@ -222,6 +222,11 @@ namespace Dogo
 		glAttachShader(m_RendererID, shader);
 	}
 
+	void OpenGLShader::SetUniform1iv(const std::string& name, int32_t* value, uint32_t count, uint8_t index)
+	{
+		glUniform1iv(glGetUniformLocation(m_RendererID, name.c_str()), count, value);
+	}
+
 
 	void OpenGLShader::SetUniform1i(const std::string& name, int32_t value, uint8_t index)
 	{

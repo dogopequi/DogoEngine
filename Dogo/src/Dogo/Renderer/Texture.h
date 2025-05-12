@@ -18,7 +18,7 @@ namespace Dogo
 		virtual void Unbind(uint32_t textureUnit) const = 0;
 
 		virtual void UpdateTexture(const std::string& filepath, const std::string& imageType, TextureType textureType) = 0;
-
+		virtual uint32_t GetID() const = 0;
 		virtual std::string GetName() const = 0;
 		virtual std::string GetType() const = 0;
 		virtual void SetName(const std::string& name) = 0;

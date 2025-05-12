@@ -30,7 +30,7 @@ namespace Dogo
 		void Unbind();
 
 		void CreateShader(const std::string& shaderSource, ShaderType type);
-
+		void SetUniform1iv(const std::string& name, int32_t* value, uint32_t count, uint8_t index = 0) override;
 		void SetUniform1i(const std::string& name, int32_t value, uint8_t index = 0) override;
 		void SetUniform2i(const std::string& name, glm::ivec2 value, uint8_t index = 0) override;
 		void SetUniform3i(const std::string& name, glm::ivec3 value, uint8_t index = 0) override;

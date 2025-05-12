@@ -19,7 +19,7 @@ namespace Dogo
     class Mesh
     {
     public:
-        Mesh(const std::shared_ptr<BufferLayout> layout, const std::shared_ptr<Shader>& vertex, const std::shared_ptr<Shader>& pixel, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Texture*>& textures);
+        Mesh(const std::shared_ptr<BufferLayout> layout, const std::shared_ptr<Shader>& vertex, const std::shared_ptr<Shader>& pixel, const std::vector<assimpVertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Texture*>& textures);
         ~Mesh() {}
 
         inline void SetLayout() const { m_VertexBuffer->SetLayout(*m_Layout); }
@@ -39,7 +39,7 @@ namespace Dogo
     private:
 
 
-        std::vector<Vertex> m_Vertices{};
+        std::vector<assimpVertex> m_Vertices{};
 
         std::shared_ptr<VertexArray> m_VertexArray;
         std::shared_ptr<VertexBuffer> m_VertexBuffer;

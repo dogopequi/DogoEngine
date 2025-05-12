@@ -31,5 +31,6 @@ namespace Dogo
 
 		virtual void SetUniformMatrix3f(const std::string& name, glm::mat3 value, uint8_t index = 0) = 0;
 		virtual void SetUniformMatrix4f(const std::string& name, glm::mat4 value, uint8_t index = 0) = 0;
+		virtual void SetUniform1iv(const std::string& name, int32_t* value, uint32_t count, uint8_t index = 0) = 0;
 	};
 }

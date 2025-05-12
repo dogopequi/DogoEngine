@@ -21,6 +21,7 @@
 #include "Actors/Actor.h"
 #include "Dogo/Renderer/Line.h"
 #include "Dogo/Renderer/TextRenderer.h"
+#include "Dogo/Renderer/Renderer2D.h"
 
 namespace Dogo
 {
@@ -194,8 +195,9 @@ namespace Dogo
 		m_Window->SetInstance(instance);
 		m_Window->Init();
 		#endif
+		m_Camera.reset(new Camera());
 
-		BufferLayout layout =
+		/*BufferLayout layout =
 		{
 			{ShaderDataType::Float3, "POSITION"},
 			{ShaderDataType::Float3, "NORMAL"},
@@ -228,7 +230,7 @@ namespace Dogo
 		Line line1(glm::vec3(0, 0, 0), glm::vec3(1, 0, 0), glm::vec3(1, 0, 0), vertexShader1, pixelShader1);
 		Line line2(glm::vec3(1, 0, 0), glm::vec3(1, 1, 0), glm::vec3(0, 1, 0), vertexShader1, pixelShader1);
 		Line line3(glm::vec3(1, 1, 0), glm::vec3(0, 1, 0), glm::vec3(0, 0, 1), vertexShader1, pixelShader1);
-		Line line4(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 0), vertexShader1, pixelShader1);
+		Line line4(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 0), vertexShader1, pixelShader1);*/
 
 		Timer timer;
 		
@@ -236,11 +238,24 @@ namespace Dogo
 		float lastFrame{ 0.0f };
 		float y = 0;
 		MemoryUsage::PrintUsage();
-		DG_Physics::CreatePlane(PxPlane(0, 1, 0, 5));
+		//DG_Physics::CreatePlane(PxPlane(0, 1, 0, 5));
 
 
-		TextRenderer textRenderer(m_Window->GetWidth(), m_Window->GetHeight());
-		textRenderer.Load("../Dogo/resources/Fonts/arial.ttf", 48);
+		//TextRenderer textRenderer(m_Window->GetWidth(), m_Window->GetHeight());
+		//textRenderer.Load("../Dogo/resources/Fonts/arial.ttf", 48);
+
+		Renderer2D* Renderer = Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl");
+		Renderer->SetViewMatrix(glm::mat4(1.0f));
+		Renderer->SetProjectionMatrix(glm::orthoRH_NO(0.0f, static_cast<float>(m_Window->GetWidth()), 1.0f, static_cast<float>(m_Window->GetHeight()), 0.0f, 1.0f));
+		Renderer->SetModelMatrix(glm::mat4(1.0f));
+		Renderer->SetTransformMatrix(glm::mat4(1.0f));
+		Texture* lebron = Texture::Create("../Dogo/resources/Textures/lebron.png", "legacy", TextureType::twoD, "lebron");
+		Texture* rat = Texture::Create("../Dogo/resources/Textures/rat.png", "legacy", TextureType::twoD, "rat");
+		const int GRID_WIDTH = 100;
+		const int GRID_HEIGHT = 100;
+		const float SPACING = 0.1f;
+		const float SCALE = 0.09f;
+		
 		while (m_Window->isRunning() && m_Window != nullptr)
 		{
 
@@ -249,28 +264,53 @@ namespace Dogo
 			float currentFrame = timer.elapsed();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
-
-			glm::vec3 force(0.0f, 0.0f, 0.05f);
-			if (Input::IsKeyPressed(DG_KEY_V))
+			DG_INFO("Delta Time: %f", deltaTime);
+			//////////////////////////////////////////////////////
+			//2D
+			/*Renderer->Submit(CreateQuad(-1.5f, -0.5f, { 0.18f, 0.6f, 0.96f, 1.0f }, 1.0f, 1.0f), lebron);
+			Renderer->Submit(CreateQuad(0.5f, -0.5f, { 1.0f, 0.93f, 0.24f, 1.0f }, 1.0f, 0.0f));*/
+			
+			for (int y = 0; y < GRID_HEIGHT; ++y)
 			{
-				actor.AddImpulse(force);
+				for (int x = 0; x < GRID_WIDTH; ++x)
+				{
+					float xpos = (x - GRID_WIDTH / 2) * SPACING;
+					float ypos = (y - GRID_HEIGHT / 2) * SPACING;
+
+					bool useFirstTex = (x + y) % 2 == 0;
+					glm::vec4 color = useFirstTex ? glm::vec4(0.8f, 0.1f, 0.2f, 1.0f) : glm::vec4(0.2f, 0.9f, 0.3f, 1.0f);
+					float texIndex = useFirstTex ? 1.0f : 2.0f;
+					Texture* texture = useFirstTex ? lebron : rat;
+
+					Renderer->Submit(CreateQuad(xpos, ypos, color, SCALE, texIndex), texture);
+				}
 			}
-			DG_Physics::StepPhysics(deltaTime);
-			Renderer.Submit(actor);
-			Renderer.Submit(actor1);
-			Renderer.Submit(line1);
-			Renderer.Submit(line2);
-			Renderer.Submit(line3);
-			Renderer.Submit(line4);
-			Renderer.SetViewPos(m_Camera->GetPosition());
-			Renderer.SetProjectionMatrixPerspective(m_Camera->GetZoom(),1280.0f, 720.0f, 0.1f, 100.0f);
-			processInput(deltaTime);
-			Renderer.SetViewMatrix(m_Camera->GetViewMatrix());
-			Renderer.Flush();
+			Renderer->Flush();
+
+			///////////////////////////////////////////////////////
+			//3D
+
+			//glm::vec3 force(0.0f, 0.0f, 0.05f);
+			//if (Input::IsKeyPressed(DG_KEY_V))
+			//{
+			//	actor.AddImpulse(force);
+			//}
+			//DG_Physics::StepPhysics(deltaTime);
+			//Renderer.Submit(actor);
+			//Renderer.Submit(actor1);
+			//Renderer.Submit(line1);
+			//Renderer.Submit(line2);
+			//Renderer.Submit(line3);
+			//Renderer.Submit(line4);
+			//Renderer.SetViewPos(m_Camera->GetPosition());
+			//Renderer.SetProjectionMatrixPerspective(m_Camera->GetZoom(),1280.0f, 720.0f, 0.1f, 100.0f);
+			//processInput(deltaTime);
+			//Renderer.SetViewMatrix(m_Camera->GetViewMatrix());
+			//Renderer.Flush();
 
 			////////////////////////////////////////////////////////
 			//UI
-			textRenderer.RenderText("Dogo Engine", 25.0f, 570.0f, 1.0f, glm::vec3(0.8f, 0.3f, 0.9f));
+			//textRenderer.RenderText("Dogo Engine", 25.0f, 570.0f, 1.0f, glm::vec3(0.8f, 0.3f, 0.9f));
 
 #if OPENGL
 			GLenum err;

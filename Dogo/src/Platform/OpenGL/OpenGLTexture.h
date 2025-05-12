@@ -30,6 +30,8 @@ namespace Dogo
 
 			inline std::string GetFilePath() const { return m_FilePath; }
 
+			inline uint32_t GetID() const override { return m_RendererID; }
+
 	private:
 		std::string m_Name;
 		std::string m_Type;

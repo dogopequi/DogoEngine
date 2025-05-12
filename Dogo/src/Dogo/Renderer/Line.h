@@ -34,7 +34,7 @@ namespace Dogo
 				vertexData.push_back(end.y);
 				vertexData.push_back(end.z);
             }
-            m_VertexBuffer.reset(VertexBuffer::Create(m_Vertices.size() * sizeof(Vertex), sizeof(Vertex), vertexData.data()));
+            m_VertexBuffer.reset(VertexBuffer::Create(m_Vertices.size() * sizeof(assimpVertex), sizeof(assimpVertex), vertexData.data()));
             m_VertexBuffer->Bind();
             RenderAPI api = GraphicsContext::Get()->GetAPI();
             switch (api)
