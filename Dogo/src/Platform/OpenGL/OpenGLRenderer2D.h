@@ -24,7 +24,7 @@ namespace Dogo
 		glm::mat4 GetTransformMatrix()override;
 		void SetViewPos(const glm::vec3& pos)override;
 		void Submit(Quad& renderable, Texture* tex = nullptr)override;
-		void Submit(const Line2D& renderable)override;
+		void Submit(Line2D& renderable)override;
 		void Flush()override;
 
 	private:

@@ -66,4 +66,22 @@ namespace Dogo
 		return line;
 	}
 
+	void Renderer2D::Push(const glm::mat4& mat, boolean override = false)
+	{
+		if(override)
+			m_TransformStack.push_back(mat);
+		else
+			m_TransformStack.push_back(mat * m_TransformStack.back());
+		m_TransformBack = &m_TransformStack.back();
+	}
+
+	void Renderer2D::Pop()
+	{
+		if (m_TransformStack.size() > 1)
+		{
+			m_TransformStack.pop_back();
+		}
+		m_TransformBack = &m_TransformStack.back();
+	}
+
 }

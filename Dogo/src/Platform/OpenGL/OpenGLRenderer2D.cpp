@@ -2,7 +2,7 @@
 #include "OpenGLRenderer2D.h"
 
 namespace Dogo{
-	OpenGLRenderer2D::OpenGLRenderer2D(const std::wstring& vertex, const std::wstring& pixel)
+	OpenGLRenderer2D::OpenGLRenderer2D(const std::wstring& vertex, const std::wstring& pixel) : Renderer2D()
 	{
 		//////////QUADS
 		glCreateVertexArrays(1, &m_QuadsVertexArray);
@@ -155,15 +155,21 @@ namespace Dogo{
 			Flush();
 			m_QuadsCount = 0;
 		}
+		renderable.vertices[0].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[0].position, 1.0f));
+		renderable.vertices[1].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[1].position, 1.0f));
+		renderable.vertices[2].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[2].position, 1.0f));
+		renderable.vertices[3].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[3].position, 1.0f));
 		m_QuadsBuffer[m_QuadsCount++] = renderable;
 	}
-	void OpenGLRenderer2D::Submit(const Line2D& renderable)
+	void OpenGLRenderer2D::Submit(Line2D& renderable)
 	{
 		if (m_LinesCount >= MAX_LINES)
 		{
 			Flush();
 			m_LinesCount = 0;
 		}
+		renderable.vertices[0].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[0].position, 1.0f));
+		renderable.vertices[1].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[1].position, 1.0f));
 		m_LinesBuffer[m_LinesCount++] = renderable;
 	}
 	void OpenGLRenderer2D::Flush()
@@ -173,7 +179,7 @@ namespace Dogo{
 	}
 	void OpenGLRenderer2D::LinesFlush()
 	{
-		glLineWidth(1.0f); // use before rendering lines
+		glLineWidth(5.0f);
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_LinesVertexBuffer);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_LinesBuffer), m_LinesBuffer.data());
@@ -183,7 +189,6 @@ namespace Dogo{
 		m_Shader->SetUniformMatrix4f("model", m_Model);
 		m_Shader->SetUniform1i("mode", 1);
 		glBindVertexArray(m_LinesVertexArray);
-		DG_INFO("Lines Count: %d", m_LinesCount);
 		glDrawElements(GL_LINES, m_LinesCount * 2, GL_UNSIGNED_INT, nullptr);
 		m_LinesCount = 0;
 	}

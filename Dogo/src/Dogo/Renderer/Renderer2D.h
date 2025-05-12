@@ -50,7 +50,17 @@ namespace Dogo
 		virtual glm::mat4 GetTransformMatrix() = 0;
 		virtual void SetViewPos(const glm::vec3& pos) = 0;
 		virtual void Submit(Quad& renderable, Texture* tex = nullptr) = 0;
-		virtual void Submit(const Line2D& renderable) = 0;
+		virtual void Submit(Line2D& renderable) = 0;
 		virtual void Flush() = 0;
+		virtual void Push(const glm::mat4& mat, boolean override);
+		virtual void Pop();
+
+	protected:
+		Renderer2D() { m_TransformStack.push_back(glm::mat4(1.0f));
+		m_TransformBack = &m_TransformStack.back();
+		}
+
+		std::vector<glm::mat4> m_TransformStack;
+		const glm::mat4* m_TransformBack;
 	};
 }
