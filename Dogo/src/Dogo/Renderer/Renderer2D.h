@@ -17,19 +17,24 @@ namespace Dogo
 {
 	struct Vertex {
 		glm::vec3 position;
-		glm::vec3 normal;
-		glm::vec2 texcoord;
 		glm::vec4 color;
+		glm::vec2 texcoord;
+		glm::vec3 normal;
 		float texIndex;
+	};
+	struct LineVertex {
+		glm::vec3 position;
+		glm::vec4 color;
 	};
 	struct Quad {
 		Vertex vertices[4];
 	};
 	struct Line2D {
-		Vertex vertices[2];
+		LineVertex vertices[2];
 	};
 
 	Quad CreateQuad(float x, float y, const glm::vec4& color, float scale, float texID);
+	Line2D CreateLine2D(const glm::vec3& start, const glm::vec3& end, const glm::vec4& color);
 	class Renderer2D
 	{
 	public:

@@ -25,7 +25,11 @@ namespace Dogo
 		void SetViewPos(const glm::vec3& pos)override;
 		void Submit(Quad& renderable, Texture* tex = nullptr)override;
 		void Submit(const Line2D& renderable)override;
-		void Flush()override;;
+		void Flush()override;
+
+	private:
+		void LinesFlush();
+		void QuadsFlush();
 
 	protected:
 		glm::mat4 m_View = glm::mat4(1.0f);
@@ -43,9 +47,15 @@ namespace Dogo
 		GLuint m_LinesIndexBuffer{};
 
 		Shader* m_Shader;
+
 		std::array<Quad, MAX_QUADS> m_QuadsBuffer;
 		size_t m_QuadsCount = 0;
 		std::array<uint32_t, MAX_QUAD_INDICES> m_QuadsIndices;
+
+		std::array<Line2D, MAX_LINES> m_LinesBuffer;
+		size_t m_LinesCount = 0;
+		std::array<uint32_t, MAX_LINE_INDICES> m_LinesIndices;
+
 		std::vector<std::pair<Texture*, uint16_t>> m_TextureSlots;
 		int m_Samplers[TWO_D_MAX_TEXTURES] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 	};

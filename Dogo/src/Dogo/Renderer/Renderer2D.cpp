@@ -52,4 +52,18 @@ namespace Dogo
 		quad.vertices[3].texIndex = texID;
 		return quad;
 	}
+
+	Line2D CreateLine2D(const glm::vec3& start, const glm::vec3& end, const glm::vec4& color)
+	{
+		Line2D line;
+
+		line.vertices[0].position = start;
+		line.vertices[0].color = color;
+
+		line.vertices[1].position = end;
+		line.vertices[1].color = color;
+
+		return line;
+	}
+
 }

@@ -8,12 +8,20 @@ in vec3 v_Normal;
 in float v_TexIndex;
 
 uniform sampler2D textures[16];
+uniform int mode;
 void main()
 {
-    int index = int(v_TexIndex);
-    if (index != 0)
-        color = texture(textures[index], v_TexCoord);
+    if(mode == 0)
+    {
+        int index = int(v_TexIndex);
+        if (index != 0)
+            color = texture(textures[index], v_TexCoord);
+        else
+            color = v_Color;
+    }
     else
+    {
         color = v_Color;
+    }
 
 }

@@ -267,10 +267,11 @@ namespace Dogo
 			DG_INFO("Delta Time: %f", deltaTime);
 			//////////////////////////////////////////////////////
 			//2D
-			/*Renderer->Submit(CreateQuad(-1.5f, -0.5f, { 0.18f, 0.6f, 0.96f, 1.0f }, 1.0f, 1.0f), lebron);
-			Renderer->Submit(CreateQuad(0.5f, -0.5f, { 1.0f, 0.93f, 0.24f, 1.0f }, 1.0f, 0.0f));*/
-			
-			for (int y = 0; y < GRID_HEIGHT; ++y)
+			//Renderer->Submit(CreateQuad(-1.5f, -0.5f, { 0.18f, 0.6f, 0.96f, 1.0f }, 1.0f, 1.0f), lebron);
+			//Renderer->Submit(CreateQuad(0.5f, -0.5f, { 1.0f, 0.93f, 0.24f, 1.0f }, 1.0f, 0.0f));
+			Line2D axisX = CreateLine2D(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec4(1, 1, 1, 1));
+			Renderer->Submit(axisX);
+			/*for (int y = 0; y < GRID_HEIGHT; ++y)
 			{
 				for (int x = 0; x < GRID_WIDTH; ++x)
 				{
@@ -284,7 +285,7 @@ namespace Dogo
 
 					Renderer->Submit(CreateQuad(xpos, ypos, color, SCALE, texIndex), texture);
 				}
-			}
+			}*/
 			Renderer->Flush();
 
 			///////////////////////////////////////////////////////

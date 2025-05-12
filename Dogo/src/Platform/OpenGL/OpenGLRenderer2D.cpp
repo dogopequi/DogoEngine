@@ -4,23 +4,23 @@
 namespace Dogo{
 	OpenGLRenderer2D::OpenGLRenderer2D(const std::wstring& vertex, const std::wstring& pixel)
 	{
+		//////////QUADS
 		glCreateVertexArrays(1, &m_QuadsVertexArray);
 		glBindVertexArray(m_QuadsVertexArray);
 
 		
 		glCreateBuffers(1, &m_QuadsVertexBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, m_QuadsVertexBuffer);
-		//glBufferData(GL_ARRAY_BUFFER, sizeof(quads), quads.data(), GL_STATIC_DRAW);
 		glBufferData(GL_ARRAY_BUFFER, MAX_QUAD_VERTICES * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
 
 		glEnableVertexArrayAttrib(m_QuadsVertexArray, 0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
 		glEnableVertexArrayAttrib(m_QuadsVertexArray, 1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
 		glEnableVertexArrayAttrib(m_QuadsVertexArray, 2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
 		glEnableVertexArrayAttrib(m_QuadsVertexArray, 3);
-		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
 		glEnableVertexArrayAttrib(m_QuadsVertexArray, 4);
 		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texIndex));
 
@@ -40,13 +40,40 @@ namespace Dogo{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_QuadsIndexBuffer);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_QuadsIndices), m_QuadsIndices.data(), GL_STATIC_DRAW);
 
-		m_Shader = Shader::Create(vertex, pixel);
+		////////////// LINES
+
+		glCreateVertexArrays(1, &m_LinesVertexArray);
+		glBindVertexArray(m_LinesVertexArray);
+
+
+		glCreateBuffers(1, &m_LinesVertexBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, m_LinesVertexBuffer);
+		glBufferData(GL_ARRAY_BUFFER, MAX_LINE_VERTICES * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW);
+
+		glEnableVertexArrayAttrib(m_LinesVertexArray, 0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, position));
+		glEnableVertexArrayAttrib(m_LinesVertexArray, 1);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, color));
+
+		for (size_t i = 0, v = 0; i < MAX_LINE_INDICES; i += 2, v += 2)
+		{
+			m_LinesIndices[i + 0] = v;
+			m_LinesIndices[i + 1] = v + 1;
+		}
+
+		glCreateBuffers(1, &m_LinesIndexBuffer);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_LinesIndexBuffer);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_LinesIndices), m_LinesIndices.data(), GL_STATIC_DRAW);
+
+
 		m_TextureSlots.resize(TWO_D_MAX_TEXTURES);
 		for (size_t i = 0; i < TWO_D_MAX_TEXTURES; i++)
 		{
 			m_TextureSlots[i].second = 0;
 		}
 		
+
+		m_Shader = Shader::Create(vertex, pixel);
 	}
 	OpenGLRenderer2D::~OpenGLRenderer2D()
 	{
@@ -132,8 +159,35 @@ namespace Dogo{
 	}
 	void OpenGLRenderer2D::Submit(const Line2D& renderable)
 	{
+		if (m_LinesCount >= MAX_LINES)
+		{
+			Flush();
+			m_LinesCount = 0;
+		}
+		m_LinesBuffer[m_LinesCount++] = renderable;
 	}
 	void OpenGLRenderer2D::Flush()
+	{
+		QuadsFlush();
+		LinesFlush();
+	}
+	void OpenGLRenderer2D::LinesFlush()
+	{
+		glLineWidth(1.0f); // use before rendering lines
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_LinesVertexBuffer);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_LinesBuffer), m_LinesBuffer.data());
+		m_Shader->Bind();
+		m_Shader->SetUniformMatrix4f("view", m_View);
+		m_Shader->SetUniformMatrix4f("projection", m_Proj);
+		m_Shader->SetUniformMatrix4f("model", m_Model);
+		m_Shader->SetUniform1i("mode", 1);
+		glBindVertexArray(m_LinesVertexArray);
+		DG_INFO("Lines Count: %d", m_LinesCount);
+		glDrawElements(GL_LINES, m_LinesCount * 2, GL_UNSIGNED_INT, nullptr);
+		m_LinesCount = 0;
+	}
+	void OpenGLRenderer2D::QuadsFlush()
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, m_QuadsVertexBuffer);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_QuadsBuffer), m_QuadsBuffer.data());
@@ -141,6 +195,7 @@ namespace Dogo{
 		m_Shader->SetUniformMatrix4f("view", m_View);
 		m_Shader->SetUniformMatrix4f("projection", m_Proj);
 		m_Shader->SetUniformMatrix4f("model", m_Model);
+		m_Shader->SetUniform1i("mode", 0);
 		for (size_t i = 0; i < m_TextureSlots.size(); i++)
 		{
 			if (m_TextureSlots[i].second != 0)
