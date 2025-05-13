@@ -62,6 +62,13 @@ namespace Dogo
 		Vertex vertices[4];
 	};
 
+	struct Character {
+		unsigned int TextureID; // ID handle of the glyph texture
+		glm::ivec2   Size;      // size of glyph
+		glm::ivec2   Bearing;   // offset from baseline to left/top of glyph
+		unsigned int Advance;   // horizontal offset to advance to next glyph
+	};
+
 	Circle GenerateCircle(glm::vec2 center, float radius, glm::vec4 color, float texID);
 	Quad CreateQuad(float x, float y, const glm::vec4& color, float scale, float texID);
 	Line2D CreateLine2D(const glm::vec3& start, const glm::vec3& end, const glm::vec4& color);
@@ -91,6 +98,8 @@ namespace Dogo
 		virtual void Flush() = 0;
 		virtual void Push(const glm::mat4& mat, boolean override);
 		virtual void Pop();
+		virtual void LoadFont(const std::string& fontPath, uint32_t size) = 0;
+		virtual void RenderText(std::string text, float x, float y, float scale, glm::vec3 color = glm::vec3(1.0f)) = 0;
 
 	protected:
 		Renderer2D() { m_TransformStack.push_back(glm::mat4(1.0f));

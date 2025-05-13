@@ -20,7 +20,6 @@
 #include "Component/Component.h"
 #include "Actors/Actor.h"
 #include "Dogo/Renderer/Line.h"
-#include "Dogo/Renderer/TextRenderer.h"
 #include "Dogo/Renderer/Renderer2D.h"
 
 namespace Dogo
@@ -241,16 +240,13 @@ namespace Dogo
 		//DG_Physics::CreatePlane(PxPlane(0, 1, 0, 5));
 
 
-		//TextRenderer textRenderer(m_Window->GetWidth(), m_Window->GetHeight());
-		//textRenderer.Load("../Dogo/resources/Fonts/arial.ttf", 48);
-
 		Renderer2D* Renderer = Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl");
 		Renderer->SetViewMatrix(glm::mat4(1.0f));
 		Renderer->SetProjectionMatrix(glm::orthoRH_NO(
 			0.0f,
 			static_cast<float>(m_Window->GetWidth()),
-			0.0f,
 			static_cast<float>(m_Window->GetHeight()),
+			0.0f,
 			-1.0f,
 			1.0f));
 
@@ -259,21 +255,17 @@ namespace Dogo
 		Renderer->SetTransformMatrix(glm::mat4(1.0f));
 		Texture* lebron = Texture::Create("../Dogo/resources/Textures/lebron.png", "legacy", TextureType::twoD, "lebron");
 		Texture* rat = Texture::Create("../Dogo/resources/Textures/rat.png", "legacy", TextureType::twoD, "rat");
-		const int GRID_WIDTH = 100;
-		const int GRID_HEIGHT = 100;
-		const float SPACING = 0.1f;
-		const float SCALE = 0.09f;
 		glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
-
+		Renderer->LoadFont("../Dogo/resources/Fonts/arial.ttf", 48);
 		while (m_Window->isRunning() && m_Window != nullptr)
 		{
-			glDisable(GL_CULL_FACE);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			DogoECS::DG_ComponentManager::UpdateComponents<TransformComponent>();
 			m_Window->ClearColor(0.2f, 1.0f, 1.0f, 1.0f);
 			float currentFrame = timer.elapsed();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
-			//DG_INFO("Delta Time: %f", deltaTime);
+			float fps = 1.0f / deltaTime;
 			//////////////////////////////////////////////////////
 			//2D
 			if (Input::IsKeyPressed(DG_KEY_A))
@@ -286,53 +278,57 @@ namespace Dogo
 			}
 			if (Input::IsKeyPressed(DG_KEY_W))
 			{
-				pos.y += 0.5f;
+				pos.y -= 0.5f;
 			}
 			if (Input::IsKeyPressed(DG_KEY_S))
 			{
-				pos.y -= 0.5f;
+				pos.y += 0.5f;
 			}
 			////DG_INFO("X: %f Y: %f", pos.x, pos.y);
 			// QUAD WORKING 
-			//Renderer->Push(glm::translate(glm::mat4(1.0f), pos), false);
-			//Renderer->Submit(CreateQuad(0.0f, 0.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, 50.0f, 0.0f));
-			//Renderer->Pop();
+			Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(500.0f, 20.0f, 0.0f)), false);
+			Renderer->Submit(CreateQuad(0.0f, 0.0f, { 0.0f, 1.0f, 0.0f, 1.0f }, 50.0f, 0.0f));
+			Renderer->Pop();
 			
 			// --- TRIANGLE --- WORKING
-			//Renderer->Push(glm::translate(glm::mat4(1.0f), pos), false);
-			//Renderer->Submit(CreateTriangle(0.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, 50.0f, 0.0f));
-			//Renderer->Pop();
+			Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(220.0f, 70.0f, 0.0f)), false);
+			Renderer->Submit(CreateTriangle(0.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, 50.0f, 0.0f));
+			Renderer->Pop();
 			
 		 ////--- CIRCLE --- WORKING
-			//Renderer->Push(glm::translate(glm::mat4(1.0f), pos), false);
-			//Renderer->Submit(GenerateCircle({ pos.x, pos.y }, 25.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, 0.0f));
-			//Renderer->Pop();
+			Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 200.0f, 0.0f)), false);
+			Renderer->Submit(GenerateCircle({ 0.0f, 0.0f }, 25.0f, { 1.0f, 1.0f, 0.0f, 1.0f }, 0.0f));
+			Renderer->Pop();
 			//
 			//// --- ROUNDED RECT --- WORKING
-			Renderer->Push(glm::translate(glm::mat4(1.0f), pos), false);
+			Renderer->Push(glm::scale(glm::translate(glm::mat4(1.0f), pos), glm::vec3(5.0f, 5.0f, 5.0f)), false);
 			Renderer->Submit(CreateRoundedRect(
-				{ 0.0f, 0.0f },           // center
-				{ 80.0f, 30.0f },         // size: wide rectangle
-				90.0f,                    // corner radius
-				{ 1.0f, 0.0f, 0.0f, 1.0f }, // red
+				{ 0.0f, 0.0f },          
+				{ 200.0f, 60.0f },        
+				90.0f,                    
+				{ 1.0f, 0.0f, 0.0f, 1.0f }, 
 				0.0f
 			));
 			Renderer->Pop();
-			//
+
 			//// --- THICK LINE --- WORKING
-			//Renderer->Push(glm::translate(glm::mat4(1.0f), pos), false);
-			//Renderer->Submit(CreateThickLine({ 0.0f, 0.0f }, { 50.0f, 50.0f }, 6.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, 0.0f));
-			//Renderer->Pop();
+			Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)), false);
+			Renderer->Submit(CreateThickLine({ 0.0f, 0.0f }, { 1200.0f, 700.0f }, 5.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, 0.0f));
+			Renderer->Pop();
 			//
 			//// --- LINE2D --- WORKING
-			//Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)), false);
-			//float y = m_Window->GetHeight() / 2.0f; // center of screen
-			//Renderer->Submit(CreateLine2D(
-			//	{ 0.0f, y, 0.0f },
-			//	{ static_cast<float>(m_Window->GetWidth()), y, 0.0f },
-			//	{ 1.0f, 0.0f, 0.0f, 1.0f } // red line
-			//));
-			//Renderer->Pop();
+			Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)), false);
+			float y = m_Window->GetHeight() / 2.0f; // center of screen
+			Renderer->Submit(CreateLine2D(
+				{ 0.0f, y, 0.0f },
+				{ static_cast<float>(m_Window->GetWidth()), y, 0.0f },
+				{ 0.0f, 0.0f, 1.0f, 1.0f } // red line
+			));
+			Renderer->Pop();
+			Renderer->Flush();
+			Renderer->RenderText("FPS: ", 25.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
+			Renderer->RenderText(std::to_string(fps).c_str(), 135.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
+			//
 			//Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)), true);
 			//Renderer->Submit(CreateQuad(-1.5f, -0.5f, { 0.18f, 0.6f, 0.96f, 1.0f }, 1.0f, 1.0f), lebron);
 			//Renderer->Pop();
@@ -354,7 +350,6 @@ namespace Dogo
 			//		Renderer->Submit(CreateQuad(xpos, ypos, color, SCALE, texIndex), texture);
 			//	}
 			//}
-			Renderer->Flush();
 
 			///////////////////////////////////////////////////////
 			//3D
@@ -377,9 +372,6 @@ namespace Dogo
 			//Renderer.SetViewMatrix(m_Camera->GetViewMatrix());
 			//Renderer.Flush();
 
-			////////////////////////////////////////////////////////
-			//UI
-			//textRenderer.RenderText("Dogo Engine", 25.0f, 570.0f, 1.0f, glm::vec3(0.8f, 0.3f, 0.9f));
 
 #if OPENGL
 			GLenum err;

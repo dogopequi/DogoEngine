@@ -7,6 +7,9 @@
 #include "glad/glad.h"
 #include "Dogo/Renderer/Shader.h"
 #include "Dogo/Renderer/Texture.h"
+#include "ft2build.h"
+#include "Dogo/Renderer/Shader.h"
+#include FT_FREETYPE_H
 namespace Dogo
 {
 	class OpenGLRenderer2D : public Renderer2D
@@ -35,6 +38,9 @@ namespace Dogo
 		void Submit(Line2D& renderable)override;
 
 		void Flush()override;
+
+		virtual void LoadFont(const std::string& fontPath, uint32_t size);
+		virtual void RenderText(std::string text, float x, float y, float scale, glm::vec3 color = glm::vec3(1.0f));
 
 	private:
 		void LinesFlush();
@@ -75,6 +81,11 @@ namespace Dogo
 		GLuint m_ThickLineVertexBuffer{};
 		GLuint m_ThickLineIndexBuffer{};
 
+		GLuint m_FontVertexArray{};
+		GLuint m_FontVertexBuffer{};
+		std::map<char, Character> Characters;
+
+		Shader* m_TextShader;
 		Shader* m_Shader;
 
 		std::array<Quad, MAX_QUADS> m_QuadsBuffer;
