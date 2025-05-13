@@ -1,70 +1,233 @@
 #include "dgpch.h"
 #include "OpenGLRenderer2D.h"
-
+#include <glm/gtx/string_cast.hpp>
 namespace Dogo{
 	OpenGLRenderer2D::OpenGLRenderer2D(const std::wstring& vertex, const std::wstring& pixel) : Renderer2D()
 	{
 		//////////QUADS
-		glCreateVertexArrays(1, &m_QuadsVertexArray);
-		glBindVertexArray(m_QuadsVertexArray);
-
-		
-		glCreateBuffers(1, &m_QuadsVertexBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, m_QuadsVertexBuffer);
-		glBufferData(GL_ARRAY_BUFFER, MAX_QUAD_VERTICES * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
-
-		glEnableVertexArrayAttrib(m_QuadsVertexArray, 0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
-		glEnableVertexArrayAttrib(m_QuadsVertexArray, 1);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
-		glEnableVertexArrayAttrib(m_QuadsVertexArray, 2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
-		glEnableVertexArrayAttrib(m_QuadsVertexArray, 3);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
-		glEnableVertexArrayAttrib(m_QuadsVertexArray, 4);
-		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texIndex));
-
-		uint32_t offset = 0;
-		for (size_t i = 0; i < MAX_QUAD_INDICES; i += 6)
 		{
-			m_QuadsIndices[i + 0] = 0 + offset;
-			m_QuadsIndices[i + 1] = 1 + offset;
-			m_QuadsIndices[i + 2] = 2 + offset;
-			m_QuadsIndices[i + 3] = 2 + offset;
-			m_QuadsIndices[i + 4] = 3 + offset;
-			m_QuadsIndices[i + 5] = 0 + offset;
-			offset += 4;
+			glCreateVertexArrays(1, &m_QuadsVertexArray);
+			glBindVertexArray(m_QuadsVertexArray);
+
+
+			glCreateBuffers(1, &m_QuadsVertexBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, m_QuadsVertexBuffer);
+			glBufferData(GL_ARRAY_BUFFER, MAX_QUAD_VERTICES * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+
+			glEnableVertexArrayAttrib(m_QuadsVertexArray, 0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
+			glEnableVertexArrayAttrib(m_QuadsVertexArray, 1);
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
+			glEnableVertexArrayAttrib(m_QuadsVertexArray, 2);
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
+			glEnableVertexArrayAttrib(m_QuadsVertexArray, 3);
+			glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
+			glEnableVertexArrayAttrib(m_QuadsVertexArray, 4);
+			glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texIndex));
+
+			uint32_t offset = 0;
+			for (size_t i = 0; i < MAX_QUAD_INDICES; i += 6)
+			{
+				m_QuadsIndices[i + 0] = 0 + offset;
+				m_QuadsIndices[i + 1] = 1 + offset;
+				m_QuadsIndices[i + 2] = 2 + offset;
+				m_QuadsIndices[i + 3] = 2 + offset;
+				m_QuadsIndices[i + 4] = 3 + offset;
+				m_QuadsIndices[i + 5] = 0 + offset;
+				offset += 4;
+			}
+
+			glCreateBuffers(1, &m_QuadsIndexBuffer);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_QuadsIndexBuffer);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_QuadsIndices), m_QuadsIndices.data(), GL_STATIC_DRAW);
+
 		}
+		//////////// TRIANGLES
+		{
+			glCreateVertexArrays(1, &m_TrianglesVertexArray);
+			glBindVertexArray(m_TrianglesVertexArray);
 
-		glCreateBuffers(1, &m_QuadsIndexBuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_QuadsIndexBuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_QuadsIndices), m_QuadsIndices.data(), GL_STATIC_DRAW);
 
+			glCreateBuffers(1, &m_TrianglesVertexBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, m_TrianglesVertexBuffer);
+			glBufferData(GL_ARRAY_BUFFER, MAX_TRIANGLE_VERTICES * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+
+			glEnableVertexArrayAttrib(m_TrianglesVertexArray, 0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
+			glEnableVertexArrayAttrib(m_TrianglesVertexArray, 1);
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
+			glEnableVertexArrayAttrib(m_TrianglesVertexArray, 2);
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
+			glEnableVertexArrayAttrib(m_TrianglesVertexArray, 3);
+			glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
+			glEnableVertexArrayAttrib(m_TrianglesVertexArray, 4);
+			glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texIndex));
+
+			for (size_t i = 0, v = 0; i < MAX_TRIANGLE_INDICES; i += 3, v += 3)
+			{
+				m_TrianglesIndices[i + 0] = v + 0;
+				m_TrianglesIndices[i + 1] = v + 1;
+				m_TrianglesIndices[i + 2] = v + 2;
+			}
+
+			glCreateBuffers(1, &m_TrianglesIndexBuffer);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_TrianglesIndexBuffer);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_TrianglesIndices), m_TrianglesIndices.data(), GL_STATIC_DRAW);
+
+		}
+		/////////// CIRCLES
+		{
+			glCreateVertexArrays(1, &m_CirclesVertexArray);
+			glBindVertexArray(m_CirclesVertexArray);
+
+
+			glCreateBuffers(1, &m_CirclesVertexBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, m_CirclesVertexBuffer);
+			glBufferData(GL_ARRAY_BUFFER, MAX_CIRCLE_VERTICES * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+
+			glEnableVertexArrayAttrib(m_CirclesVertexArray, 0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
+			glEnableVertexArrayAttrib(m_CirclesVertexArray, 1);
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
+			glEnableVertexArrayAttrib(m_CirclesVertexArray, 2);
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
+			glEnableVertexArrayAttrib(m_CirclesVertexArray, 3);
+			glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
+			glEnableVertexArrayAttrib(m_CirclesVertexArray, 4);
+			glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texIndex));
+
+			uint32_t offset = 0;
+			for (size_t c = 0; c < MAX_CIRCLES; ++c)
+			{
+				for (uint32_t i = 0; i < CIRCLE_SEGMENTS; ++i)
+				{
+					m_CirclesIndices[(c * CIRCLE_SEGMENTS + i) * 3 + 0] = offset + 0;
+					m_CirclesIndices[(c * CIRCLE_SEGMENTS + i) * 3 + 1] = offset + i + 1;
+					m_CirclesIndices[(c * CIRCLE_SEGMENTS + i) * 3 + 2] = offset + i + 2;
+				}
+				offset += (CIRCLE_SEGMENTS + 2);
+			}
+
+			glCreateBuffers(1, &m_CirclesIndexBuffer);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_CirclesIndexBuffer);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_CirclesIndices), m_CirclesIndices.data(), GL_STATIC_DRAW);
+
+		}
+		///////////// ROUNDED RECT
+		{
+			glCreateVertexArrays(1, &m_RoundedRectVertexArray);
+			glBindVertexArray(m_RoundedRectVertexArray);
+
+
+			glCreateBuffers(1, &m_RoundedRectVertexBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, m_RoundedRectVertexBuffer);
+			glBufferData(GL_ARRAY_BUFFER, MAX_ROUNDED_RECT_VERTICES * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+
+			glEnableVertexArrayAttrib(m_RoundedRectVertexArray, 0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
+			glEnableVertexArrayAttrib(m_RoundedRectVertexArray, 1);
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
+			glEnableVertexArrayAttrib(m_RoundedRectVertexArray, 2);
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
+			glEnableVertexArrayAttrib(m_RoundedRectVertexArray, 3);
+			glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
+			glEnableVertexArrayAttrib(m_RoundedRectVertexArray, 4);
+			glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texIndex));
+
+			uint32_t offset = 0;
+			for (size_t r = 0; r < MAX_ROUNDED_RECTS; ++r)
+			{
+				uint32_t centerIndex = offset;
+				uint32_t arcStart = offset + 1;
+
+				for (int corner = 0; corner < 4; ++corner)
+				{
+					uint32_t cornerStart = arcStart + corner * (ROUNDED_RECT_SEGMENTS + 1);
+
+					for (int seg = 0; seg < ROUNDED_RECT_SEGMENTS; ++seg)
+					{
+						uint32_t i0 = centerIndex;
+						uint32_t i1 = cornerStart + seg;
+						uint32_t i2 = cornerStart + seg + 1;
+
+						size_t indexOffset = (r * ROUNDED_RECT_SEGMENTS * 4 + corner * ROUNDED_RECT_SEGMENTS + seg) * 3;
+						m_RoundedRectsIndices[indexOffset + 0] = i0;
+						m_RoundedRectsIndices[indexOffset + 1] = i1;
+						m_RoundedRectsIndices[indexOffset + 2] = i2;
+					}
+				}
+
+				offset += 1 + 4 * (ROUNDED_RECT_SEGMENTS + 1); 
+			}
+
+
+			glCreateBuffers(1, &m_RoundedRectIndexBuffer);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RoundedRectIndexBuffer);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_RoundedRectsIndices), m_RoundedRectsIndices.data(), GL_STATIC_DRAW);
+
+		}
+		////////////// THICK LINES
+		{
+			glCreateVertexArrays(1, &m_ThickLineVertexArray);
+			glBindVertexArray(m_ThickLineVertexArray);
+
+
+			glCreateBuffers(1, &m_ThickLineVertexBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, m_ThickLineVertexBuffer);
+			glBufferData(GL_ARRAY_BUFFER, MAX_QUAD_VERTICES * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+
+			glEnableVertexArrayAttrib(m_ThickLineVertexArray, 0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
+			glEnableVertexArrayAttrib(m_ThickLineVertexArray, 1);
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
+			glEnableVertexArrayAttrib(m_ThickLineVertexArray, 2);
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
+			glEnableVertexArrayAttrib(m_ThickLineVertexArray, 3);
+			glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
+			glEnableVertexArrayAttrib(m_ThickLineVertexArray, 4);
+			glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texIndex));
+
+			uint32_t offset = 0;
+			for (size_t i = 0; i < MAX_THICK_LINES_INDICES; i += 6)
+			{
+				m_ThickLinesIndices[i + 0] = 0 + offset;
+				m_ThickLinesIndices[i + 1] = 1 + offset;
+				m_ThickLinesIndices[i + 2] = 2 + offset;
+				m_ThickLinesIndices[i + 3] = 2 + offset;
+				m_ThickLinesIndices[i + 4] = 3 + offset;
+				m_ThickLinesIndices[i + 5] = 0 + offset;
+				offset += 4;
+			}
+
+			glCreateBuffers(1, &m_ThickLineIndexBuffer);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ThickLineIndexBuffer);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_ThickLinesIndices), m_ThickLinesIndices.data(), GL_STATIC_DRAW);
+		}
 		////////////// LINES
-
-		glCreateVertexArrays(1, &m_LinesVertexArray);
-		glBindVertexArray(m_LinesVertexArray);
-
-
-		glCreateBuffers(1, &m_LinesVertexBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, m_LinesVertexBuffer);
-		glBufferData(GL_ARRAY_BUFFER, MAX_LINE_VERTICES * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW);
-
-		glEnableVertexArrayAttrib(m_LinesVertexArray, 0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, position));
-		glEnableVertexArrayAttrib(m_LinesVertexArray, 1);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, color));
-
-		for (size_t i = 0, v = 0; i < MAX_LINE_INDICES; i += 2, v += 2)
 		{
-			m_LinesIndices[i + 0] = v;
-			m_LinesIndices[i + 1] = v + 1;
+			glCreateVertexArrays(1, &m_LinesVertexArray);
+			glBindVertexArray(m_LinesVertexArray);
+
+
+			glCreateBuffers(1, &m_LinesVertexBuffer);
+			glBindBuffer(GL_ARRAY_BUFFER, m_LinesVertexBuffer);
+			glBufferData(GL_ARRAY_BUFFER, MAX_LINE_VERTICES * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW);
+
+			glEnableVertexArrayAttrib(m_LinesVertexArray, 0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, position));
+			glEnableVertexArrayAttrib(m_LinesVertexArray, 1);
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, color));
+
+			for (size_t i = 0, v = 0; i < MAX_LINE_INDICES; i += 2, v += 2)
+			{
+				m_LinesIndices[i + 0] = v;
+				m_LinesIndices[i + 1] = v + 1;
+			}
+
+			glCreateBuffers(1, &m_LinesIndexBuffer);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_LinesIndexBuffer);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_LinesIndices), m_LinesIndices.data(), GL_STATIC_DRAW);
 		}
-
-		glCreateBuffers(1, &m_LinesIndexBuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_LinesIndexBuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_LinesIndices), m_LinesIndices.data(), GL_STATIC_DRAW);
-
 
 		m_TextureSlots.resize(TWO_D_MAX_TEXTURES);
 		for (size_t i = 0; i < TWO_D_MAX_TEXTURES; i++)
@@ -80,15 +243,19 @@ namespace Dogo{
 	}
 	void OpenGLRenderer2D::SetViewMatrix(const glm::mat4& view)
 	{
+		m_View = view;
 	}
 	void OpenGLRenderer2D::SetProjectionMatrix(const glm::mat4& proj)
 	{
+		m_Proj = proj;
 	}
 	void OpenGLRenderer2D::SetModelMatrix(const glm::mat4& model)
 	{
+		m_Model = model;
 	}
 	void OpenGLRenderer2D::SetTransformMatrix(const glm::mat4& model)
 	{
+		m_Transform = model;
 	}
 	glm::mat4 OpenGLRenderer2D::GetViewMatrix()
 	{
@@ -117,6 +284,8 @@ namespace Dogo{
 			boolean found = false;
 			for (size_t i = 0; i < m_TextureSlots.size(); i++)
 			{
+				if (m_TextureSlots[i].first == nullptr)
+					continue;
 				if (m_TextureSlots[i].second == (uint16_t)renderable.vertices[0].texIndex && m_TextureSlots[i].first->GetID() == tex->GetID())
 				{
 					found = true;
@@ -140,11 +309,6 @@ namespace Dogo{
 				{
 					Flush();
 					m_QuadsCount = 0;
-					for (size_t i = 0; i < m_TextureSlots.size(); i++)
-					{
-						m_TextureSlots[i].second = 0;
-						m_TextureSlots[i].first = nullptr;
-					}
 					m_TextureSlots[0].second = (uint16_t)renderable.vertices[0].texIndex;
 					m_TextureSlots[0].first = tex;
 				}
@@ -155,11 +319,194 @@ namespace Dogo{
 			Flush();
 			m_QuadsCount = 0;
 		}
-		renderable.vertices[0].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[0].position, 1.0f));
-		renderable.vertices[1].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[1].position, 1.0f));
-		renderable.vertices[2].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[2].position, 1.0f));
-		renderable.vertices[3].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[3].position, 1.0f));
+		for(int i = 0; i < 4; i++)
+			renderable.vertices[i].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
 		m_QuadsBuffer[m_QuadsCount++] = renderable;
+	}
+	void OpenGLRenderer2D::Submit(Triangle& renderable, Texture* tex)
+	{
+		if (renderable.vertices[0].texIndex != 0.0f)
+		{
+			boolean found = false;
+			for (size_t i = 0; i < m_TextureSlots.size(); i++)
+			{
+				if (m_TextureSlots[i].first == nullptr)
+					continue;
+				if (m_TextureSlots[i].second == (uint16_t)renderable.vertices[0].texIndex && m_TextureSlots[i].first->GetID() == tex->GetID())
+				{
+					found = true;
+					break;
+				}
+			}
+			if (found == false)
+			{
+				bool available = false;
+				for (size_t i = 0; i < m_TextureSlots.size(); i++)
+				{
+					if (m_TextureSlots[i].second == 0)
+					{
+						m_TextureSlots[i].second = (uint16_t)renderable.vertices[0].texIndex;
+						m_TextureSlots[i].first = tex;
+						available = true;
+						break;
+					}
+				}
+				if (!available)
+				{
+					Flush();
+					m_QuadsCount = 0;
+					m_TextureSlots[0].second = (uint16_t)renderable.vertices[0].texIndex;
+					m_TextureSlots[0].first = tex;
+				}
+			}
+		}
+		if (m_TrianglesCount >= MAX_TRIANGLES)
+		{
+			Flush();
+			m_TrianglesCount = 0;
+		}
+		for (int i = 0; i < 3; i++)
+			renderable.vertices[i].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+		m_TrianglesBuffer[m_TrianglesCount++] = renderable;
+	}
+	void OpenGLRenderer2D::Submit(Circle& renderable, Texture* tex)
+	{
+		if (renderable.vertices[0].texIndex != 0.0f)
+		{
+			boolean found = false;
+			for (size_t i = 0; i < m_TextureSlots.size(); i++)
+			{
+				if (m_TextureSlots[i].first == nullptr)
+					continue;
+				if (m_TextureSlots[i].second == (uint16_t)renderable.vertices[0].texIndex && m_TextureSlots[i].first->GetID() == tex->GetID())
+				{
+					found = true;
+					break;
+				}
+			}
+			if (found == false)
+			{
+				bool available = false;
+				for (size_t i = 0; i < m_TextureSlots.size(); i++)
+				{
+					if (m_TextureSlots[i].second == 0)
+					{
+						m_TextureSlots[i].second = (uint16_t)renderable.vertices[0].texIndex;
+						m_TextureSlots[i].first = tex;
+						available = true;
+						break;
+					}
+				}
+				if (!available)
+				{
+					Flush();
+					m_QuadsCount = 0;
+					m_TextureSlots[0].second = (uint16_t)renderable.vertices[0].texIndex;
+					m_TextureSlots[0].first = tex;
+				}
+			}
+		}
+		if (m_CirclesCount >= MAX_CIRCLES)
+		{
+			Flush();
+			m_CirclesCount = 0;
+		}
+		for (int i = 0; i < (CIRCLE_SEGMENTS + 2); i++)
+			renderable.vertices[i].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+		m_CirclesBuffer[m_CirclesCount++] = renderable;
+	}
+	void OpenGLRenderer2D::Submit(RoundedRect& renderable, Texture* tex)
+	{
+		if (renderable.vertices[0].texIndex != 0.0f)
+		{
+			boolean found = false;
+			for (size_t i = 0; i < m_TextureSlots.size(); i++)
+			{
+				if (m_TextureSlots[i].first == nullptr)
+					continue;
+				if (m_TextureSlots[i].second == (uint16_t)renderable.vertices[0].texIndex && m_TextureSlots[i].first->GetID() == tex->GetID())
+				{
+					found = true;
+					break;
+				}
+			}
+			if (found == false)
+			{
+				bool available = false;
+				for (size_t i = 0; i < m_TextureSlots.size(); i++)
+				{
+					if (m_TextureSlots[i].second == 0)
+					{
+						m_TextureSlots[i].second = (uint16_t)renderable.vertices[0].texIndex;
+						m_TextureSlots[i].first = tex;
+						available = true;
+						break;
+					}
+				}
+				if (!available)
+				{
+					Flush();
+					m_QuadsCount = 0;
+					m_TextureSlots[0].second = (uint16_t)renderable.vertices[0].texIndex;
+					m_TextureSlots[0].first = tex;
+				}
+			}
+		}
+		if (m_RoundedRectsCount >= MAX_ROUNDED_RECTS)
+		{
+			Flush();
+			m_RoundedRectsCount = 0;
+		}
+		int numVertices = 1 + 4 * (ROUNDED_RECT_SEGMENTS + 1);
+		for (int i = 0; i < numVertices; i++)
+			renderable.vertices[i].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+		m_RoundedRectsBuffer[m_RoundedRectsCount++] = renderable;
+	}
+	void OpenGLRenderer2D::Submit(ThickLine& renderable, Texture* tex)
+	{
+		if (renderable.vertices[0].texIndex != 0.0f)
+		{
+			boolean found = false;
+			for (size_t i = 0; i < m_TextureSlots.size(); i++)
+			{
+				if (m_TextureSlots[i].first == nullptr)
+					continue;
+				if (m_TextureSlots[i].second == (uint16_t)renderable.vertices[0].texIndex && m_TextureSlots[i].first->GetID() == tex->GetID())
+				{
+					found = true;
+					break;
+				}
+			}
+			if (found == false)
+			{
+				bool available = false;
+				for (size_t i = 0; i < m_TextureSlots.size(); i++)
+				{
+					if (m_TextureSlots[i].second == 0)
+					{
+						m_TextureSlots[i].second = (uint16_t)renderable.vertices[0].texIndex;
+						m_TextureSlots[i].first = tex;
+						available = true;
+						break;
+					}
+				}
+				if (!available)
+				{
+					Flush();
+					m_QuadsCount = 0;
+					m_TextureSlots[0].second = (uint16_t)renderable.vertices[0].texIndex;
+					m_TextureSlots[0].first = tex;
+				}
+			}
+		}
+		if (m_ThickLinesCount >= MAX_THICK_LINES)
+		{
+			Flush();
+			m_ThickLinesCount = 0;
+		}
+		for (int i = 0; i < 4; i++)
+			renderable.vertices[i].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+		m_ThickLinesBuffer[m_ThickLinesCount++] = renderable;
 	}
 	void OpenGLRenderer2D::Submit(Line2D& renderable)
 	{
@@ -168,25 +515,33 @@ namespace Dogo{
 			Flush();
 			m_LinesCount = 0;
 		}
-		renderable.vertices[0].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[0].position, 1.0f));
-		renderable.vertices[1].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[1].position, 1.0f));
+		for (int i = 0; i < 2; i++)
+			renderable.vertices[i].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
 		m_LinesBuffer[m_LinesCount++] = renderable;
 	}
 	void OpenGLRenderer2D::Flush()
 	{
-		QuadsFlush();
-		LinesFlush();
+		//QuadsFlush();
+		//TrianglesFlush();
+		//CirclesFlush();
+		RoundedRectFlush();
+		//ThickLineFlush();
+		//LinesFlush();
+		for (size_t i = 0; i < m_TextureSlots.size(); i++)
+		{
+			m_TextureSlots[i].second = 0;
+			m_TextureSlots[i].first = nullptr;
+		}
 	}
 	void OpenGLRenderer2D::LinesFlush()
 	{
-		glLineWidth(5.0f);
+		glLineWidth(50.0f);
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_LinesVertexBuffer);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_LinesBuffer), m_LinesBuffer.data());
 		m_Shader->Bind();
 		m_Shader->SetUniformMatrix4f("view", m_View);
 		m_Shader->SetUniformMatrix4f("projection", m_Proj);
-		m_Shader->SetUniformMatrix4f("model", m_Model);
 		m_Shader->SetUniform1i("mode", 1);
 		glBindVertexArray(m_LinesVertexArray);
 		glDrawElements(GL_LINES, m_LinesCount * 2, GL_UNSIGNED_INT, nullptr);
@@ -199,11 +554,10 @@ namespace Dogo{
 		m_Shader->Bind();
 		m_Shader->SetUniformMatrix4f("view", m_View);
 		m_Shader->SetUniformMatrix4f("projection", m_Proj);
-		m_Shader->SetUniformMatrix4f("model", m_Model);
 		m_Shader->SetUniform1i("mode", 0);
 		for (size_t i = 0; i < m_TextureSlots.size(); i++)
 		{
-			if (m_TextureSlots[i].second != 0)
+			if (m_TextureSlots[i].second != 0 && m_TextureSlots[i].first != nullptr)
 			{
 				m_TextureSlots[i].first->Bind(m_TextureSlots[i].second);
 			}
@@ -212,5 +566,85 @@ namespace Dogo{
 		glBindVertexArray(m_QuadsVertexArray);
 		glDrawElements(GL_TRIANGLES, m_QuadsCount * 6, GL_UNSIGNED_INT, nullptr);
 		m_QuadsCount = 0;
+	}
+	void OpenGLRenderer2D::TrianglesFlush()
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_TrianglesVertexBuffer);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_TrianglesBuffer), m_TrianglesBuffer.data());
+		m_Shader->Bind();
+		m_Shader->SetUniformMatrix4f("view", m_View);
+		m_Shader->SetUniformMatrix4f("projection", m_Proj);
+		m_Shader->SetUniform1i("mode", 0);
+		for (size_t i = 0; i < m_TextureSlots.size(); i++)
+		{
+			if (m_TextureSlots[i].second != 0 && m_TextureSlots[i].first != nullptr)
+			{
+				m_TextureSlots[i].first->Bind(m_TextureSlots[i].second);
+			}
+		}
+		m_Shader->SetUniform1iv("textures", m_Samplers, 16);
+		glBindVertexArray(m_TrianglesVertexArray);
+		glDrawElements(GL_TRIANGLES, m_TrianglesCount * 3, GL_UNSIGNED_INT, nullptr);
+		m_TrianglesCount = 0;
+	}
+	void OpenGLRenderer2D::CirclesFlush()
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_CirclesVertexBuffer);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_CirclesBuffer), m_CirclesBuffer.data());
+		m_Shader->Bind();
+		m_Shader->SetUniformMatrix4f("view", m_View);
+		m_Shader->SetUniformMatrix4f("projection", m_Proj);
+		m_Shader->SetUniform1i("mode", 0);
+		for (size_t i = 0; i < m_TextureSlots.size(); i++)
+		{
+			if (m_TextureSlots[i].second != 0 && m_TextureSlots[i].first != nullptr)
+			{
+				m_TextureSlots[i].first->Bind(m_TextureSlots[i].second);
+			}
+		}
+		m_Shader->SetUniform1iv("textures", m_Samplers, 16);
+		glBindVertexArray(m_CirclesVertexArray);
+		glDrawElements(GL_TRIANGLES, m_CirclesCount * CIRCLE_SEGMENTS * 3, GL_UNSIGNED_INT, nullptr);
+		m_CirclesCount = 0;
+	}
+	void OpenGLRenderer2D::RoundedRectFlush()
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_RoundedRectVertexBuffer);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_RoundedRectsBuffer), m_RoundedRectsBuffer.data());
+		m_Shader->Bind();
+		m_Shader->SetUniformMatrix4f("view", m_View);
+		m_Shader->SetUniformMatrix4f("projection", m_Proj);
+		m_Shader->SetUniform1i("mode", 0);
+		for (size_t i = 0; i < m_TextureSlots.size(); i++)
+		{
+			if (m_TextureSlots[i].second != 0 && m_TextureSlots[i].first != nullptr)
+			{
+				m_TextureSlots[i].first->Bind(m_TextureSlots[i].second);
+			}
+		}
+		m_Shader->SetUniform1iv("textures", m_Samplers, 16);
+		glBindVertexArray(m_RoundedRectVertexArray);
+		glDrawElements(GL_TRIANGLES, m_RoundedRectsCount * ROUNDED_RECT_SEGMENTS * 4 * 3, GL_UNSIGNED_INT, nullptr);
+		m_RoundedRectsCount = 0;
+	}
+	void OpenGLRenderer2D::ThickLineFlush()
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_ThickLineVertexBuffer);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_ThickLinesBuffer), m_ThickLinesBuffer.data());
+		m_Shader->Bind();
+		m_Shader->SetUniformMatrix4f("view", m_View);
+		m_Shader->SetUniformMatrix4f("projection", m_Proj);
+		m_Shader->SetUniform1i("mode", 0);
+		for (size_t i = 0; i < m_TextureSlots.size(); i++)
+		{
+			if (m_TextureSlots[i].second != 0 && m_TextureSlots[i].first != nullptr)
+			{
+				m_TextureSlots[i].first->Bind(m_TextureSlots[i].second);
+			}
+		}
+		m_Shader->SetUniform1iv("textures", m_Samplers, 16);
+		glBindVertexArray(m_ThickLineVertexArray);
+		glDrawElements(GL_TRIANGLES, m_ThickLinesCount * 6, GL_UNSIGNED_INT, nullptr);
+		m_ThickLinesCount = 0;
 	}
 }

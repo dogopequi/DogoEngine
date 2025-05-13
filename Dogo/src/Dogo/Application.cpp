@@ -246,8 +246,16 @@ namespace Dogo
 
 		Renderer2D* Renderer = Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl");
 		Renderer->SetViewMatrix(glm::mat4(1.0f));
-		Renderer->SetProjectionMatrix(glm::orthoRH_NO(0.0f, static_cast<float>(m_Window->GetWidth()), 1.0f, static_cast<float>(m_Window->GetHeight()), 0.0f, 1.0f));
-		Renderer->SetModelMatrix(glm::mat4(1.0f));
+		Renderer->SetProjectionMatrix(glm::orthoRH_NO(
+			0.0f,
+			static_cast<float>(m_Window->GetWidth()),
+			0.0f,
+			static_cast<float>(m_Window->GetHeight()),
+			-1.0f,
+			1.0f));
+
+		glm::mat4 model = glm::mat4(1.0f);
+		Renderer->SetModelMatrix(model);
 		Renderer->SetTransformMatrix(glm::mat4(1.0f));
 		Texture* lebron = Texture::Create("../Dogo/resources/Textures/lebron.png", "legacy", TextureType::twoD, "lebron");
 		Texture* rat = Texture::Create("../Dogo/resources/Textures/rat.png", "legacy", TextureType::twoD, "rat");
@@ -255,39 +263,97 @@ namespace Dogo
 		const int GRID_HEIGHT = 100;
 		const float SPACING = 0.1f;
 		const float SCALE = 0.09f;
-		
+		glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
+
 		while (m_Window->isRunning() && m_Window != nullptr)
 		{
-
+			glDisable(GL_CULL_FACE);
 			DogoECS::DG_ComponentManager::UpdateComponents<TransformComponent>();
 			m_Window->ClearColor(0.2f, 1.0f, 1.0f, 1.0f);
 			float currentFrame = timer.elapsed();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
-			DG_INFO("Delta Time: %f", deltaTime);
+			//DG_INFO("Delta Time: %f", deltaTime);
 			//////////////////////////////////////////////////////
 			//2D
-			Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)), true);
-			Renderer->Submit(CreateQuad(-1.5f, -0.5f, { 0.18f, 0.6f, 0.96f, 1.0f }, 1.0f, 1.0f), lebron);
+			if (Input::IsKeyPressed(DG_KEY_A))
+			{
+				pos.x -= 0.5f;
+			}
+			if (Input::IsKeyPressed(DG_KEY_D))
+			{
+				pos.x += 0.5f;
+			}
+			if (Input::IsKeyPressed(DG_KEY_W))
+			{
+				pos.y += 0.5f;
+			}
+			if (Input::IsKeyPressed(DG_KEY_S))
+			{
+				pos.y -= 0.5f;
+			}
+			////DG_INFO("X: %f Y: %f", pos.x, pos.y);
+			// QUAD WORKING 
+			//Renderer->Push(glm::translate(glm::mat4(1.0f), pos), false);
+			//Renderer->Submit(CreateQuad(0.0f, 0.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, 50.0f, 0.0f));
+			//Renderer->Pop();
+			
+			// --- TRIANGLE --- WORKING
+			//Renderer->Push(glm::translate(glm::mat4(1.0f), pos), false);
+			//Renderer->Submit(CreateTriangle(0.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, 50.0f, 0.0f));
+			//Renderer->Pop();
+			
+		 ////--- CIRCLE --- WORKING
+			//Renderer->Push(glm::translate(glm::mat4(1.0f), pos), false);
+			//Renderer->Submit(GenerateCircle({ pos.x, pos.y }, 25.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, 0.0f));
+			//Renderer->Pop();
+			//
+			//// --- ROUNDED RECT --- WORKING
+			Renderer->Push(glm::translate(glm::mat4(1.0f), pos), false);
+			Renderer->Submit(CreateRoundedRect(
+				{ 0.0f, 0.0f },           // center
+				{ 80.0f, 30.0f },         // size: wide rectangle
+				90.0f,                    // corner radius
+				{ 1.0f, 0.0f, 0.0f, 1.0f }, // red
+				0.0f
+			));
 			Renderer->Pop();
-			Renderer->Submit(CreateQuad(0.5f, -0.5f, { 1.0f, 0.93f, 0.24f, 1.0f }, 1.0f, 0.0f));
+			//
+			//// --- THICK LINE --- WORKING
+			//Renderer->Push(glm::translate(glm::mat4(1.0f), pos), false);
+			//Renderer->Submit(CreateThickLine({ 0.0f, 0.0f }, { 50.0f, 50.0f }, 6.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, 0.0f));
+			//Renderer->Pop();
+			//
+			//// --- LINE2D --- WORKING
+			//Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)), false);
+			//float y = m_Window->GetHeight() / 2.0f; // center of screen
+			//Renderer->Submit(CreateLine2D(
+			//	{ 0.0f, y, 0.0f },
+			//	{ static_cast<float>(m_Window->GetWidth()), y, 0.0f },
+			//	{ 1.0f, 0.0f, 0.0f, 1.0f } // red line
+			//));
+			//Renderer->Pop();
+			//Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)), true);
+			//Renderer->Submit(CreateQuad(-1.5f, -0.5f, { 0.18f, 0.6f, 0.96f, 1.0f }, 1.0f, 1.0f), lebron);
+			//Renderer->Pop();
+			//Renderer->Submit(CreateQuad(0.5f, -0.5f, { 1.0f, 0.93f, 0.24f, 1.0f }, 1.0f, 0.0f));
 			//Line2D axisX = CreateLine2D(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec4(1, 1, 1, 1));
 			//Renderer->Submit(axisX);
-			/*for (int y = 0; y < GRID_HEIGHT; ++y)
-			{
-				for (int x = 0; x < GRID_WIDTH; ++x)
-				{
-					float xpos = (x - GRID_WIDTH / 2) * SPACING;
-					float ypos = (y - GRID_HEIGHT / 2) * SPACING;
+			//for (int y = 0; y < GRID_HEIGHT; ++y)
+			//{
+			//	for (int x = 0; x < GRID_WIDTH; ++x)
+			//	{
+			//		float xpos = (x - GRID_WIDTH / 2) * SPACING;
+			//		float ypos = (y - GRID_HEIGHT / 2) * SPACING;
 
-					bool useFirstTex = (x + y) % 2 == 0;
-					glm::vec4 color = useFirstTex ? glm::vec4(0.8f, 0.1f, 0.2f, 1.0f) : glm::vec4(0.2f, 0.9f, 0.3f, 1.0f);
-					float texIndex = useFirstTex ? 1.0f : 2.0f;
-					Texture* texture = useFirstTex ? lebron : rat;
+			//		bool useFirstTex = (x + y) % 2 == 0;
+			//		glm::vec4 color = useFirstTex ? glm::vec4(0.8f, 0.1f, 0.2f, 1.0f) : glm::vec4(0.2f, 0.9f, 0.3f, 1.0f);
+			//		float texIndex = useFirstTex ? 1.0f : 2.0f;
+			//		Texture* texture = useFirstTex ? lebron : rat;
 
-					Renderer->Submit(CreateQuad(xpos, ypos, color, SCALE, texIndex), texture);
-				}
-			}*/
+			//		Renderer->Submit(CreateQuad(xpos, ypos, color, SCALE, texIndex), texture);
+			//	}
+			//}
 			Renderer->Flush();
 
 			///////////////////////////////////////////////////////
