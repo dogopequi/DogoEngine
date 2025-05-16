@@ -17,7 +17,7 @@ namespace Dogo
 				0.0f
 			));
 
-			renderer->RenderText(text, 10.0f, 10.0f, 1.0f,
+			renderer->RenderText(text, 0.0f, 0.0f, 0.5f,
 				hovered ? glm::vec3(1.0f, 1.0f, 0.0f) : glm::vec3(1.0f));
 
 			renderer->Pop();

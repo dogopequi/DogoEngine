@@ -84,6 +84,7 @@ namespace Dogo
 		GLuint m_FontVertexArray{};
 		GLuint m_FontVertexBuffer{};
 		std::map<char, Character> Characters;
+		GLuint FontAtlasTextureID = 0;
 
 		Shader* m_TextShader;
 		Shader* m_Shader;

@@ -63,10 +63,11 @@ namespace Dogo
 	};
 
 	struct Character {
-		unsigned int TextureID; // ID handle of the glyph texture
-		glm::ivec2   Size;      // size of glyph
-		glm::ivec2   Bearing;   // offset from baseline to left/top of glyph
-		unsigned int Advance;   // horizontal offset to advance to next glyph
+		glm::vec2 uvTopLeft;
+		glm::vec2 uvBottomRight;
+		glm::ivec2 size;
+		glm::ivec2 bearing;
+		uint32_t advance;
 	};
 
 	Circle GenerateCircle(glm::vec2 center, float radius, glm::vec4 color, float texID);

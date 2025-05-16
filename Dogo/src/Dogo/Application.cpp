@@ -352,7 +352,6 @@ namespace Dogo
 			std::pair<uint32_t, uint32_t> mouse = Input::GetMousePosition();
 			DogoUI::HandleInput(glm::vec2(mouse.first, mouse.second), Input::IsMouseButtonPressed(DG_MOUSE_BUTTON_1));
 			DogoUI::Render(Renderer);
-
 			Renderer->RenderText("FPS: ", 25.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
 			Renderer->RenderText(std::to_string(fps).c_str(), 135.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
 			Renderer->Flush();
@@ -410,7 +409,7 @@ namespace Dogo
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 			m_Window->OnUpdate();
-		 	 MemoryUsage::PrintUsage();
+		 	//MemoryUsage::PrintUsage();
 		}
 	}
 

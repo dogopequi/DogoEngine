@@ -555,60 +555,106 @@ namespace Dogo{
 	void OpenGLRenderer2D::LoadFont(const std::string& fontPath, uint32_t size)
 	{
 		
-		this->Characters.clear();
-		
+		Characters.clear();
+
 		FT_Library ft;
 		if (FT_Init_FreeType(&ft))
+		{
 			std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-		
+			return;
+		}
+
 		FT_Face face;
 		if (FT_New_Face(ft, fontPath.c_str(), 0, &face))
-			std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-		
-		FT_Set_Pixel_Sizes(face, 0, size);
-		
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		
-		for (GLubyte c = 0; c < 128; c++) 
 		{
-			
+			std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+			FT_Done_FreeType(ft);
+			return;
+		}
+
+		FT_Set_Pixel_Sizes(face, 0, size);
+
+		int atlasWidth = 0;
+		int atlasHeight = 0;
+		int rowHeight = 0;
+
+		for (GLubyte c = 0; c < 128; ++c)
+		{
+			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+				continue;
+
+			if (atlasWidth + face->glyph->bitmap.width >= 1024)
+			{
+				atlasHeight += rowHeight;
+				atlasWidth = 0;
+				rowHeight = 0;
+			}
+
+			atlasWidth += face->glyph->bitmap.width + 1;
+			rowHeight = std::max(rowHeight, static_cast<int>(face->glyph->bitmap.rows));
+		}
+
+		atlasHeight += rowHeight;
+
+		// Create atlas texture
+		GLuint atlasTex;
+		glGenTextures(1, &atlasTex);
+		glBindTexture(GL_TEXTURE_2D, atlasTex);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 1024, atlasHeight, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+
+		// Set texture parameters
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		// Pack glyphs
+		int xOffset = 0;
+		int yOffset = 0;
+		rowHeight = 0;
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		for (GLubyte c = 0; c < 128; ++c)
+		{
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
 			{
-				std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+				std::cout << "Failed to load Glyph " << (char)c << std::endl;
 				continue;
 			}
-			
-			unsigned int texture;
-			glGenTextures(1, &texture);
-			glBindTexture(GL_TEXTURE_2D, texture);
-			glTexImage2D(
-				GL_TEXTURE_2D,
-				0,
-				GL_RED,
+
+			if (xOffset + face->glyph->bitmap.width >= 1024)
+			{
+				yOffset += rowHeight;
+				xOffset = 0;
+				rowHeight = 0;
+			}
+
+			glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset,
 				face->glyph->bitmap.width,
 				face->glyph->bitmap.rows,
-				0,
-				GL_RED,
-				GL_UNSIGNED_BYTE,
-				face->glyph->bitmap.buffer
-			);
-			
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				GL_RED, GL_UNSIGNED_BYTE,
+				face->glyph->bitmap.buffer);
 
-			
+			float u0 = (float)xOffset / 1024.0f;
+			float v0 = (float)(yOffset + face->glyph->bitmap.rows) / (float)atlasHeight; // bottom
+			float u1 = (float)(xOffset + face->glyph->bitmap.width) / 1024.0f;
+			float v1 = (float)yOffset / (float)atlasHeight; // top
+
 			Character character = {
-				texture,
+				glm::vec2(u0, v0),
+				glm::vec2(u1, v1),
 				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
 				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
 				face->glyph->advance.x
 			};
+
 			Characters.insert(std::pair<char, Character>(c, character));
+			xOffset += face->glyph->bitmap.width + 1;
+			rowHeight = std::max(rowHeight, static_cast<int>(face->glyph->bitmap.rows));
 		}
+
+		FontAtlasTextureID = atlasTex;
+
 		glBindTexture(GL_TEXTURE_2D, 0);
-		
 		FT_Done_Face(face);
 		FT_Done_FreeType(ft);
 	}
@@ -617,41 +663,43 @@ namespace Dogo{
 		glDepthFunc(GL_ALWAYS);
 		m_TextShader->Bind();
 		m_TextShader->SetUniform3f("textColor", color);
-		glActiveTexture(GL_TEXTURE0);
-		glBindVertexArray(m_FontVertexArray);
 		m_TextShader->SetUniformMatrix4f("projection", m_Proj);
 		m_TextShader->SetUniform1i("text", 0);
-		
-		std::string::const_iterator c;
-		for (c = text.begin(); c != text.end(); c++)
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, FontAtlasTextureID);
+		glBindVertexArray(m_FontVertexArray);
+
+		for (char c : text)
 		{
-			Character ch = Characters[*c];
+			const Character& ch = Characters[c];
 
-			float xpos = x + ch.Bearing.x * scale;
-			float ypos = y + (this->Characters['H'].Bearing.y - ch.Bearing.y) * scale;
+			glm::vec4 origin = *m_TransformBack * glm::vec4(x, y, 0.0f, 1.0f);
+			float xpos = origin.x + ch.bearing.x * scale;
+			float ypos = origin.y + (Characters['H'].bearing.y - ch.bearing.y) * scale;
 
-			float w = ch.Size.x * scale;
-			float h = ch.Size.y * scale;
+
+			float w = ch.size.x * scale;
+			float h = ch.size.y * scale;
+
 			float vertices[6][4] = {
-				{ xpos,     ypos + h,   0.0f, 1.0f },
-				{ xpos + w, ypos,       1.0f, 0.0f },
-				{ xpos,     ypos,       0.0f, 0.0f },
+				{ xpos,     ypos + h,   ch.uvTopLeft.x,        ch.uvTopLeft.y },
+				{ xpos + w, ypos,       ch.uvBottomRight.x,    ch.uvBottomRight.y },
+				{ xpos,     ypos,       ch.uvTopLeft.x,        ch.uvBottomRight.y },
 
-				{ xpos,     ypos + h,   0.0f, 1.0f },
-				{ xpos + w, ypos + h,   1.0f, 1.0f },
-				{ xpos + w, ypos,       1.0f, 0.0f }
+				{ xpos,     ypos + h,   ch.uvTopLeft.x,        ch.uvTopLeft.y },
+				{ xpos + w, ypos + h,   ch.uvBottomRight.x,    ch.uvTopLeft.y },
+				{ xpos + w, ypos,       ch.uvBottomRight.x,    ch.uvBottomRight.y }
 			};
-			
-			glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-			
+
+
 			glBindBuffer(GL_ARRAY_BUFFER, m_FontVertexBuffer);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 
-			
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			
-			x += (ch.Advance >> 6) * scale; 
+
+			x += (ch.advance >> 6) * scale;
 		}
+
 		glBindVertexArray(0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
