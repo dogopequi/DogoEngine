@@ -21,6 +21,7 @@
 #include "Actors/Actor.h"
 #include "Dogo/Renderer/Line.h"
 #include "Dogo/Renderer/Renderer2D.h"
+#include "Dogo/Renderer/UI/UI.h"
 
 namespace Dogo
 {
@@ -91,62 +92,62 @@ namespace Dogo
 	{
 		/*DG_TRACE(e.ToString().c_str());*/
 
-		if (Input::GetKey() == DG_KEY_ESCAPE)
-			return false;
+		//if (Input::GetKey() == DG_KEY_ESCAPE)
+		//	return false;
 
-		RECT rect;
-		WindowsWindow* window = (WindowsWindow*)m_Window;
-		GetClientRect(window->GetHandle(), &rect);
+		//RECT rect;
+		//WindowsWindow* window = (WindowsWindow*)m_Window;
+		//GetClientRect(window->GetHandle(), &rect);
 
-		POINT ul;
-		ul.x = rect.left;
-		ul.y = rect.top;
+		//POINT ul;
+		//ul.x = rect.left;
+		//ul.y = rect.top;
 
-		POINT lr;
-		lr.x = rect.right;
-		lr.y = rect.bottom;
+		//POINT lr;
+		//lr.x = rect.right;
+		//lr.y = rect.bottom;
 
-		MapWindowPoints(window->GetHandle(), nullptr, &ul, 1);
-		MapWindowPoints(window->GetHandle(), nullptr, &lr, 1);
+		//MapWindowPoints(window->GetHandle(), nullptr, &ul, 1);
+		//MapWindowPoints(window->GetHandle(), nullptr, &lr, 1);
 
-		rect.left = ul.x;
-		rect.top = ul.y;
-		rect.right = lr.x;
-		rect.bottom = lr.y;
+		//rect.left = ul.x;
+		//rect.top = ul.y;
+		//rect.right = lr.x;
+		//rect.bottom = lr.y;
 
-		float xpos = static_cast<float>(Input::GetMouseX());
-		float ypos = static_cast<float>(Input::GetMouseY());
+		//float xpos = static_cast<float>(Input::GetMouseX());
+		//float ypos = static_cast<float>(Input::GetMouseY());
 
-		if (firstMouse)
-		{
-			lastX = xpos;
-			lastY = ypos;
-			firstMouse = false;
-		}
+		//if (firstMouse)
+		//{
+		//	lastX = xpos;
+		//	lastY = ypos;
+		//	firstMouse = false;
+		//}
 
-		float xoffset = xpos - lastX;
-		float yoffset = lastY - ypos;
+		//float xoffset = xpos - lastX;
+		//float yoffset = lastY - ypos;
 
-		lastX = 1280 / 2;
-		lastY = 720 / 2;
+		//lastX = 1280 / 2;
+		//lastY = 720 / 2;
 
-		xoffset *= m_Camera->GetSensitivity();
-		yoffset *= m_Camera->GetSensitivity();
+		//xoffset *= m_Camera->GetSensitivity();
+		//yoffset *= m_Camera->GetSensitivity();
 
 	
-		m_Camera->SetYaw(m_Camera->GetYaw() + xoffset);
-		m_Camera->SetPitch(m_Camera->GetPitch() + yoffset);
+		//m_Camera->SetYaw(m_Camera->GetYaw() + xoffset);
+		//m_Camera->SetPitch(m_Camera->GetPitch() + yoffset);
 
-		if (m_Camera->GetPitch() > 89.0f)
-			m_Camera->SetPitch(89.0f);
-		if (m_Camera->GetPitch() < -89.0f)
-			m_Camera->SetPitch(-89.0f);
+		//if (m_Camera->GetPitch() > 89.0f)
+		//	m_Camera->SetPitch(89.0f);
+		//if (m_Camera->GetPitch() < -89.0f)
+		//	m_Camera->SetPitch(-89.0f);
 
-		m_Camera->UpdateVectors();
+		//m_Camera->UpdateVectors();
 
-		ClipCursor(&rect);
+		//ClipCursor(&rect);
 
-		SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
+		//SetCursorPos(rect.left + 1280 / 2, rect.top + 720 / 2);
 
 		return true;
 	}
@@ -238,8 +239,6 @@ namespace Dogo
 		float y = 0;
 		MemoryUsage::PrintUsage();
 		//DG_Physics::CreatePlane(PxPlane(0, 1, 0, 5));
-
-
 		Renderer2D* Renderer = Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl");
 		Renderer->SetViewMatrix(glm::mat4(1.0f));
 		Renderer->SetProjectionMatrix(glm::orthoRH_NO(
@@ -257,6 +256,23 @@ namespace Dogo
 		Texture* rat = Texture::Create("../Dogo/resources/Textures/rat.png", "legacy", TextureType::twoD, "rat");
 		glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		Renderer->LoadFont("../Dogo/resources/Fonts/arial.ttf", 48);
+		static constexpr int NUM_ROWS = 100;
+		static constexpr int NUM_COLS = 100;
+		static constexpr float QUAD_SIZE = 5.0f;
+		static constexpr float PADDING = 2.0f;
+		std::shared_ptr<DogoUI::UIButton> button = std::make_shared<DogoUI::UIButton>();
+		std::shared_ptr<DogoUI::UIPanel> panel = std::make_shared<DogoUI::UIPanel>();
+		DogoUI::AddElement(button);
+		DogoUI::AddElement(panel);
+		button->visible = true;
+		panel->visible = false;
+		button->text = "Click Me!";
+		button->pos = { 100.0f, 100.0f };
+		button->size = { 200.0f, 60.0f };
+		button->onClick = []() { DG_INFO("Button Clicked!"); };
+		panel->color = { 0.0f, 1.0f, 0.0f };
+		panel->pos = { 0.0f, 0.0f };
+		panel->size = { 1280.0f, 720.0f };
 		while (m_Window->isRunning() && m_Window != nullptr)
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -266,91 +282,80 @@ namespace Dogo
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 			float fps = 1.0f / deltaTime;
+			//Renderer->Flush();
 			//////////////////////////////////////////////////////
 			//2D
-			if (Input::IsKeyPressed(DG_KEY_A))
-			{
-				pos.x -= 0.5f;
-			}
-			if (Input::IsKeyPressed(DG_KEY_D))
-			{
-				pos.x += 0.5f;
-			}
-			if (Input::IsKeyPressed(DG_KEY_W))
-			{
-				pos.y -= 0.5f;
-			}
-			if (Input::IsKeyPressed(DG_KEY_S))
-			{
-				pos.y += 0.5f;
-			}
+			//if (Input::IsKeyPressed(DG_KEY_A))
+			//{
+			//	pos.x -= 0.5f;
+			//}
+			//if (Input::IsKeyPressed(DG_KEY_D))
+			//{
+			//	pos.x += 0.5f;
+			//}
+			//if (Input::IsKeyPressed(DG_KEY_W))
+			//{
+			//	pos.y -= 0.5f;
+			//}
+			//if (Input::IsKeyPressed(DG_KEY_S))
+			//{
+			//	pos.y += 0.5f;
+			//}
 			////DG_INFO("X: %f Y: %f", pos.x, pos.y);
 			// QUAD WORKING 
-			Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(500.0f, 20.0f, 0.0f)), false);
-			Renderer->Submit(CreateQuad(0.0f, 0.0f, { 0.0f, 1.0f, 0.0f, 1.0f }, 50.0f, 0.0f));
-			Renderer->Pop();
-			
-			// --- TRIANGLE --- WORKING
-			Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(220.0f, 70.0f, 0.0f)), false);
-			Renderer->Submit(CreateTriangle(0.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, 50.0f, 0.0f));
-			Renderer->Pop();
-			
-		 ////--- CIRCLE --- WORKING
-			Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 200.0f, 0.0f)), false);
-			Renderer->Submit(GenerateCircle({ 0.0f, 0.0f }, 25.0f, { 1.0f, 1.0f, 0.0f, 1.0f }, 0.0f));
-			Renderer->Pop();
+			//Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(500.0f, 20.0f, 0.0f)), false);
+			//Renderer->Submit(CreateQuad(0.0f, 0.0f, { 0.0f, 1.0f, 0.0f, 1.0f }, 50.0f, 0.0f));
+			//Renderer->Pop();
 			//
-			//// --- ROUNDED RECT --- WORKING
-			Renderer->Push(glm::scale(glm::translate(glm::mat4(1.0f), pos), glm::vec3(5.0f, 5.0f, 5.0f)), false);
-			Renderer->Submit(CreateRoundedRect(
-				{ 0.0f, 0.0f },          
-				{ 200.0f, 60.0f },        
-				90.0f,                    
-				{ 1.0f, 0.0f, 0.0f, 1.0f }, 
-				0.0f
-			));
-			Renderer->Pop();
+			//// --- TRIANGLE --- WORKING
+			//Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(220.0f, 70.0f, 0.0f)), false);
+			//Renderer->Submit(CreateTriangle(0.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, 50.0f, 0.0f));
+			//Renderer->Pop();
+			//
+		 //////--- CIRCLE --- WORKING
+			//Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 200.0f, 0.0f)), false);
+			//Renderer->Submit(GenerateCircle({ 0.0f, 0.0f }, 25.0f, { 1.0f, 1.0f, 0.0f, 1.0f }, 0.0f));
+			//Renderer->Pop();
+			////
+			////// --- ROUNDED RECT --- WORKING
+			//Renderer->Push(glm::scale(glm::translate(glm::mat4(1.0f), pos), glm::vec3(5.0f, 5.0f, 5.0f)), false);
+			//Renderer->Submit(CreateRoundedRect(
+			//	{ 0.0f, 0.0f },          
+			//	{ 200.0f, 60.0f },        
+			//	90.0f,                    
+			//	{ 1.0f, 0.0f, 0.0f, 1.0f }, 
+			//	0.0f
+			//));
+			//Renderer->Pop();
 
-			//// --- THICK LINE --- WORKING
-			Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)), false);
-			Renderer->Submit(CreateThickLine({ 0.0f, 0.0f }, { 1200.0f, 700.0f }, 5.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, 0.0f));
-			Renderer->Pop();
-			//
-			//// --- LINE2D --- WORKING
-			Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)), false);
-			float y = m_Window->GetHeight() / 2.0f; // center of screen
-			Renderer->Submit(CreateLine2D(
-				{ 0.0f, y, 0.0f },
-				{ static_cast<float>(m_Window->GetWidth()), y, 0.0f },
-				{ 0.0f, 0.0f, 1.0f, 1.0f } // red line
-			));
-			Renderer->Pop();
-			Renderer->Flush();
+			////// --- THICK LINE --- WORKING
+			//Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)), false);
+			//Renderer->Submit(CreateThickLine({ 0.0f, 0.0f }, { 1200.0f, 700.0f }, 5.0f, { 1.0f, 1.0f, 1.0f, 1.0f }, 0.0f));
+			//Renderer->Pop();
+			////
+			////// --- LINE2D --- WORKING
+			//Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)), false);
+			//float y = m_Window->GetHeight() / 2.0f; // center of screen
+			//Renderer->Submit(CreateLine2D(
+			//	{ 0.0f, y, 0.0f },
+			//	{ static_cast<float>(m_Window->GetWidth()), y, 0.0f },
+			//	{ 0.0f, 0.0f, 1.0f, 1.0f } // red line
+			//));
+			//Renderer->Pop();
+			//Renderer->Flush();
 			Renderer->RenderText("FPS: ", 25.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
 			Renderer->RenderText(std::to_string(fps).c_str(), 135.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
-			//
-			//Renderer->Push(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)), true);
-			//Renderer->Submit(CreateQuad(-1.5f, -0.5f, { 0.18f, 0.6f, 0.96f, 1.0f }, 1.0f, 1.0f), lebron);
-			//Renderer->Pop();
-			//Renderer->Submit(CreateQuad(0.5f, -0.5f, { 1.0f, 0.93f, 0.24f, 1.0f }, 1.0f, 0.0f));
-			//Line2D axisX = CreateLine2D(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec4(1, 1, 1, 1));
-			//Renderer->Submit(axisX);
-			//for (int y = 0; y < GRID_HEIGHT; ++y)
-			//{
-			//	for (int x = 0; x < GRID_WIDTH; ++x)
-			//	{
-			//		float xpos = (x - GRID_WIDTH / 2) * SPACING;
-			//		float ypos = (y - GRID_HEIGHT / 2) * SPACING;
 
-			//		bool useFirstTex = (x + y) % 2 == 0;
-			//		glm::vec4 color = useFirstTex ? glm::vec4(0.8f, 0.1f, 0.2f, 1.0f) : glm::vec4(0.2f, 0.9f, 0.3f, 1.0f);
-			//		float texIndex = useFirstTex ? 1.0f : 2.0f;
-			//		Texture* texture = useFirstTex ? lebron : rat;
+			//////////////////////////////////////////////////////
+			//UI
 
-			//		Renderer->Submit(CreateQuad(xpos, ypos, color, SCALE, texIndex), texture);
-			//	}
-			//}
+			std::pair<uint32_t, uint32_t> mouse = Input::GetMousePosition();
+			DogoUI::HandleInput(glm::vec2(mouse.first, mouse.second), Input::IsMouseButtonPressed(DG_MOUSE_BUTTON_1));
+			DogoUI::Render(Renderer);
 
+			Renderer->RenderText("FPS: ", 25.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
+			Renderer->RenderText(std::to_string(fps).c_str(), 135.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
+			Renderer->Flush();
 			///////////////////////////////////////////////////////
 			//3D
 
@@ -370,7 +375,7 @@ namespace Dogo
 			//Renderer.SetProjectionMatrixPerspective(m_Camera->GetZoom(),1280.0f, 720.0f, 0.1f, 100.0f);
 			//processInput(deltaTime);
 			//Renderer.SetViewMatrix(m_Camera->GetViewMatrix());
-			//Renderer.Flush();
+			//Renderer->Flush();
 
 
 #if OPENGL
@@ -405,7 +410,7 @@ namespace Dogo
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 			m_Window->OnUpdate();
-		// 	// MemoryUsage::PrintUsage();
+		 	 MemoryUsage::PrintUsage();
 		}
 	}
 

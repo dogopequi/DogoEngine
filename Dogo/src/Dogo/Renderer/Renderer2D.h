@@ -88,6 +88,7 @@ namespace Dogo
 		virtual glm::mat4 GetProjectionMatrix() = 0;
 		virtual glm::mat4 GetModelMatrix() = 0;
 		virtual glm::mat4 GetTransformMatrix() = 0;
+		virtual glm::mat4 GetTransformBack();
 		virtual void SetViewPos(const glm::vec3& pos) = 0;
 		virtual void Submit(Quad& renderable, Texture* tex = nullptr) = 0;
 		virtual void Submit(Triangle& renderable, Texture* tex = nullptr) = 0;
@@ -96,7 +97,7 @@ namespace Dogo
 		virtual void Submit(ThickLine& renderable, Texture* tex = nullptr) = 0;
 		virtual void Submit(Line2D& renderable) = 0;
 		virtual void Flush() = 0;
-		virtual void Push(const glm::mat4& mat, boolean override);
+		virtual void Push(const glm::mat4& mat, boolean override = false);
 		virtual void Pop();
 		virtual void LoadFont(const std::string& fontPath, uint32_t size) = 0;
 		virtual void RenderText(std::string text, float x, float y, float scale, glm::vec3 color = glm::vec3(1.0f)) = 0;

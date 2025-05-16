@@ -196,7 +196,7 @@ namespace Dogo
 		return quad;
 	}
 
-	void Renderer2D::Push(const glm::mat4& mat, boolean override = false)
+	void Renderer2D::Push(const glm::mat4& mat, boolean override)
 	{
 		if(override)
 			m_TransformStack.push_back(mat);
@@ -212,6 +212,11 @@ namespace Dogo
 			m_TransformStack.pop_back();
 		}
 		m_TransformBack = &m_TransformStack.back();
+	}
+
+	glm::mat4 Renderer2D::GetTransformBack()
+	{
+		return *m_TransformBack;
 	}
 
 }
