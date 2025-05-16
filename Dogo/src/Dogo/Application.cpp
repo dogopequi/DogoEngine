@@ -261,18 +261,18 @@ namespace Dogo
 		static constexpr float QUAD_SIZE = 5.0f;
 		static constexpr float PADDING = 2.0f;
 		std::shared_ptr<DogoUI::UIButton> button = std::make_shared<DogoUI::UIButton>();
-		std::shared_ptr<DogoUI::UIPanel> panel = std::make_shared<DogoUI::UIPanel>();
+		//std::shared_ptr<DogoUI::UIPanel> panel = std::make_shared<DogoUI::UIPanel>();
 		DogoUI::AddElement(button);
-		DogoUI::AddElement(panel);
+		//DogoUI::AddElement(panel);
 		button->visible = true;
-		panel->visible = false;
+		//panel->visible = false;
 		button->text = "Click Me!";
-		button->pos = { 100.0f, 100.0f };
+		button->pos = { m_Window->GetWidth() / 2 - 50.0f, m_Window->GetHeight() / 2 };
 		button->size = { 200.0f, 60.0f };
 		button->onClick = []() { DG_INFO("Button Clicked!"); };
-		panel->color = { 0.0f, 1.0f, 0.0f };
-		panel->pos = { 0.0f, 0.0f };
-		panel->size = { 1280.0f, 720.0f };
+		//panel->color = { 0.0f, 1.0f, 0.0f };
+		//panel->pos = { 0.0f, 0.0f };
+		//panel->size = { 1280.0f, 720.0f };
 		while (m_Window->isRunning() && m_Window != nullptr)
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -343,8 +343,6 @@ namespace Dogo
 			//));
 			//Renderer->Pop();
 			//Renderer->Flush();
-			Renderer->RenderText("FPS: ", 25.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
-			Renderer->RenderText(std::to_string(fps).c_str(), 135.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
 
 			//////////////////////////////////////////////////////
 			//UI
@@ -352,9 +350,10 @@ namespace Dogo
 			std::pair<uint32_t, uint32_t> mouse = Input::GetMousePosition();
 			DogoUI::HandleInput(glm::vec2(mouse.first, mouse.second), Input::IsMouseButtonPressed(DG_MOUSE_BUTTON_1));
 			DogoUI::Render(Renderer);
-			Renderer->RenderText("FPS: ", 25.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
-			Renderer->RenderText(std::to_string(fps).c_str(), 135.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
+			Renderer->SubmitText("FPS: ", 25.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
+			Renderer->SubmitText(std::to_string(fps).c_str(), 135.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
 			Renderer->Flush();
+			Renderer->RenderText();
 			///////////////////////////////////////////////////////
 			//3D
 

@@ -36,11 +36,13 @@ namespace Dogo
 		void Submit(RoundedRect& renderable, Texture* tex = nullptr) override;
 		void Submit(ThickLine& renderable, Texture* tex = nullptr) override;
 		void Submit(Line2D& renderable)override;
-
+		void SubmitText(const std::string& text, float x, float y, float scale, const glm::vec3& color = glm::vec3(1.0f)) override;
+		float ComputeTextWidth(const std::string& text, float scale) override;
+		float GetFontHeight(float scale)override;
 		void Flush()override;
 
 		virtual void LoadFont(const std::string& fontPath, uint32_t size);
-		virtual void RenderText(std::string text, float x, float y, float scale, glm::vec3 color = glm::vec3(1.0f));
+		virtual void RenderText();
 
 	private:
 		void LinesFlush();
@@ -84,7 +86,8 @@ namespace Dogo
 		GLuint m_FontVertexArray{};
 		GLuint m_FontVertexBuffer{};
 		std::map<char, Character> Characters;
-		GLuint FontAtlasTextureID = 0;
+		GLuint m_FontAtlasTextureID = 0;
+		std::vector<TextCommand> m_TextCommands;
 
 		Shader* m_TextShader;
 		Shader* m_Shader;

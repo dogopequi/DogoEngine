@@ -11,6 +11,7 @@
 #define MAX_CIRCLES 1000
 #define MAX_ROUNDED_RECTS 1000
 #define MAX_THICK_LINES 1000
+#define MAX_CHARACTERS 100
 
 #define CIRCLE_SEGMENTS 32
 #define ROUNDED_RECT_SEGMENTS 36
@@ -70,12 +71,21 @@ namespace Dogo
 		uint32_t advance;
 	};
 
+	struct TextCommand {
+		std::string text;
+		float x, y;
+		float scale;
+		glm::vec3 color;
+		glm::mat4 transform;
+	};
+
 	Circle GenerateCircle(glm::vec2 center, float radius, glm::vec4 color, float texID);
-	Quad CreateQuad(float x, float y, const glm::vec4& color, float scale, float texID);
+	Quad CreateQuad(float x, float y, const glm::vec4& color, float width, float height, float texID);
 	Line2D CreateLine2D(const glm::vec3& start, const glm::vec3& end, const glm::vec4& color);
 	Triangle CreateTriangle(float origin, const glm::vec4& color, float scale, float texID);
 	RoundedRect CreateRoundedRect(const glm::vec2& center, const glm::vec2& size, float radius, const glm::vec4& color, float texID);
 	ThickLine CreateThickLine(const glm::vec2& p0, const glm::vec2& p1, float thickness, const glm::vec4& color, float texIndex);
+	
 	class Renderer2D
 	{
 	public:
@@ -97,11 +107,14 @@ namespace Dogo
 		virtual void Submit(RoundedRect& renderable, Texture* tex = nullptr) = 0;
 		virtual void Submit(ThickLine& renderable, Texture* tex = nullptr) = 0;
 		virtual void Submit(Line2D& renderable) = 0;
+		virtual void SubmitText(const std::string& text, float x, float y, float scale, const glm::vec3& color = glm::vec3(1.0f)) = 0;
 		virtual void Flush() = 0;
 		virtual void Push(const glm::mat4& mat, boolean override = false);
 		virtual void Pop();
 		virtual void LoadFont(const std::string& fontPath, uint32_t size) = 0;
-		virtual void RenderText(std::string text, float x, float y, float scale, glm::vec3 color = glm::vec3(1.0f)) = 0;
+		virtual float ComputeTextWidth(const std::string& text, float scale) = 0;
+		virtual void RenderText() = 0;
+		virtual float GetFontHeight(float scale) = 0;
 
 	protected:
 		Renderer2D() { m_TransformStack.push_back(glm::mat4(1.0f));

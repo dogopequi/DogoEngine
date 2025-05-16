@@ -245,7 +245,7 @@ namespace Dogo{
 		glGenBuffers(1, &m_FontVertexBuffer);
 		glBindVertexArray(m_FontVertexArray);
 		glBindBuffer(GL_ARRAY_BUFFER, m_FontVertexBuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4 * MAX_CHARACTERS, NULL, GL_DYNAMIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -552,6 +552,27 @@ namespace Dogo{
 			m_TextureSlots[i].first = nullptr;
 		}
 	}
+	float OpenGLRenderer2D::GetFontHeight(float scale)
+	{
+		auto it = Characters.find('H');
+		if (it != Characters.end())
+			return it->second.size.y * scale;
+		return 0.0f;
+	}
+	float OpenGLRenderer2D::ComputeTextWidth(const std::string& text, float scale)
+	{
+		float width = 0.0f;
+		for (char c : text)
+		{
+			auto it = Characters.find(c);
+			if (it != Characters.end())
+			{
+				const Character& ch = it->second;
+				width += (ch.advance >> 6) * scale; // Convert from 1/64th pixels
+			}
+		}
+		return width;
+	}
 	void OpenGLRenderer2D::LoadFont(const std::string& fontPath, uint32_t size)
 	{
 		
@@ -652,56 +673,92 @@ namespace Dogo{
 			rowHeight = std::max(rowHeight, static_cast<int>(face->glyph->bitmap.rows));
 		}
 
-		FontAtlasTextureID = atlasTex;
+		m_FontAtlasTextureID = atlasTex;
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		FT_Done_Face(face);
 		FT_Done_FreeType(ft);
 	}
-	void OpenGLRenderer2D::RenderText(std::string text, float x, float y, float scale, glm::vec3 color)
+	void OpenGLRenderer2D::SubmitText(const std::string& text, float x, float y, float scale, const glm::vec3& color)
 	{
+		TextCommand cmd;
+		cmd.text = text;
+		cmd.x = x;
+		cmd.y = y;
+		cmd.scale = scale;
+		cmd.color = color;
+		cmd.transform = *m_TransformBack; // capture transform stack at submission time
+		m_TextCommands.push_back(cmd);
+	}
+
+	void OpenGLRenderer2D::RenderText()
+	{
+		if (m_TextCommands.empty()) return;
+
 		glDepthFunc(GL_ALWAYS);
 		m_TextShader->Bind();
-		m_TextShader->SetUniform3f("textColor", color);
 		m_TextShader->SetUniformMatrix4f("projection", m_Proj);
 		m_TextShader->SetUniform1i("text", 0);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, FontAtlasTextureID);
+		glBindTexture(GL_TEXTURE_2D, m_FontAtlasTextureID);
 		glBindVertexArray(m_FontVertexArray);
 
-		for (char c : text)
+		// Temp vertex storage for the whole batch
+		std::vector<float> vertices;
+		vertices.reserve(m_TextCommands.size() * 6 * 4 * 16); // max estimate
+
+		for (const auto& cmd : m_TextCommands)
 		{
-			const Character& ch = Characters[c];
+			float cursorX = cmd.x;
+			float cursorY = cmd.y;
 
-			glm::vec4 origin = *m_TransformBack * glm::vec4(x, y, 0.0f, 1.0f);
-			float xpos = origin.x + ch.bearing.x * scale;
-			float ypos = origin.y + (Characters['H'].bearing.y - ch.bearing.y) * scale;
+			glm::vec4 transformedPos = cmd.transform * glm::vec4(cursorX, cursorY, 0.0f, 1.0f);
+			cursorX = transformedPos.x;
+			cursorY = transformedPos.y;
+
+			for (char c : cmd.text)
+			{
+				const Character& ch = Characters.at(c);
+
+				float xpos = cursorX + ch.bearing.x * cmd.scale;
+				float ypos = cursorY + (Characters['H'].bearing.y - ch.bearing.y) * cmd.scale;
+
+				float w = ch.size.x * cmd.scale;
+				float h = ch.size.y * cmd.scale;
+
+				float u0 = ch.uvTopLeft.x;
+				float v0 = ch.uvTopLeft.y;
+				float u1 = ch.uvBottomRight.x;
+				float v1 = ch.uvBottomRight.y;
+
+				float quad[6][4] = {
+					{ xpos,     ypos + h, u0, v0 }, // flipped v0/v1
+					{ xpos + w, ypos,     u1, v1 },
+					{ xpos,     ypos,     u0, v1 },
+
+					{ xpos,     ypos + h, u0, v0 },
+					{ xpos + w, ypos + h, u1, v0 },
+					{ xpos + w, ypos,     u1, v1 }
+				};
 
 
-			float w = ch.size.x * scale;
-			float h = ch.size.y * scale;
 
-			float vertices[6][4] = {
-				{ xpos,     ypos + h,   ch.uvTopLeft.x,        ch.uvTopLeft.y },
-				{ xpos + w, ypos,       ch.uvBottomRight.x,    ch.uvBottomRight.y },
-				{ xpos,     ypos,       ch.uvTopLeft.x,        ch.uvBottomRight.y },
+				vertices.insert(vertices.end(), &quad[0][0], &quad[0][0] + 6 * 4);
+				cursorX += (ch.advance >> 6) * cmd.scale;
+			}
 
-				{ xpos,     ypos + h,   ch.uvTopLeft.x,        ch.uvTopLeft.y },
-				{ xpos + w, ypos + h,   ch.uvBottomRight.x,    ch.uvTopLeft.y },
-				{ xpos + w, ypos,       ch.uvBottomRight.x,    ch.uvBottomRight.y }
-			};
-
-
+			m_TextShader->SetUniform3f("textColor", cmd.color); // color per command
 			glBindBuffer(GL_ARRAY_BUFFER, m_FontVertexBuffer);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-
-			x += (ch.advance >> 6) * scale;
+			glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(float), vertices.data());
+			glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size() / 4));
+			vertices.clear();
 		}
 
 		glBindVertexArray(0);
 		glBindTexture(GL_TEXTURE_2D, 0);
+
+		m_TextCommands.clear();
 	}
 	void OpenGLRenderer2D::LinesFlush()
 	{

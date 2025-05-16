@@ -61,29 +61,38 @@ namespace Dogo
 		return c;
 	
 	}
-	Quad CreateQuad(float x, float y, const glm::vec4& color, float scale, float texID)
+	Quad CreateQuad(float x, float y, const glm::vec4& color, float width, float height, float texID)
 	{
 		Quad quad;
 		quad.vertices[0].position = { x, y, 0.0f };
-		quad.vertices[1].position = { x + scale, y, 0.0f };
-		quad.vertices[2].position = { x + scale, y + scale, 0.0f };
-		quad.vertices[3].position = { x, y + scale, 0.0f };
+		quad.vertices[1].position = { x + width, y, 0.0f };
+		quad.vertices[2].position = { x + width, y + height, 0.0f };
+		quad.vertices[3].position = { x, y + height, 0.0f };
+
+		// Set the normal vector for each vertex (assuming a flat 2D quad)
 		quad.vertices[0].normal = { 0.0f, 0.0f, 1.0f };
 		quad.vertices[1].normal = { 0.0f, 0.0f, 1.0f };
 		quad.vertices[2].normal = { 0.0f, 0.0f, 1.0f };
 		quad.vertices[3].normal = { 0.0f, 0.0f, 1.0f };
+
+		// Set texture coordinates for each vertex (assuming a basic texture mapping)
 		quad.vertices[0].texcoord = { 0.0f, 0.0f };
 		quad.vertices[1].texcoord = { 1.0f, 0.0f };
 		quad.vertices[2].texcoord = { 1.0f, 1.0f };
 		quad.vertices[3].texcoord = { 0.0f, 1.0f };
+
+		// Apply the color to each vertex
 		quad.vertices[0].color = { color.x, color.y, color.z, color.w };
 		quad.vertices[1].color = { color.x, color.y, color.z, color.w };
 		quad.vertices[2].color = { color.x, color.y, color.z, color.w };
 		quad.vertices[3].color = { color.x, color.y, color.z, color.w };
+
+		// Apply texture index to each vertex
 		quad.vertices[0].texIndex = texID;
 		quad.vertices[1].texIndex = texID;
 		quad.vertices[2].texIndex = texID;
 		quad.vertices[3].texIndex = texID;
+
 		return quad;
 	}
 
