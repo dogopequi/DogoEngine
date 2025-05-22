@@ -1,5 +1,7 @@
 #include "dgpch.h"
 #include "UI.h"
+#include "Dogo/Logger.h"
+#include "Dogo/Input/Input.h"
 namespace Dogo
 {
 	namespace DogoUI
@@ -40,19 +42,10 @@ namespace Dogo
 
 			if (hovered)
 			{
-				if (isPressed)
+				if (isPressed && (Input::GetButtonState() != Input::ButtonState::RELEASED))
 				{
-					pressed = true;
-				}
-				else if (pressed)
-				{
-					pressed = false;
 					if (onClick) onClick();
 				}
-			}
-			else
-			{
-				pressed = false;
 			}
 
 			return hovered;

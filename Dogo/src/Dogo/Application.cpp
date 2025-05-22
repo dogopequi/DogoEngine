@@ -8,7 +8,6 @@
 #include "Dogo/Renderer/Buffers.h"
 #include "Platform/OpenGL/OpenGLTexture.h"
 #include "Dogo/Timer.h"
-#include "Dogo/Input/WindowsInput.h"
 #include <stb/stb_image.h>
 #include "Dogo/Renderer/Renderable2D.h"
 #include "Dogo/Renderer/SimpleRenderer2D.h"
@@ -16,7 +15,6 @@
 #include "Renderer/AssimpModel.h"
 #include "Renderer/AssimpRenderer.h"
 #include "Physics/DG_Physics.h"
-#include "DogoECS.h"
 #include "Component/Component.h"
 #include "Actors/Actor.h"
 #include "Dogo/Renderer/Line.h"
@@ -26,29 +24,29 @@
 namespace Dogo
 {
 	
-	void Application::processInput(float time)
-	{
-		WindowsWindow* window = WindowsWindow::GetWindowClass(NULL);
-		const float cameraSpeed = m_Camera->GetSpeed() * time;
-		if (Input::IsKeyPressed(DG_KEY_W))
-			m_Camera->SetPosition(m_Camera->GetPosition() + m_Camera->GetSpeed() * m_Camera->GetFront());
-		if (Input::IsKeyPressed(DG_KEY_S))
-			m_Camera->SetPosition(m_Camera->GetPosition() - m_Camera->GetSpeed() * m_Camera->GetFront());
-		if (Input::IsKeyPressed(DG_KEY_A))
-			m_Camera->SetPosition(m_Camera->GetPosition() - m_Camera->GetSpeed() * m_Camera->GetRight());
-		if (Input::IsKeyPressed(DG_KEY_D))
-			m_Camera->SetPosition(m_Camera->GetPosition() + m_Camera->GetSpeed() * m_Camera->GetRight());
+	//void Application::processInput(float time)
+	//{
+	//	WindowsWindow* window = WindowsWindow::GetWindowClass(NULL);
+	//	const float cameraSpeed = m_Camera->GetSpeed() * time;
+	//	if (Input::IsKeyPressed(DG_KEY_W))
+	//		m_Camera->SetPosition(m_Camera->GetPosition() + m_Camera->GetSpeed() * m_Camera->GetFront());
+	//	if (Input::IsKeyPressed(DG_KEY_S))
+	//		m_Camera->SetPosition(m_Camera->GetPosition() - m_Camera->GetSpeed() * m_Camera->GetFront());
+	//	if (Input::IsKeyPressed(DG_KEY_A))
+	//		m_Camera->SetPosition(m_Camera->GetPosition() - m_Camera->GetSpeed() * m_Camera->GetRight());
+	//	if (Input::IsKeyPressed(DG_KEY_D))
+	//		m_Camera->SetPosition(m_Camera->GetPosition() + m_Camera->GetSpeed() * m_Camera->GetRight());
 
-		if (Input::IsKeyPressed(DG_KEY_L))
-			window->LockCursor();
-		if (Input::IsKeyPressed(DG_KEY_U))
-			window->UnlockCursor();
-	}
+	//	if (Input::IsKeyPressed(DG_KEY_L))
+	//		window->LockCursor();
+	//	if (Input::IsKeyPressed(DG_KEY_U))
+	//		window->UnlockCursor();
+	//}
 	
 	Application::Application()
 	{
-		m_Window = DG_Window::Create();
-		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Application::OnEvent));
+	/*	m_Window->SetEventCallback(DG_BIND_EVENT_FN(Application::OnEvent));*/
+		m_Window = new Dogo::DogoWindow(1280, 720, "Dogo Window");
 		m_IsRunning = true;
 	}
 	Application::~Application()
@@ -72,15 +70,15 @@ namespace Dogo
 #endif
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		/*DG_TRACE(e.ToString().c_str());*/
+		DG_TRACE(e.ToString().c_str());
 		m_IsRunning = false;
 		return true;
 	}
 	bool Application::KeyPressedCallBack(KeyPressedEvent& e)
 	{
 		/*DG_TRACE(e.ToString().c_str());*/
-		 if(e.GetKeyCode() == DG_KEY_ESCAPE)
-		 	ClipCursor(nullptr);
+		 //if(e.GetKeyCode() == DG_KEY_ESCAPE)
+		 //	ClipCursor(nullptr);
 		return true;
 	}
 	bool Application::KeyReleasedCallBack(KeyReleasedEvent& e)
@@ -163,39 +161,31 @@ namespace Dogo
 	}
 	bool Application::MouseScrolledCallBack(MouseScrolledEvent& e)
 	{
-		m_Camera->SetZoom(m_Camera->GetZoom() - Input::GetScrollDelta());
-		if ((m_Camera->GetZoom() < 1.0f))
-			m_Camera->SetZoom(1.0f);
-		if ((m_Camera->GetZoom() > 90.0f))
-			m_Camera->SetZoom(90.0f);
+		//m_Camera->SetZoom(m_Camera->GetZoom() - Input::GetScrollDelta());
+		//if ((m_Camera->GetZoom() < 1.0f))
+		//	m_Camera->SetZoom(1.0f);
+		//if ((m_Camera->GetZoom() > 90.0f))
+		//	m_Camera->SetZoom(90.0f);
 		//DG_TRACE(e.ToString().c_str());
 		return true;
-	}
-
-	void changetexture(const std::string& filepath, const std::string& imageType, TextureType textureType, Texture& texture)
-	{
-		if (Input::IsKeyPressed(DG_KEY_B))
-		{
-			texture.UpdateTexture(filepath, imageType, textureType);
-		}
 	}
 
 	void Application::Run()
 	{
 
-		MemoryUsage::PrintUsage();
-		DogoECS::Init();
-		DG_Physics::InitPhysics(glm::vec3(0.0f, -9.81f, 0.0f));
-		DogoECS::DG_ComponentManager::RegisterComponent<BaseComponent>();
-		DogoECS::DG_ComponentManager::RegisterComponent<DynamicMeshComponent>();
-		DogoECS::DG_ComponentManager::RegisterComponent<TransformComponent>();
-		DogoECS::DG_ComponentManager::RegisterComponent<StaticMeshComponent>();
+		//MemoryUsage::PrintUsage();
+		//DogoECS::Init();
+		//DG_Physics::InitPhysics(glm::vec3(0.0f, -9.81f, 0.0f));
+		//DogoECS::DG_ComponentManager::RegisterComponent<BaseComponent>();
+		//DogoECS::DG_ComponentManager::RegisterComponent<DynamicMeshComponent>();
+		//DogoECS::DG_ComponentManager::RegisterComponent<TransformComponent>();
+		//DogoECS::DG_ComponentManager::RegisterComponent<StaticMeshComponent>();
 
-		#if DG_PLATFORM_WINDOWS
-		m_Window->SetInstance(instance);
-		m_Window->Init();
-		#endif
-		m_Camera.reset(new Camera());
+		//#if DG_PLATFORM_WINDOWS
+		//m_Window->SetInstance(instance);
+		//m_Window->Init();
+		//#endif
+		//m_Camera.reset(new Camera());
 
 		/*BufferLayout layout =
 		{
@@ -232,56 +222,56 @@ namespace Dogo
 		Line line3(glm::vec3(1, 1, 0), glm::vec3(0, 1, 0), glm::vec3(0, 0, 1), vertexShader1, pixelShader1);
 		Line line4(glm::vec3(0, 1, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 0), vertexShader1, pixelShader1);*/
 
-		Timer timer;
-		
-		float deltaTime{ 0.0f };
-		float lastFrame{ 0.0f };
-		float y = 0;
-		MemoryUsage::PrintUsage();
-		//DG_Physics::CreatePlane(PxPlane(0, 1, 0, 5));
-		Renderer2D* Renderer = Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl");
-		Renderer->SetViewMatrix(glm::mat4(1.0f));
-		Renderer->SetProjectionMatrix(glm::orthoRH_NO(
-			0.0f,
-			static_cast<float>(m_Window->GetWidth()),
-			static_cast<float>(m_Window->GetHeight()),
-			0.0f,
-			-1.0f,
-			1.0f));
+		//Timer timer;
+		//
+		//float deltaTime{ 0.0f };
+		//float lastFrame{ 0.0f };
+		//float y = 0;
+		//MemoryUsage::PrintUsage();
+		////DG_Physics::CreatePlane(PxPlane(0, 1, 0, 5));
+		//Renderer2D* Renderer = Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl");
+		//Renderer->SetViewMatrix(glm::mat4(1.0f));
+		//Renderer->SetProjectionMatrix(glm::orthoRH_NO(
+		//	0.0f,
+		//	static_cast<float>(m_Window->GetWidth()),
+		//	static_cast<float>(m_Window->GetHeight()),
+		//	0.0f,
+		//	-1.0f,
+		//	1.0f));
 
-		glm::mat4 model = glm::mat4(1.0f);
-		Renderer->SetModelMatrix(model);
-		Renderer->SetTransformMatrix(glm::mat4(1.0f));
-		Texture* lebron = Texture::Create("../Dogo/resources/Textures/lebron.png", "legacy", TextureType::twoD, "lebron");
-		Texture* rat = Texture::Create("../Dogo/resources/Textures/rat.png", "legacy", TextureType::twoD, "rat");
-		glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		Renderer->LoadFont("../Dogo/resources/Fonts/arial.ttf", 48);
-		static constexpr int NUM_ROWS = 100;
-		static constexpr int NUM_COLS = 100;
-		static constexpr float QUAD_SIZE = 5.0f;
-		static constexpr float PADDING = 2.0f;
-		std::shared_ptr<DogoUI::UIButton> button = std::make_shared<DogoUI::UIButton>();
-		//std::shared_ptr<DogoUI::UIPanel> panel = std::make_shared<DogoUI::UIPanel>();
-		DogoUI::AddElement(button);
-		//DogoUI::AddElement(panel);
-		button->visible = true;
-		//panel->visible = false;
-		button->text = "Click Me!";
-		button->pos = { m_Window->GetWidth() / 2 - 50.0f, m_Window->GetHeight() / 2 };
-		button->size = { 200.0f, 60.0f };
-		button->onClick = []() { DG_INFO("Button Clicked!"); };
+		//glm::mat4 model = glm::mat4(1.0f);
+		//Renderer->SetModelMatrix(model);
+		//Renderer->SetTransformMatrix(glm::mat4(1.0f));
+		//Texture* lebron = Texture::Create("../Dogo/resources/Textures/lebron.png", "legacy", TextureType::twoD, "lebron");
+		//Texture* rat = Texture::Create("../Dogo/resources/Textures/rat.png", "legacy", TextureType::twoD, "rat");
+		//glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		//Renderer->LoadFont("../Dogo/resources/Fonts/arial.ttf", 48);
+		//static constexpr int NUM_ROWS = 100;
+		//static constexpr int NUM_COLS = 100;
+		//static constexpr float QUAD_SIZE = 5.0f;
+		//static constexpr float PADDING = 2.0f;
+		//std::shared_ptr<DogoUI::UIButton> button = std::make_shared<DogoUI::UIButton>();
+		////std::shared_ptr<DogoUI::UIPanel> panel = std::make_shared<DogoUI::UIPanel>();
+		//DogoUI::AddElement(button);
+		////DogoUI::AddElement(panel);
+		//button->visible = true;
+		////panel->visible = false;
+		//button->text = "Click Me!";
+		//button->pos = { m_Window->GetWidth() / 2 - 50.0f, m_Window->GetHeight() / 2 };
+		//button->size = { 200.0f, 60.0f };
+		//button->onClick = []() { DG_INFO("Button Clicked!"); };
 		//panel->color = { 0.0f, 1.0f, 0.0f };
 		//panel->pos = { 0.0f, 0.0f };
 		//panel->size = { 1280.0f, 720.0f };
-		while (m_Window->isRunning() && m_Window != nullptr)
+		m_Window->SwapInterval(0);
+		while (!m_Window->WindowShouldClose() && m_Window != nullptr)
 		{
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			DogoECS::DG_ComponentManager::UpdateComponents<TransformComponent>();
+			//DogoECS::DG_ComponentManager::UpdateComponents<TransformComponent>();
 			m_Window->ClearColor(0.2f, 1.0f, 1.0f, 1.0f);
-			float currentFrame = timer.elapsed();
-			deltaTime = currentFrame - lastFrame;
-			lastFrame = currentFrame;
-			float fps = 1.0f / deltaTime;
+			//float currentFrame = timer.elapsed();
+			//deltaTime = currentFrame - lastFrame;
+			//lastFrame = currentFrame;
+			//float fps = 1.0f / deltaTime;
 			//Renderer->Flush();
 			//////////////////////////////////////////////////////
 			//2D
@@ -346,14 +336,14 @@ namespace Dogo
 
 			//////////////////////////////////////////////////////
 			//UI
-
-			std::pair<uint32_t, uint32_t> mouse = Input::GetMousePosition();
-			DogoUI::HandleInput(glm::vec2(mouse.first, mouse.second), Input::IsMouseButtonPressed(DG_MOUSE_BUTTON_1));
-			DogoUI::Render(Renderer);
-			Renderer->SubmitText("FPS: ", 25.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
-			Renderer->SubmitText(std::to_string(fps).c_str(), 135.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
-			Renderer->Flush();
-			Renderer->RenderText();
+			// I WAS USING THIS
+			//std::pair<uint32_t, uint32_t> mouse = Input::GetMousePosition();
+			//DogoUI::HandleInput(glm::vec2(mouse.first, mouse.second), Input::IsMouseButtonPressed(DG_MOUSE_BUTTON_1));
+			//DogoUI::Render(Renderer);
+			//Renderer->SubmitText("FPS: ", 25.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
+			//Renderer->SubmitText(std::to_string(fps).c_str(), 135.0f, 570.0f, 1.0f, glm::vec3(0.0f, .0f, 1.0f));
+			//Renderer->Flush();
+			//Renderer->RenderText();
 			///////////////////////////////////////////////////////
 			//3D
 
@@ -376,39 +366,40 @@ namespace Dogo
 			//Renderer->Flush();
 
 
-#if OPENGL
-			GLenum err;
-			while ((err = glGetError()) != GL_NO_ERROR) {
-				switch (err) {
-				case GL_INVALID_ENUM:
-					std::cout << "OpenGL Error: GL_INVALID_ENUM" << std::endl;
-					break;
-				case GL_INVALID_VALUE:
-					std::cout << "OpenGL Error: GL_INVALID_VALUE" << std::endl;
-					break;
-				case GL_INVALID_OPERATION:
-					std::cout << "OpenGL Error: GL_INVALID_OPERATION" << std::endl;
-					break;
-				case GL_STACK_OVERFLOW:
-					std::cout << "OpenGL Error: GL_STACK_OVERFLOW" << std::endl;
-					break;
-				case GL_STACK_UNDERFLOW:
-					std::cout << "OpenGL Error: GL_STACK_UNDERFLOW" << std::endl;
-					break;
-				case GL_OUT_OF_MEMORY:
-					std::cout << "OpenGL Error: GL_OUT_OF_MEMORY" << std::endl;
-					break;
-					// Add more cases as needed
-				default:
-					std::cout << "Unknown OpenGL Error" << std::endl;
-					break;
-				}
-			}
-#endif
+//#if OPENGL
+//			GLenum err;
+//			while ((err = glGetError()) != GL_NO_ERROR) {
+//				switch (err) {
+//				case GL_INVALID_ENUM:
+//					std::cout << "OpenGL Error: GL_INVALID_ENUM" << std::endl;
+//					break;
+//				case GL_INVALID_VALUE:
+//					std::cout << "OpenGL Error: GL_INVALID_VALUE" << std::endl;
+//					break;
+//				case GL_INVALID_OPERATION:
+//					std::cout << "OpenGL Error: GL_INVALID_OPERATION" << std::endl;
+//					break;
+//				case GL_STACK_OVERFLOW:
+//					std::cout << "OpenGL Error: GL_STACK_OVERFLOW" << std::endl;
+//					break;
+//				case GL_STACK_UNDERFLOW:
+//					std::cout << "OpenGL Error: GL_STACK_UNDERFLOW" << std::endl;
+//					break;
+//				case GL_OUT_OF_MEMORY:
+//					std::cout << "OpenGL Error: GL_OUT_OF_MEMORY" << std::endl;
+//					break;
+//					// Add more cases as needed
+//				default:
+//					std::cout << "Unknown OpenGL Error" << std::endl;
+//					break;
+//				}
+//			}
+//#endif
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
-			m_Window->OnUpdate();
-		 	//MemoryUsage::PrintUsage();
+			m_Window->SwapBuffers();
+			m_Window->PollEvents();
+		// 	//MemoryUsage::PrintUsage();
 		}
 	}
 

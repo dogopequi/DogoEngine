@@ -25,12 +25,8 @@ namespace Dogo
 		virtual void ClearColor(float x, float y, float z, float a) = 0;
 
 
-#if DG_PLATFORM_WINDOWS
-		static void Create(HWND* handle, RenderAPI api);
-#else
+
 		static void Create(RenderAPI api);
-		static void Create(RenderAPI api, Display *dpy, Visual* vi, int screen, const Window& window);
-#endif
 
 		static GraphicsContext* Get() { return s_Context; }
 		static RenderAPI GetAPI() { return s_RenderAPI; }

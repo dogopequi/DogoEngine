@@ -29,6 +29,7 @@ The licenses can be found in their respective folder.
 - [stb](https://github.com/nothings/stb)
 - [glm](https://github.com/icaven/glm)
 - [glad](https://github.com/Dav1dde/glad)
+- [GLFW](https://github.com/glfw/glfw) (submodule)
 - [PhysX](https://github.com/NVIDIA-Omniverse/PhysX)
 - [FreeType](https://freetype.org/)
 - [DogoECS](https://github.com/dogopequi/DogoECS)
@@ -47,7 +48,7 @@ To be added soon.
 PhysX is integrated, with more functionality to introduce.
 
 No Editor yet; Although with the 2D Renderer improving, I will start to be able to draw UI and start making the Editor.
-UI is in progress, at this point I can make a small 2D game, so I will be doing that after exams! Won't be an update for a month.
+UI is in progress, at this point I can make a small 2D game, so I will be doing that after exams!
 
 3D (Just two models and a few lines, nothing exemplary yet):
 ![image](https://github.com/user-attachments/assets/2ed5c1ed-5513-444a-b491-f7ce831189d3)

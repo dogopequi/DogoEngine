@@ -1,6 +1,5 @@
 #pragma once
 #include "Dogo/Logger.h"
-
 // TODO: Needs work to handle edge cases (combo input when using alt and shift) need a better solution
 
 
@@ -253,98 +252,170 @@
 
 namespace Dogo
 {
-	enum class KeyState
+	namespace Input
 	{
-		KEY_NONE, PRESSED, REPEAT, RELEASED
-	};
-	enum class ButtonState
-	{
-		BUTTON_NONE, PRESSED, REPEAT, RELEASED
-	};
+		struct Int2
+		{
+			int32_t x;
+			int32_t y;
 
-	class Input
-	{
-	public:
-		Input(const Input&) = delete;
-		Input& operator=(const Input&) = delete;
+			bool operator== (const Int2& other) const
+			{
+				return x == other.x && y == other.y;
+			}
+			bool operator!= (const Int2& other) const
+			{
+				return x != other.x || y != other.y;
+			}
+		};
+		enum class KeyState
+		{
+			KEY_NONE, PRESSED, REPEAT, RELEASED
+		};
+		enum class ButtonState
+		{
+			BUTTON_NONE, PRESSED, REPEAT, RELEASED
+		};
+		inline Int2 m_MousePosition;
+		inline Int2 m_Scroll;
+		inline int32_t m_ScrollDelta;
+		inline int32_t m_Key;
+		inline int32_t m_Button;
+		inline Int2 m_LastMousePosition;
+		inline int32_t m_LastKey;
+		inline int32_t m_LastButton;
+		inline KeyState m_KeyState;
+		inline ButtonState m_ButtonState;
 
-		inline static bool IsKeyPressed(int32_t keycode) { return s_Instance->IsKeyPressedImpl(keycode); }
 
-		inline static bool IsMouseButtonPressed(int32_t button) { return s_Instance->IsMouseButtonPressedImpl(button); }
-
-		inline static void ProcessKey(int32_t key, bool pressed) { s_Instance->ProcessKeyImpl(key, pressed); }
-		inline static void ProcessButton(int32_t button, bool pressed) { s_Instance->ProcessButtonImpl(button, pressed); }
-		inline static void ProcessMousePos(std::pair<int32_t, int32_t> mousepos) { s_Instance->ProcessMousePosImpl(mousepos); }
-		inline static void ProcessMouseScroll(std::pair<int32_t, int32_t> scroll) { s_Instance->ProcessMouseScrollImpl(scroll); }
-		inline static void ProcessMouseScrollDelta(int32_t delta) { s_Instance->ProcessScrollDeltaImpl(delta); }
-	protected:
-		Input() = default;
-		virtual bool IsKeyPressedImpl(int32_t keycode) = 0;
-
-		virtual bool IsMouseButtonPressedImpl(int32_t button) = 0;
-		virtual void ProcessKeyImpl(int32_t key, bool pressed) = 0;
-		virtual void ProcessButtonImpl(int32_t button, bool pressed) = 0;
-		virtual void ProcessMousePosImpl(std::pair<int32_t, int32_t> mousepos) = 0;
-		virtual void ProcessMouseScrollImpl(std::pair<int32_t, int32_t> scroll) = 0;
-		virtual void ProcessScrollDeltaImpl(int32_t delta) = 0;
-
-
-	public:
-		inline static int32_t GetKey() { return m_Key; }
-		inline static int32_t GetLastKey() { return m_LastKey; }
-		inline static int32_t GetButton() { return m_Button; }
-		inline static int32_t GetLastButton() { return m_LastButton; }
-		inline static KeyState GetKeyState() { return m_KeyState; }
-		inline static ButtonState GetButtonState() { return m_ButtonState; }
-		inline static std::pair<int32_t, int32_t> GetMousePosition() { return s_Instance->m_MousePosition; }
-		inline static int32_t GetMouseX() { return s_Instance->m_MousePosition.first; }
-		inline static int32_t GetMouseY() { return s_Instance->m_MousePosition.second; }
-		inline static std::pair<int32_t, int32_t> GetMouseScroll() { return s_Instance->m_Scroll; }
-		inline static int32_t GetScrollX() { return s_Instance->m_Scroll.first; }
-		inline static int32_t GetScrollY() { return s_Instance->m_Scroll.second; }
-		inline static int32_t GetScrollDelta() { return s_Instance->m_ScrollDelta; }
-
-	protected:
-		inline static void SetKey(int32_t key) 
-		{ 
+		inline int32_t GetKey() { return m_Key; }
+		inline int32_t GetLastKey() { return m_LastKey; }
+		inline int32_t GetButton() { return m_Button; }
+		inline int32_t GetLastButton() { return m_LastButton; }
+		inline KeyState GetKeyState() { return m_KeyState; }
+		inline ButtonState GetButtonState() { return m_ButtonState; }
+		inline Int2 GetMousePosition() { return m_MousePosition; }
+		inline int32_t GetMouseX() { return m_MousePosition.x; }
+		inline int32_t GetMouseY() { return m_MousePosition.y; }
+		inline Int2 GetMouseScroll() { return m_Scroll; }
+		inline int32_t GetScrollX() { return m_Scroll.x; }
+		inline int32_t GetScrollY() { return m_Scroll.y; }
+		inline int32_t GetScrollDelta() { return m_ScrollDelta; }
+		inline void SetKey(int32_t key)
+		{
 			m_LastKey = m_Key;
 			m_Key = key;
 		}
-		inline static void SetButton(int32_t button) 
-		{ 
+		inline void SetButton(int32_t button)
+		{
 			m_LastButton = m_Button;
 			m_Button = button;
 		}
-		inline static void SetKeyState(KeyState state) { m_KeyState = state; }
-		inline static void SetButtonState(ButtonState state) { m_ButtonState = state; }
-		inline static void SetMousePos(std::pair<int32_t, int32_t> pos)
+		inline void SetKeyState(KeyState state) { m_KeyState = state; }
+		inline void SetButtonState(ButtonState state) { m_ButtonState = state; }
+		inline void SetMousePos(int32_t x, int32_t y)
 		{
-			m_MousePosition = pos;
+			m_MousePosition.x = x;
+			m_MousePosition.y = y;
 		}
-		inline static void SetScroll(std::pair<int32_t, int32_t> scroll)
+		inline void SetScroll(int32_t x, int32_t y)
 		{
-			m_Scroll = scroll;
+			m_Scroll.x = x;
+			m_Scroll.y = y;
 		}
-		inline static void SetScrollDelta(int32_t scroll)
+		inline void SetScrollDelta(int32_t scroll)
 		{
 			m_ScrollDelta = scroll;
 		}
 
-	private:
-		static Input* s_Instance;
-		static std::pair<int32_t, int32_t> m_MousePosition;
-		static std::pair<int32_t, int32_t> m_Scroll;
-		static int32_t m_ScrollDelta;
-		static int32_t m_Key;
-		static int32_t m_Button;
-		static std::pair<int32_t, int32_t> m_LastMousePosition;
-		static int32_t m_LastKey;
-		static int32_t m_LastButton;
-		static KeyState m_KeyState;
-		static ButtonState m_ButtonState;
-	};
 
+		inline bool IsKeyPressed(int32_t keycode) {
+			if (m_Key == keycode)
+				return true;
+			return false;
+		}
 
+		inline bool IsMouseButtonPressed(int32_t button) {
+			if (m_Button == button)
+				return true;
+			return false;
+		}
+
+		inline void ProcessKey(int32_t key, bool pressed) {
+			bool same = true;
+			if (key != Input::GetKey()) { same = false; }
+			if (!same)
+			{
+				if (pressed)
+				{
+					Input::SetKey(key);
+					Input::SetKeyState(KeyState::PRESSED);
+					return;
+				}
+			}
+			if (same)
+			{
+				if (pressed) // repeat
+				{
+					Input::SetKey(key);
+					Input::SetKeyState(KeyState::REPEAT);
+					return;
+				}
+				else
+				{
+					Input::SetKeyState(KeyState::RELEASED);
+					return;
+				}
+			}
+		}
+		inline void ProcessButton(int32_t button, bool pressed) {
+			bool same = true;
+			if (button != Input::GetButton()) { same = false; }
+			if (!same)
+			{
+				if (pressed)
+				{
+					Input::SetButton(button);
+					Input::SetButtonState(ButtonState::PRESSED);
+					return;
+				}
+			}
+			if (same)
+			{
+				if (pressed) // repeat
+				{
+					Input::SetButton(button);
+					Input::SetButtonState(ButtonState::REPEAT);
+					return;
+				}
+				else
+				{
+					Input::SetButtonState(ButtonState::RELEASED);
+					return;
+				}
+			}
+		}
+		inline void ProcessMousePos(Int2 mousepos) {
+			if (mousepos != Input::GetMousePosition())
+			{
+				Input::SetMousePos(mousepos.x, mousepos.y);
+				return;
+			}
+		}
+		inline void ProcessMouseScroll(Int2 scroll) {
+			if (scroll != Input::GetMouseScroll())
+			{
+				Input::SetScroll(scroll.x, scroll.y);
+			}
+		}
+		inline void ProcessMouseScrollDelta(int32_t delta) {
+			if (delta != Input::GetScrollDelta())
+			{
+				Input::SetScrollDelta(delta);
+			}
+		}
+
+	}
 	static std::string KeyCodeToKeyName(int32_t keycode)
 	{
 		switch (keycode)

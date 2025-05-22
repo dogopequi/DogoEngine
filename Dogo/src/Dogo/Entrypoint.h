@@ -1,11 +1,5 @@
 #pragma once
 //#include <tchar.h>
-#if DG_PLATFORM_WINDOWS
-#include "Dogo/Input/WindowsInput.h"
-#endif
-#if DG_PLATFORM_LINUX
-#include "Dogo/Input/LinuxInput.h"
-#endif
 extern Dogo::Application* Dogo::CreateApplication();
 
 //#if DG_PLATFORM_WINDOWS
@@ -23,11 +17,11 @@ extern Dogo::Application* Dogo::CreateApplication();
 //}
 //#endif
 //#if DG_PLATFORM_LINUX
-#if DG_PLATFORM_WINDOWS
-Dogo::Input* Dogo::Input::s_Instance = new Dogo::WindowsInput();
-#else
-Dogo::Input* Dogo::Input::s_Instance = new Dogo::LinuxInput();
-#endif
+//#if DG_PLATFORM_WINDOWS
+//Dogo::Input* = new Dogo::Input();
+//#else
+//Dogo::Input* Dogo::Input::s_Instance = new Dogo::LinuxInput();
+//#endif
 int main(int argc, char** argv)
 {
 //    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -41,3 +35,4 @@ int main(int argc, char** argv)
 	// delete app;
 }
 //#endif
+//

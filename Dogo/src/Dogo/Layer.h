@@ -12,7 +12,7 @@ namespace Dogo
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate() {}
-		inline const std::string& GetName() const { return m_Name; }
+		inline virtual const std::string& GetName() const { return m_Name; }
 	protected:
 		std::string m_Name;
 	};

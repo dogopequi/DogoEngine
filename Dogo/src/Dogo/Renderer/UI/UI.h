@@ -19,7 +19,6 @@ namespace Dogo
 			std::string text;
 			std::function<void()> onClick;
 			bool hovered = false;
-			bool pressed = false;
 
 			void Draw(Renderer2D* renderer, const glm::mat4 parentTransform) override;
 			bool MouseHandler(const glm::vec2& mousePos, bool isPressed, const glm::mat4 parentTransform) override;

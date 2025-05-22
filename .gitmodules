@@ -1,0 +1,3 @@
+[submodule "Dogo/vendor/GLFW"]
+	path = Dogo/vendor/GLFW
+	url = https://github.com/dogopequi/glfw.git

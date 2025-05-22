@@ -22,9 +22,11 @@ workspace "Dogo"
     IncludeDir = {}
     IncludeDir["glad"] = "Dogo/vendor/glad/include"
     IncludeDir["DogoECS"] = "Dogo/vendor/DogoECS/include"
+    IncludeDir["GLFW"] = "Dogo/vendor/GLFW/include"
     
     include "Dogo/vendor/glad"
     include "Dogo/vendor/DogoECS"
+    include "Dogo/vendor/GLFW"
 
 project "Dogo"
     location "Dogo"
@@ -52,6 +54,7 @@ project "Dogo"
         GLMinclude,
         "%{IncludeDir.glad}",
         "%{IncludeDir.DogoECS}",
+        "%{IncludeDir.GLFW}",
         ASSIMPinclude,
         PHYSXinclude,
         FreeTypeInclude
@@ -65,6 +68,7 @@ project "Dogo"
     {
         "DogoECS",
         "glad",
+        "GLFW",
 		"opengl32.lib",
         "assimp-vc143-mt.lib",
     }
@@ -77,6 +81,7 @@ project "Dogo"
         {
             "DG_PLATFORM_WINDOWS",
             "DG_BUILD_STATIC",
+            "GLFW_STATIC",
             "ASSIMP_STATIC"
         }
 
@@ -104,6 +109,7 @@ project "Dogo"
         {
             "DG_PLATFORM_LINUX",
             "DG_BUILD_STATIC",
+            "GLFW_STATIC",
             "ASSIMP_STATIC"
         }
 
@@ -175,6 +181,7 @@ project "Sandbox"
         GLMinclude,
         "%{IncludeDir.glad}",
         "%{IncludeDir.DogoECS}",
+        "%{IncludeDir.GLFW}",
         PHYSXinclude
     }
 
@@ -183,6 +190,7 @@ project "Sandbox"
     {
         "Dogo",
         "glad",
+        "GLFW",
         "DogoECS"
     }
     
