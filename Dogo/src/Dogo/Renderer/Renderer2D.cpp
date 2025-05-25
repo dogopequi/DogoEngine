@@ -129,52 +129,38 @@ namespace Dogo
 		triangle.vertices[2] = { p2, color, uv2, normal, texID };
 		return triangle;
 	}
+	RoundedRect CreateRoundedRect(glm::vec2 center, glm::vec2 size, float radius, glm::vec4 color, float texID) {
+		static const float sina[ROUNDED_RECT_VERTICES] = {
+				 0.0f,  0.1736482f,  0.3420201f,  0.5f,        0.6427876f,  0.7660444f,
+				 0.8660254f,  0.9396926f,  0.9848077f,  1.0f,        0.9848077f,  0.9396926f,
+				 0.8660254f,  0.7660444f,  0.6427876f,  0.5f,        0.3420201f,  0.1736482f,
+				 0.0f, -0.1736482f, -0.3420201f, -0.5f,       -0.6427876f, -0.7660444f,
+				-0.8660254f, -0.9396926f, -0.9848077f, -1.0f,       -0.9848077f, -0.9396926f,
+				-0.8660254f, -0.7660444f, -0.6427876f, -0.5f,       -0.3420201f, -0.1736482f
+		};
+		static const float* cosa = sina + ROUNDED_RECT_SEGMENTS;
 
-	RoundedRect CreateRoundedRect(const glm::vec2& center, const glm::vec2& size, float radius, const glm::vec4& color, float texID)
-	{
 		RoundedRect rr;
-		glm::vec2 halfSize = size * 0.5f;
-		glm::vec3 normal{ 0, 0, 1 };
-
-
-		radius = glm::min(radius, glm::min(halfSize.x, halfSize.y));
-
-
-		glm::vec2 cornerOffset = halfSize - glm::vec2(radius);
-		glm::vec2 pos;
+		glm::vec2 half = size * 0.5f;
+		radius = std::min(radius, std::min(half.x, half.y));
+		glm::vec2 d = half - glm::vec2(radius);
+		glm::vec3 normal{ 0.0f, 0.0f, 1.0f };
 
 		int idx = 0;
+		rr.vertices[idx++] = { glm::vec3(center, 0.0f), color, glm::vec2(0.0f), normal, texID };
 
-	
-		rr.vertices[idx++] = {
-			glm::vec3(center, 0.0f),
-			color,
-			glm::vec2(0.0f, 0.0f),
-			normal,
-			texID
-		};
+		for (int i = 0; i < ROUNDED_RECT_SEGMENTS * 4; ++i) {
+			glm::vec2 off;
+			if (i < ROUNDED_RECT_SEGMENTS)       off = { +d.x, +d.y };
+			else if (i < ROUNDED_RECT_SEGMENTS * 2)   off = { -d.x, +d.y };
+			else if (i < ROUNDED_RECT_SEGMENTS * 3)   off = { -d.x, -d.y };
+			else                                       off = { +d.x, -d.y };
 
-		
-		for (int i = 0; i <= ROUNDED_RECT_SEGMENTS; ++i)
-		{
-			float angle = glm::radians(90.0f) * (float(i) / 9.0f); 
+			float s = sina[i];
+			float c = cosa[i];
+			glm::vec2 p = center + off + glm::vec2(c, s) * radius;
 
-
-			glm::vec2 corner;
-			if (i <= 9) corner = { +cornerOffset.x, +cornerOffset.y }; 
-			else if (i <= 18) corner = { -cornerOffset.x, +cornerOffset.y }; 
-			else if (i <= 27) corner = { -cornerOffset.x, -cornerOffset.y }; 
-			else corner = { +cornerOffset.x, -cornerOffset.y }; 
-
-			pos = center + corner + glm::vec2(cos(angle), sin(angle)) * radius;
-
-			rr.vertices[idx++] = {
-				glm::vec3(pos, 0.0f),
-				color,
-				glm::vec2(0.0f, 0.0f),
-				normal,
-				texID
-			};
+			rr.vertices[idx++] = { glm::vec3(p, 0.0f), color, glm::vec2(0.0f), normal, texID };
 		}
 
 		return rr;

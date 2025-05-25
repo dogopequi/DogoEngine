@@ -91,7 +91,6 @@ namespace Dogo
 
 	void DogoWindow::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
-		DG_TRACE("Key event: key={%d}, scancode={%d}, action={%d}, mods={%d}", key, scancode, action, mods);
 		DogoWindow* dogoWindow = static_cast<DogoWindow*>(glfwGetWindowUserPointer(window));
 
 		if (action == GLFW_PRESS) {
@@ -113,7 +112,6 @@ namespace Dogo
 
 	void DogoWindow::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 	{
-		DG_TRACE("Mouse button: button={%d}, action={%d}, mods={%d}", button, action, mods);
 		DogoWindow* dogoWindow = static_cast<DogoWindow*>(glfwGetWindowUserPointer(window));
 
 		if (action == GLFW_PRESS) {
@@ -135,7 +133,6 @@ namespace Dogo
 
 	void DogoWindow::CursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 	{
-		DG_TRACE("Cursor moved: x={%f}, y={%f}", xpos, ypos);
 		Input::ProcessMousePos({ (int32_t)xpos, (int32_t)ypos });
 		DogoWindow* dogoWindow = static_cast<DogoWindow*>(glfwGetWindowUserPointer(window));
 		MouseMovedEvent e((uint32_t)xpos, (uint32_t)ypos);
@@ -144,7 +141,6 @@ namespace Dogo
 
 	void DogoWindow::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 	{
-		DG_TRACE("Scroll: xoffset={%f}, yoffset={%f}", xoffset, yoffset);
 		Input::ProcessMouseScroll({ (int32_t)xoffset, (int32_t)yoffset });
 		Input::ProcessMouseScrollDelta((int32_t)yoffset);
 		DogoWindow* dogoWindow = static_cast<DogoWindow*>(glfwGetWindowUserPointer(window));
@@ -154,7 +150,6 @@ namespace Dogo
 
 	void DogoWindow::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 	{
-		DG_TRACE("Framebuffer resized: {%d}x{%d}", width, height);
 		glViewport(0, 0, width, height);
 		DogoWindow* dogoWindow = static_cast<DogoWindow*>(glfwGetWindowUserPointer(window));
 		dogoWindow->SetHeight(height);
@@ -165,14 +160,8 @@ namespace Dogo
 
 	void DogoWindow::WindowCloseCallback(GLFWwindow* window)
 	{
-		DG_TRACE("Window close event triggered.");
-
 		DogoWindow* dogoWindow = static_cast<DogoWindow*>(glfwGetWindowUserPointer(window));
 		WindowCloseEvent e;
 		dogoWindow->GetEventCallback()(e);
-
-		// You can also add logic to prevent the window from closing, if needed
-		// For example, to confirm closure or perform clean-up:
-		// glfwSetWindowShouldClose(window, GLFW_FALSE);  // Prevent closing
 	}
 }

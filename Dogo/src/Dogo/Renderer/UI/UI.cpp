@@ -10,14 +10,16 @@ namespace Dogo
 		{
 			glm::mat4 transform = parentTransform * glm::translate(glm::mat4(1.0f), glm::vec3(pos, 0.0f));
 			renderer->Push(transform);
-			renderer->Submit(CreateQuad(
-				0.0f, 
-				0.0f,
-				{ 1.0f, 0.0f, 0.0f, 1.0f },
-				size.x,
-				size.y,
-				0.0f
-			));
+			//renderer->Submit(CreateQuad(
+			//	0.0f, 
+			//	0.0f,
+			//	glm::vec4(color, 1.0f),
+			//	size.x,
+			//	size.y,
+			//	0.0f
+			//));
+			// 
+			renderer->Submit(CreateRoundedRect({0.0f, 0.0f}, size, 0.5f, glm::vec4(color, 1.0f), 0.0f));
 			// Compute text width and height
 			float textWidth = renderer->ComputeTextWidth(text, 0.5f);
 			float textHeight = renderer->GetFontHeight(0.5f); // Can be adjusted if needed

@@ -14,8 +14,9 @@
 #define MAX_CHARACTERS 100
 
 #define CIRCLE_SEGMENTS 32
-#define ROUNDED_RECT_SEGMENTS 36
-#define ROUNDED_RECT_VERTICES (1 + 4*(ROUNDED_RECT_SEGMENTS+1))
+
+#define ROUNDED_RECT_SEGMENTS 9
+#define ROUNDED_RECT_VERTICES (1 + ROUNDED_RECT_SEGMENTS*4)
 
 #define MAX_QUAD_VERTICES (MAX_QUADS * 4)
 #define MAX_LINE_VERTICES (MAX_LINES * 2)
@@ -83,7 +84,7 @@ namespace Dogo
 	Quad CreateQuad(float x, float y, const glm::vec4& color, float width, float height, float texID);
 	Line2D CreateLine2D(const glm::vec3& start, const glm::vec3& end, const glm::vec4& color);
 	Triangle CreateTriangle(float origin, const glm::vec4& color, float scale, float texID);
-	RoundedRect CreateRoundedRect(const glm::vec2& center, const glm::vec2& size, float radius, const glm::vec4& color, float texID);
+	RoundedRect CreateRoundedRect(glm::vec2 center, glm::vec2 size, float radius, glm::vec4 color, float texID);
 	ThickLine CreateThickLine(const glm::vec2& p0, const glm::vec2& p1, float thickness, const glm::vec4& color, float texIndex);
 	
 	class Renderer2D

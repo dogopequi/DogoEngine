@@ -9,6 +9,7 @@ namespace Dogo
 		{
 			glm::vec2 pos;
 			glm::vec2 size;
+			glm::vec3 color;
 			bool visible = true;
 			virtual void Draw(Renderer2D* renderer, const glm::mat4 parentTransform = glm::mat4(1.0f)) = 0;
 			virtual bool MouseHandler(const glm::vec2& mousePos, bool isPressed, const glm::mat4 parentTransform = glm::mat4(1.0f)) = 0;
@@ -26,26 +27,27 @@ namespace Dogo
 
 		struct UIPanel : public UIElement
 		{
-			glm::vec3 color;
-			std::vector<std::shared_ptr<UIElement>> children;
+			std::deque<std::shared_ptr<UIElement>> children;
 			inline void Draw(Renderer2D* renderer, const glm::mat4 parentTransform) override
 			{
 				glm::mat4 transform = parentTransform * glm::translate(glm::mat4(1.0f), glm::vec3(pos, 0.0f));
 				renderer->Push(transform);
 
-				renderer->Submit(CreateRoundedRect(
-					{ 0.0f, 0.0f },
-					size,
-					10.0f,
-					glm::vec4(color, 1.0f),
-					0.0f
-				));
 
 				for (auto& child : children)
 				{
 					if(child->visible)
 						child->Draw(renderer, transform);
 				}
+				//renderer->Submit(CreateQuad(
+				//	0.0f,
+				//	0.0f,
+				//	glm::vec4(color, 1.0f),
+				//	size.x,
+				//	size.y,
+				//	0.0f
+				//));
+				renderer->Submit(CreateRoundedRect({ 0.0f, 0.0f }, size, 0.5f, glm::vec4(color, 1.0f), 0.0f));
 
 				renderer->Pop();
 			}
@@ -61,16 +63,16 @@ namespace Dogo
 			}
 			inline void AddElement(std::shared_ptr<UIElement> element)
 			{
-				children.push_back(element);
+				children.push_front(element);
 			}
 		};
 
 
-		inline std::vector<std::shared_ptr<UIElement>> m_Elements;
+		inline std::deque<std::shared_ptr<UIElement>> m_Elements;
 
 		inline void AddElement(std::shared_ptr<UIElement> element)
 		{
-			m_Elements.push_back(element);
+			m_Elements.push_front(element);
 		}
 		inline void HandleInput(const glm::vec2& mousePos, bool isPressed)
 		{
@@ -90,6 +92,8 @@ namespace Dogo
 					element->Draw(renderer, root);
 				}
 			}
+			glDepthFunc(GL_ALWAYS);
+			renderer->Flush();
 		}
 
 	}

@@ -256,6 +256,7 @@ namespace Dogo{
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glDepthFunc(GL_LESS);
 	}
+
 	OpenGLRenderer2D::~OpenGLRenderer2D()
 	{
 	}

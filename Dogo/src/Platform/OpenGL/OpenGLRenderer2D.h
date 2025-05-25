@@ -112,9 +112,9 @@ namespace Dogo
 		size_t m_RoundedRectsCount = 0;
 		std::array<uint32_t, MAX_ROUNDED_RECT_INDICES> m_RoundedRectsIndices;
 
-		std::array<ThickLine, MAX_ROUNDED_RECTS> m_ThickLinesBuffer;
+		std::array<ThickLine, MAX_THICK_LINES> m_ThickLinesBuffer;
 		size_t m_ThickLinesCount = 0;
-		std::array<uint32_t, MAX_ROUNDED_RECT_INDICES> m_ThickLinesIndices;
+		std::array<uint32_t, MAX_THICK_LINES_INDICES> m_ThickLinesIndices;
 
 		std::vector<std::pair<Texture*, uint16_t>> m_TextureSlots;
 		int m_Samplers[TWO_D_MAX_TEXTURES] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };

@@ -677,7 +677,7 @@ namespace Dogo
 			return "MENU";
 		default:
 		{
-			DG_INFO("KeyCode: %i", keycode);
+			DG_TRACE("KeyCode: %i", keycode);
 			return "Unknown key";
 		}
 		}
@@ -705,7 +705,7 @@ namespace Dogo
 			return "MouseButton8";
 		default:
 		{
-			DG_INFO("ButtonCode: %i", button);
+			DG_TRACE("ButtonCode: %i", button);
 			return "Unknown button";
 		}
 		}

@@ -23,7 +23,7 @@
 #include "Dogo/Renderer/Renderer2D.h"
 #include "Dogo/Renderer/UI/UI.h"
 #include "Graphics/DogoWindow.h"
-#include "../AppLayer.h"
+#include "AppLayer.h"
 class Sandbox : public Dogo::Application
 {
 public:
@@ -92,8 +92,8 @@ public:
 		glm::mat4 model = glm::mat4(1.0f);
 		Renderer->SetModelMatrix(model);
 		Renderer->SetTransformMatrix(glm::mat4(1.0f));
-		Dogo::Texture* lebron = Dogo::Texture::Create("../Dogo/resources/Textures/lebron.png", "legacy", Dogo::TextureType::twoD, "lebron");
-		Dogo::Texture* rat = Dogo::Texture::Create("../Dogo/resources/Textures/rat.png", "legacy", Dogo::TextureType::twoD, "rat");
+		//Dogo::Texture* lebron = Dogo::Texture::Create("../Dogo/resources/Textures/lebron.png", "legacy", Dogo::TextureType::twoD, "lebron");
+		//Dogo::Texture* rat = Dogo::Texture::Create("..Dogo/resources/Textures/rat.png", "legacy", Dogo::TextureType::twoD, "rat");
 		glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
 		Renderer->LoadFont("../Dogo/resources/Fonts/arial.ttf", 48);
 		static constexpr int NUM_ROWS = 100;
@@ -101,15 +101,19 @@ public:
 		static constexpr float QUAD_SIZE = 5.0f;
 		static constexpr float PADDING = 2.0f;
 		std::shared_ptr<Dogo::DogoUI::UIButton> button = std::make_shared<Dogo::DogoUI::UIButton>();
-		//std::shared_ptr<DogoUI::UIPanel> panel = std::make_shared<DogoUI::UIPanel>();
-		Dogo::DogoUI::AddElement(button);
-		//DogoUI::AddElement(panel);
+		std::shared_ptr<Dogo::DogoUI::UIPanel> panel = std::make_shared<Dogo::DogoUI::UIPanel>();
+		Dogo::DogoUI::AddElement(panel);
 		button->visible = true;
-		//panel->visible = false;
+		panel->visible = true;
+		panel->color = { 1.0f, 0.0f, 1.0f };
+		panel->size = { 1280.0f / 2, 720.0f / 2 };
+		panel->pos = { 0.0f, 0.0f };
 		button->text = "Click Me!";
-		button->pos = { m_Window->GetWidth() / 2 - 50.0f, m_Window->GetHeight() / 2 };
+		button->pos = { panel->pos.x / 2 - 50.0f,  panel->pos.y / 2 };
 		button->size = { 200.0f, 60.0f };
+		button->color = { 0.0f, 1.0f, 0.0f };
 		button->onClick = []() { DG_INFO("Button Clicked!"); };
+		panel->AddElement(button);
 
 
 	}
@@ -121,13 +125,13 @@ public:
 	void OnEvent(Dogo::Event& e) override
 	{
 		Dogo::EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<Dogo::WindowCloseEvent>(DG_BIND_EVENT_FN(Sandbox::OnWindowClose));
-		dispatcher.Dispatch<Dogo::KeyPressedEvent>(DG_BIND_EVENT_FN(Sandbox::KeyPressedCallBack));
-		dispatcher.Dispatch<Dogo::KeyReleasedEvent>(DG_BIND_EVENT_FN(Sandbox::KeyReleasedCallBack));
-		dispatcher.Dispatch<Dogo::MouseMovedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseMovedCallBack));
-		dispatcher.Dispatch<Dogo::MouseButtonPressedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseButtonPressedCallBack));
-		dispatcher.Dispatch<Dogo::MouseButtonReleasedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseButtonReleasedCallBack));
-		dispatcher.Dispatch<Dogo::MouseScrolledEvent>(DG_BIND_EVENT_FN(Sandbox::MouseScrolledCallBack));
+		//dispatcher.Dispatch<Dogo::WindowCloseEvent>(DG_BIND_EVENT_FN(Sandbox::OnWindowClose));
+		//dispatcher.Dispatch<Dogo::KeyPressedEvent>(DG_BIND_EVENT_FN(Sandbox::KeyPressedCallBack));
+		//dispatcher.Dispatch<Dogo::KeyReleasedEvent>(DG_BIND_EVENT_FN(Sandbox::KeyReleasedCallBack));
+		//dispatcher.Dispatch<Dogo::MouseMovedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseMovedCallBack));
+		//dispatcher.Dispatch<Dogo::MouseButtonPressedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseButtonPressedCallBack));
+		//dispatcher.Dispatch<Dogo::MouseButtonReleasedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseButtonReleasedCallBack));
+		//dispatcher.Dispatch<Dogo::MouseScrolledEvent>(DG_BIND_EVENT_FN(Sandbox::MouseScrolledCallBack));
 	}
 
 
