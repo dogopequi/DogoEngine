@@ -49,9 +49,6 @@ namespace Dogo
 		m_Window = new Dogo::DogoWindow(1280, 720, "Dogo Window");
 		m_IsRunning = true;
 	}
-	Application::~Application()
-	{
-	}
 
 	void Application::PushLayer(Layer* layer)
 	{
@@ -62,12 +59,6 @@ namespace Dogo
 	{
 		m_LayerStack.PushOverlay(layer);
 	}
-#if DG_PLATFORM_WINDOWS
-	void Application::SetWindowsInstance(HINSTANCE instance)
-	{
-		this->instance = instance;
-	}
-#endif
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		DG_TRACE(e.ToString().c_str());

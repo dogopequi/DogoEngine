@@ -18,27 +18,25 @@ namespace Dogo
 	{
 	public:
 		Application();
-		virtual ~Application();
+		virtual ~Application() = default;
 
-		void PushLayer(Layer* layer);
-		void PushOverlay(Layer* layer);
+		virtual void PushLayer(Layer* layer);
+		virtual void PushOverlay(Layer* layer);
 
-		void Run();
+		virtual void Run() = 0;
 		virtual void OnEvent(Event& e);
-#if DG_PLATFORM_WINDOWS
-		void SetWindowsInstance(HINSTANCE instance);
-#endif
+
 	protected:
-		bool OnWindowClose(WindowCloseEvent& e);
-		bool KeyPressedCallBack(KeyPressedEvent& e);
-		bool KeyReleasedCallBack(KeyReleasedEvent& e);
-		bool MouseMovedCallBack(MouseMovedEvent& e);
-		bool MouseButtonPressedCallBack(MouseButtonPressedEvent& e);
-		bool MouseButtonReleasedCallBack(MouseButtonReleasedEvent& e);
-		bool MouseScrolledCallBack(MouseScrolledEvent& e);
+		virtual bool OnWindowClose(WindowCloseEvent& e);
+		virtual bool KeyPressedCallBack(KeyPressedEvent& e);
+		virtual bool KeyReleasedCallBack(KeyReleasedEvent& e);
+		virtual bool MouseMovedCallBack(MouseMovedEvent& e);
+		virtual bool MouseButtonPressedCallBack(MouseButtonPressedEvent& e);
+		virtual bool MouseButtonReleasedCallBack(MouseButtonReleasedEvent& e);
+		virtual bool MouseScrolledCallBack(MouseScrolledEvent& e);
 	protected:
 		DogoWindow* m_Window;
-		LayerStack m_LayerStack;
+		inline static LayerStack m_LayerStack;
 
 		bool m_IsRunning;
 
@@ -52,9 +50,6 @@ namespace Dogo
 		//void processInput(float time);
 		
 		//std::shared_ptr<Camera> m_Camera;
-#if DG_PLATFORM_WINDOWS
-		HINSTANCE instance;
-#endif
 	};
 	Application* CreateApplication();
 }

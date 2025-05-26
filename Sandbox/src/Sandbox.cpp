@@ -1,7 +1,8 @@
 #include "dgpch.h"
-#include <Dogo.h>
+#include "Sandbox.h"
 #include "Dogo/Core.h"
 #include "Dogo/LayerStack.h"
+#include "Dogo/Layer.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Dogo/Events/Event.h"
 #include "Dogo/Events/ApplicationEvent.h"
@@ -23,47 +24,57 @@
 #include "Dogo/Renderer/UI/UI.h"
 #include "Graphics/DogoWindow.h"
 #include "Examples/Pong.h"
-class Sandbox : public Dogo::Application
-{
-public:
 
-	bool OnWindowClose(Dogo::WindowCloseEvent& e)
+	bool Sandbox::OnWindowClose(Dogo::WindowCloseEvent& e)
 	{
 		return Application::OnWindowClose(e);
 	}
-	bool KeyPressedCallBack(Dogo::KeyPressedEvent& e)
+	bool Sandbox::KeyPressedCallBack(Dogo::KeyPressedEvent& e)
 	{
 		DG_TRACE(e.ToString().c_str());
 		return true;
 	}
-	bool KeyReleasedCallBack(Dogo::KeyReleasedEvent& e)
+	bool Sandbox::KeyReleasedCallBack(Dogo::KeyReleasedEvent& e)
 	{
 		DG_TRACE(e.ToString().c_str());
 		return true;
 	}
-	bool MouseMovedCallBack(Dogo::MouseMovedEvent& e)
+	bool Sandbox::MouseMovedCallBack(Dogo::MouseMovedEvent& e)
 	{
 		DG_TRACE(e.ToString().c_str());
 		return true;
 	}
-	bool MouseButtonPressedCallBack(Dogo::MouseButtonPressedEvent& e)
+	bool Sandbox::MouseButtonPressedCallBack(Dogo::MouseButtonPressedEvent& e)
 	{
 		DG_TRACE(e.ToString().c_str());
 		return true;
 	}
-	bool MouseButtonReleasedCallBack(Dogo::MouseButtonReleasedEvent& e)
+	bool Sandbox::MouseButtonReleasedCallBack(Dogo::MouseButtonReleasedEvent& e)
 	{
 		DG_TRACE(e.ToString().c_str());
 		return true;
 	}
-	bool MouseScrolledCallBack(Dogo::MouseScrolledEvent& e)
+	bool Sandbox::MouseScrolledCallBack(Dogo::MouseScrolledEvent& e)
 	{
 		DG_TRACE(e.ToString().c_str());
 		return true;
 	}
 
+	void Sandbox::Run()
+	{
+		m_Window->SwapInterval(0);
+		while (!m_Window->WindowShouldClose() && m_Window != nullptr)
+		{
+			m_Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			for (Dogo::Layer* layer : m_LayerStack)
+				layer->OnUpdate();
+			m_Window->SwapBuffers();
+			m_Window->PollEvents();
+		}
+	}
 
-	Sandbox() : Application()
+
+	Sandbox::Sandbox() : Application()
 	{
 		DG_TRACE("Hello Window");
 		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Sandbox::OnEvent));
@@ -80,12 +91,8 @@ public:
 		DogoECS::DG_ComponentManager::RegisterComponent<Dogo::TransformComponent>();
 		DogoECS::DG_ComponentManager::RegisterComponent<Dogo::StaticMeshComponent>();
 	}
-	~Sandbox()
-	{
 
-	}
-
-	void OnEvent(Dogo::Event& e) override
+	void Sandbox::OnEvent(Dogo::Event& e)
 	{
 		Dogo::EventDispatcher dispatcher(e);
 		//dispatcher.Dispatch<Dogo::WindowCloseEvent>(DG_BIND_EVENT_FN(Sandbox::OnWindowClose));
@@ -96,11 +103,3 @@ public:
 		//dispatcher.Dispatch<Dogo::MouseButtonReleasedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseButtonReleasedCallBack));
 		//dispatcher.Dispatch<Dogo::MouseScrolledEvent>(DG_BIND_EVENT_FN(Sandbox::MouseScrolledCallBack));
 	}
-
-
-};
-
-Dogo::Application* Dogo::CreateApplication()
-{
-	return new Sandbox();
-}

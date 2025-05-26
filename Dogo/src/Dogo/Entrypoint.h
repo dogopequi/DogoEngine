@@ -1,4 +1,5 @@
 #pragma once
+#include "Dogo/Application.h"
 //#include <tchar.h>
 extern Dogo::Application* Dogo::CreateApplication();
 
@@ -24,15 +25,9 @@ extern Dogo::Application* Dogo::CreateApplication();
 //#endif
 int main(int argc, char** argv)
 {
-//    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-//
-//    DWORD dwMode = 0;
-//    GetConsoleMode(hOut, &dwMode);
-//    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-//    SetConsoleMode(hOut, dwMode);
 	auto app = Dogo::CreateApplication();
 	app->Run();
-	// delete app;
+	delete app;
 }
 //#endif
 //

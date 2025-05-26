@@ -1,6 +1,21 @@
+newoption {
+    trigger = "sandbox-mode",
+    value = "TYPE",
+    description = "Choose Sandbox mode: 'lib' (with Editor) or 'app' (standalone)",
+    allowed = {
+        { "lib", "Sandbox as StaticLib and Editor as ConsoleApp" },
+        { "app", "Sandbox as ConsoleApp, no Editor" }
+    },
+    default = "lib"
+}
+
 workspace "Dogo"
     architecture "x86_64"
-    startproject "Sandbox"
+    if _OPTIONS["sandbox-mode"] == "app" then
+        startproject "Sandbox"
+    else
+        startproject "Editor"
+    end
 
     configurations
     {
@@ -160,22 +175,35 @@ project "Dogo"
 
 project "Sandbox"
     location "Sandbox"
-    kind "ConsoleApp"
+    
+    local isAppMode = (_OPTIONS["sandbox-mode"] == "app")
+
+    if isAppMode then
+        kind "ConsoleApp"
+        defines {
+            "DG_SANDBOX_MODE_APP"
+        }
+    else
+        kind "StaticLib"
+    end
+    
     language "C++"
     cppdialect "C++17"
     staticruntime "on"
-    
+        
     targetdir ("bin/".. outputDir .. "/%{prj.name}")
     objdir ("bin-int/".. outputDir .. "/%{prj.name}")
     
-    files
-    {
+    files {
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp"
     }
-
-    includedirs
-    {
+    if not isAppMode then
+        removefiles {
+            "%{prj.name}/src/Entrypoint.cpp"
+        }
+    end
+    includedirs {
         "Dogo/src",
         STBinclude,
         GLMinclude,
@@ -184,10 +212,8 @@ project "Sandbox"
         "%{IncludeDir.GLFW}",
         PHYSXinclude
     }
-
-
-    links
-    {
+    
+    links {
         "Dogo",
         "glad",
         "GLFW",
@@ -249,3 +275,63 @@ project "Sandbox"
         {
             "NDEBUG"
         }
+if _OPTIONS["sandbox-mode"] ~= "app" then
+    project "Editor"
+        location "Editor"
+        kind "ConsoleApp"
+        language "C++"
+        cppdialect "C++17"
+        staticruntime "on"
+                
+        targetdir ("bin/".. outputDir .. "/%{prj.name}")
+        objdir ("bin-int/".. outputDir .. "/%{prj.name}")
+            
+        files {
+            "%{prj.name}/src/**.h",
+            "%{prj.name}/src/**.cpp"
+        }
+            
+        includedirs {
+            "Dogo/src",
+            "Sandbox/src",
+            STBinclude,
+            GLMinclude,
+            "%{IncludeDir.glad}",
+            "%{IncludeDir.DogoECS}",
+            "%{IncludeDir.GLFW}",
+            PHYSXinclude
+        }
+            
+        links {
+            "Sandbox"
+        }
+    
+        filter "system:windows"
+        system "windows"
+            systemversion = "latest"
+    
+            defines
+            {
+                "DG_PLATFORM_WINDOWS",
+            }
+
+        filter "system:linux"
+            system "linux"
+            systemversion = "latest"
+    
+            defines
+            {
+                "DG_PLATFORM_LINUX",
+            }
+
+    
+        filter "configurations:Debug"
+            defines "DG_BUILD_DEBUG"
+            symbols "on"
+            runtime "Debug"
+    
+        filter "configurations:Release"
+            defines "DG_BUILD_RELEASE"
+            optimize "on"
+            runtime "Release"
+        end
