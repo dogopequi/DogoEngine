@@ -35,7 +35,7 @@ The licenses can be found in their respective folder.
 - [DogoECS](https://github.com/dogopequi/DogoECS)
 
 ## Examples
-Pong made with the 2D Renderer:
+Pong made with the 2D Renderer (src: "AppLayer"):
 
 https://github.com/user-attachments/assets/ef83634d-ad5d-42e6-9592-23ba7e08ada8
 
