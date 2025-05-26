@@ -7,7 +7,7 @@
 class Pong : public Dogo::Layer
 {
 public:
-	Pong();
+	Pong(Dogo::Renderer2D* renderer);
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate() override;

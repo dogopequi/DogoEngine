@@ -5,26 +5,16 @@
 #include "Dogo/Renderer/UI/UI.h"
 #include "Dogo/Input/Input.h"
 #include "Dogo/Renderer/Renderer2D.h"
-Pong::Pong()
+Pong::Pong(Dogo::Renderer2D* renderer)
 	: Layer("AppLayer")
 {
 	DG_INFO("Example App starting");
+	Renderer = renderer;
 }
 
 void Pong::OnAttach()
 {
 	DG_INFO("AppLayer Attached");
-	Renderer = Dogo::Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl");
-	Renderer->SetViewMatrix(glm::mat4(1.0f));
-	Renderer->SetProjectionMatrix(glm::orthoRH_NO(
-		0.0f,
-		static_cast<float>(window->GetWidth()),
-		static_cast<float>(window->GetHeight()),
-		0.0f,
-		-1.0f,
-		1.0f));
-	Renderer->SetModelMatrix(glm::mat4(1.0f));
-	Renderer->SetTransformMatrix(glm::mat4(1.0f));
 	//Dogo::Texture* lebron = Dogo::Texture::Create("../Dogo/resources/Textures/lebron.png", "legacy", Dogo::TextureType::twoD, "lebron");
 	//Dogo::Texture* rat = Dogo::Texture::Create("..Dogo/resources/Textures/rat.png", "legacy", Dogo::TextureType::twoD, "rat");
 	pos = glm::vec3(0.0f, 0.0f, 0.0f);

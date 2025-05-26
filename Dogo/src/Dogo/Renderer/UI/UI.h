@@ -16,6 +16,29 @@ namespace Dogo
 			virtual bool MouseHandler(const glm::vec2& mousePos, bool isPressed, const glm::mat4 parentTransform = glm::mat4(1.0f)) = 0;
 		};
 
+		struct UIViewport : public UIElement
+		{
+			void Draw(Renderer2D* renderer, const glm::mat4 parentTransform) override
+			{
+				glm::mat4 transform = parentTransform * glm::translate(glm::mat4(1.0f), glm::vec3(pos, 0.0f));
+				renderer->Push(transform);
+				renderer->DrawFrameBuffer(CreateQuad(
+					0.0f,
+					0.0f,
+					glm::vec4(color, 1.0f),
+					size.x,
+					size.y,
+					0.0f
+				));
+				renderer->Pop();
+			}
+
+			bool MouseHandler(const glm::vec2& mousePos, bool isPressed, const glm::mat4 parentTransform) override
+			{
+				return false; // TODO
+			}
+		};
+
 		struct UIButton : public UIElement
 		{
 			std::string text;

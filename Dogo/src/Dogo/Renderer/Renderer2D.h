@@ -3,6 +3,7 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include "Dogo/Renderer/Texture.h"
+#include "Dogo/Renderer/Shader.h"
 #define TWO_D_MAX_TEXTURES 16
 
 #define MAX_QUADS 1000
@@ -116,6 +117,11 @@ namespace Dogo
 		virtual float ComputeTextWidth(const std::string& text, float scale) = 0;
 		virtual void RenderText() = 0;
 		virtual float GetFontHeight(float scale) = 0;
+		virtual Shader* ExposeShader() const = 0;
+		virtual void SetShader(Shader* shader) = 0;
+		virtual void DrawFrameBuffer(Quad& quad) = 0;
+		//inline static void SetInstance(Renderer2D* instance) { m_Instance = instance; }
+		//inline static Renderer2D* GetInstance() { return m_Instance; }
 
 	protected:
 		Renderer2D() { m_TransformStack.push_back(glm::mat4(1.0f));
@@ -124,5 +130,8 @@ namespace Dogo
 
 		std::vector<glm::mat4> m_TransformStack;
 		const glm::mat4* m_TransformBack;
+
+	//private:
+	//	inline static Renderer2D* m_Instance;
 	};
 }

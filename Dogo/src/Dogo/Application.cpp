@@ -46,7 +46,6 @@ namespace Dogo
 	Application::Application()
 	{
 	/*	m_Window->SetEventCallback(DG_BIND_EVENT_FN(Application::OnEvent));*/
-		m_Window = new Dogo::DogoWindow(1280, 720, "Dogo Window");
 		m_IsRunning = true;
 	}
 

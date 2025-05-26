@@ -30,6 +30,7 @@ namespace Dogo
 
 		void SetViewPos(const glm::vec3& pos)override;
 
+		void DrawFrameBuffer(Quad& quad) override;
 		void Submit(Quad& renderable, Texture* tex = nullptr) override;
 		void Submit(Triangle& renderable, Texture* tex = nullptr) override;
 		void Submit(Circle& renderable, Texture* tex = nullptr) override;
@@ -40,6 +41,13 @@ namespace Dogo
 		float ComputeTextWidth(const std::string& text, float scale) override;
 		float GetFontHeight(float scale)override;
 		void Flush()override;
+
+		inline Shader* ExposeShader() const override {
+			return m_Shader;
+		}
+		inline void SetShader(Shader* shader) override {
+			m_Shader = shader;
+		}
 
 		virtual void LoadFont(const std::string& fontPath, uint32_t size);
 		virtual void RenderText();

@@ -4,6 +4,8 @@
 #include "Dogo/Application.h"
 #include "Sandbox.h"
 #include "EditorLayer.h"
+#include "Dogo/Renderer/UI/UI.h"
+#include "Dogo/Renderer/FrameBuffer.h"
 
 class Editor : public Dogo::Application
 {
@@ -11,11 +13,12 @@ public:
     Editor()
     {
         DG_TRACE("Launching Editor");
-        PushLayer(new EditorLayer());
-		m_Window->~DogoWindow();
-        Sandbox* game = new Sandbox();
+		m_Window = new Dogo::DogoWindow(1280, 720, "Dogo Editor");
 		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Editor::OnEvent));
-		game->Run();
+		Sandbox* game = new Sandbox();
+		renderer = game->Renderer;
+		framebuffer = Dogo::Framebuffer::Create(m_Window->GetWidth(), m_Window->GetHeight());
+		PushLayer(new EditorLayer(renderer, m_Window, framebuffer));
     }
 
 	bool OnWindowClose(Dogo::WindowCloseEvent& e)
@@ -67,10 +70,25 @@ public:
 
 	void Run() override
 	{
-
+		m_Window->SwapInterval(0);
+		while (!m_Window->WindowShouldClose() && m_Window != nullptr)
+		{
+			m_Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			for (Dogo::Layer* layer : m_LayerStack)
+			{
+				layer->OnUpdate();
+			}
+			m_Window->SwapBuffers();
+			m_Window->PollEvents();
+		}
 	}
 
 	~Editor() = default;
+
+
+private:
+	Dogo::Framebuffer* framebuffer;
+	Dogo::Renderer2D* renderer;
 };
 
 Dogo::Application* Dogo::CreateApplication()

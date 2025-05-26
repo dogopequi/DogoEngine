@@ -76,9 +76,23 @@
 
 	Sandbox::Sandbox() : Application()
 	{
-		DG_TRACE("Hello Window");
+#ifdef DG_SANDBOX_MODE_APP
+		m_Window = new Dogo::DogoWindow(1280, 720, "Dogo Window");
 		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Sandbox::OnEvent));
-		Pong* pong = new Pong();
+#endif
+		DG_TRACE("Hello Window");
+		Renderer = Dogo::Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl");
+		Renderer->SetViewMatrix(glm::mat4(1.0f));
+		Renderer->SetProjectionMatrix(glm::orthoRH_NO(
+			0.0f,
+			static_cast<float>(m_Window->GetWidth()),
+			static_cast<float>(m_Window->GetHeight()),
+			0.0f,
+			-1.0f,
+			1.0f));
+		Renderer->SetModelMatrix(glm::mat4(1.0f));
+		Renderer->SetTransformMatrix(glm::mat4(1.0f));
+		Pong* pong = new Pong(Renderer);
 		pong->window = m_Window;
 		pong->OnAttach();
 		PushLayer(pong);
@@ -90,6 +104,9 @@
 		DogoECS::DG_ComponentManager::RegisterComponent<Dogo::DynamicMeshComponent>();
 		DogoECS::DG_ComponentManager::RegisterComponent<Dogo::TransformComponent>();
 		DogoECS::DG_ComponentManager::RegisterComponent<Dogo::StaticMeshComponent>();
+#ifdef DG_SANDBOX_MODE_APP
+		Run();
+#endif
 	}
 
 	void Sandbox::OnEvent(Dogo::Event& e)

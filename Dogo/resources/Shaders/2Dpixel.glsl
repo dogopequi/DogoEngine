@@ -20,7 +20,8 @@ void main()
     }
     else
     {
-        color = v_Color;
+        vec2 flippedTexCoord = vec2(v_TexCoord.x, 1.0 - v_TexCoord.y);
+        color = texture(textures[0], flippedTexCoord);
     }
 
 }

@@ -296,6 +296,20 @@ namespace Dogo{
 	{
 		m_ViewPos = pos;
 	}
+	void OpenGLRenderer2D::DrawFrameBuffer(Quad& quad)
+	{
+		Submit(quad, nullptr);
+		glBindBuffer(GL_ARRAY_BUFFER, m_QuadsVertexBuffer);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_QuadsBuffer), m_QuadsBuffer.data());
+		m_Shader->Bind();
+		m_Shader->SetUniformMatrix4f("view", m_View);
+		m_Shader->SetUniformMatrix4f("projection", m_Proj);
+		m_Shader->SetUniform1i("mode", 1);
+		m_Shader->SetUniform1iv("textures", m_Samplers, 16);
+		glBindVertexArray(m_QuadsVertexArray);
+		glDrawElements(GL_TRIANGLES, m_QuadsCount * 6, GL_UNSIGNED_INT, nullptr);
+		m_QuadsCount = 0;
+	}
 	void OpenGLRenderer2D::Submit(Quad& renderable, Texture* tex)
 	{
 		if (renderable.vertices[0].texIndex != 0.0f)
@@ -770,7 +784,7 @@ namespace Dogo{
 		m_Shader->Bind();
 		m_Shader->SetUniformMatrix4f("view", m_View);
 		m_Shader->SetUniformMatrix4f("projection", m_Proj);
-		m_Shader->SetUniform1i("mode", 1);
+		m_Shader->SetUniform1i("mode", 0);
 		glBindVertexArray(m_LinesVertexArray);
 		glDrawElements(GL_LINES, m_LinesCount * 2, GL_UNSIGNED_INT, nullptr);
 		m_LinesCount = 0;

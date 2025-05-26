@@ -1,5 +1,6 @@
 #pragma once
 #include "Dogo/Application.h"
+#include "Dogo/Renderer/Renderer2D.h"
 class Sandbox : public Dogo::Application
 {
 public:
@@ -17,6 +18,6 @@ public:
 	~Sandbox() = default;
 
 	void OnEvent(Dogo::Event& e) override;
-
+	Dogo::Renderer2D* Renderer;
 
 };
