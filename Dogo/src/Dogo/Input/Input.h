@@ -276,6 +276,12 @@ namespace Dogo
 		{
 			BUTTON_NONE, PRESSED, REPEAT, RELEASED
 		};
+
+		constexpr int MAX_KEYS = 512;
+		inline KeyState keyStates[MAX_KEYS] = { KeyState::KEY_NONE };
+		constexpr int MAX_BUTTONS = 256;
+		inline ButtonState buttonStates[MAX_BUTTONS] = { ButtonState::BUTTON_NONE };
+
 		inline Int2 m_MousePosition;
 		inline Int2 m_Scroll;
 		inline int32_t m_ScrollDelta;
@@ -329,70 +335,47 @@ namespace Dogo
 		}
 
 
-		inline bool IsKeyPressed(int32_t keycode) {
-			if (m_Key == keycode)
-				return true;
-			return false;
+		inline bool IsKeyPressed(int32_t keycode)
+		{
+			if (keycode < 0 || keycode >= MAX_KEYS) return false;
+			return keyStates[keycode] == KeyState::PRESSED || keyStates[keycode] == KeyState::REPEAT;
 		}
 
 		inline bool IsMouseButtonPressed(int32_t button) {
-			if (m_Button == button)
-				return true;
-			return false;
+			if (button < 0 || button >= MAX_BUTTONS) return false;
+			return buttonStates[button] == ButtonState::PRESSED || buttonStates[button] == ButtonState::REPEAT;
 		}
 
-		inline void ProcessKey(int32_t key, bool pressed) {
-			bool same = true;
-			if (key != Input::GetKey()) { same = false; }
-			if (!same)
+
+		inline void ProcessKey(int32_t key, bool pressed)
+		{
+			if (key < 0 || key >= MAX_KEYS) return;
+
+			if (pressed)
 			{
-				if (pressed)
-				{
-					Input::SetKey(key);
-					Input::SetKeyState(KeyState::PRESSED);
-					return;
-				}
-			}
-			if (same)
-			{
-				if (pressed) // repeat
-				{
-					Input::SetKey(key);
-					Input::SetKeyState(KeyState::REPEAT);
-					return;
-				}
+				if (keyStates[key] == KeyState::PRESSED || keyStates[key] == KeyState::REPEAT)
+					keyStates[key] = KeyState::REPEAT;
 				else
-				{
-					Input::SetKeyState(KeyState::RELEASED);
-					return;
-				}
+					keyStates[key] = KeyState::PRESSED;
+			}
+			else
+			{
+				keyStates[key] = KeyState::RELEASED;
 			}
 		}
 		inline void ProcessButton(int32_t button, bool pressed) {
-			bool same = true;
-			if (button != Input::GetButton()) { same = false; }
-			if (!same)
+			if (button < 0 || button >= MAX_BUTTONS) return;
+
+			if (pressed)
 			{
-				if (pressed)
-				{
-					Input::SetButton(button);
-					Input::SetButtonState(ButtonState::PRESSED);
-					return;
-				}
-			}
-			if (same)
-			{
-				if (pressed) // repeat
-				{
-					Input::SetButton(button);
-					Input::SetButtonState(ButtonState::REPEAT);
-					return;
-				}
+				if (buttonStates[button] == ButtonState::PRESSED || buttonStates[button] == ButtonState::REPEAT)
+					buttonStates[button] = ButtonState::REPEAT;
 				else
-				{
-					Input::SetButtonState(ButtonState::RELEASED);
-					return;
-				}
+					buttonStates[button] = ButtonState::PRESSED;
+			}
+			else
+			{
+				buttonStates[button] = ButtonState::RELEASED;
 			}
 		}
 		inline void ProcessMousePos(Int2 mousepos) {

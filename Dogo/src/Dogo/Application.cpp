@@ -267,7 +267,7 @@ namespace Dogo
 		while (!m_Window->WindowShouldClose() && m_Window != nullptr)
 		{
 			//DogoECS::DG_ComponentManager::UpdateComponents<TransformComponent>();
-			m_Window->ClearColor(0.2f, 1.0f, 1.0f, 1.0f);
+			m_Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			//float currentFrame = timer.elapsed();
 			//deltaTime = currentFrame - lastFrame;
 			//lastFrame = currentFrame;

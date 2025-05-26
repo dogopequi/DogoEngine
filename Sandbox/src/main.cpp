@@ -18,7 +18,6 @@
 #include "Dogo/Physics/DG_Physics.h"
 #include "DogoECS.h"
 #include "Dogo/Component/Component.h"
-//#include "Dogo/Actors/Actor.h"
 #include "Dogo/Renderer/Line.h"
 #include "Dogo/Renderer/Renderer2D.h"
 #include "Dogo/Renderer/UI/UI.h"
@@ -68,8 +67,10 @@ public:
 	{
 		DG_TRACE("Hello Window");
 		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Sandbox::OnEvent));
-		AppLayer* layer = new AppLayer();
-		PushLayer(layer);
+		AppLayer* exampleApp = new AppLayer();
+		exampleApp->window = m_Window;
+		exampleApp->OnAttach();
+		PushLayer(exampleApp);
 
 		Dogo::MemoryUsage::PrintUsage();
 		DogoECS::Init();
@@ -78,44 +79,6 @@ public:
 		DogoECS::DG_ComponentManager::RegisterComponent<Dogo::DynamicMeshComponent>();
 		DogoECS::DG_ComponentManager::RegisterComponent<Dogo::TransformComponent>();
 		DogoECS::DG_ComponentManager::RegisterComponent<Dogo::StaticMeshComponent>();
-
-		Dogo::Renderer2D* Renderer = Dogo::Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl");
-		layer->Renderer = Renderer;
-		Renderer->SetViewMatrix(glm::mat4(1.0f));
-		Renderer->SetProjectionMatrix(glm::orthoRH_NO(
-			0.0f,
-			static_cast<float>(m_Window->GetWidth()),
-			static_cast<float>(m_Window->GetHeight()),
-			0.0f,
-			-1.0f,
-			1.0f));
-		glm::mat4 model = glm::mat4(1.0f);
-		Renderer->SetModelMatrix(model);
-		Renderer->SetTransformMatrix(glm::mat4(1.0f));
-		//Dogo::Texture* lebron = Dogo::Texture::Create("../Dogo/resources/Textures/lebron.png", "legacy", Dogo::TextureType::twoD, "lebron");
-		//Dogo::Texture* rat = Dogo::Texture::Create("..Dogo/resources/Textures/rat.png", "legacy", Dogo::TextureType::twoD, "rat");
-		glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		Renderer->LoadFont("../Dogo/resources/Fonts/arial.ttf", 48);
-		static constexpr int NUM_ROWS = 100;
-		static constexpr int NUM_COLS = 100;
-		static constexpr float QUAD_SIZE = 5.0f;
-		static constexpr float PADDING = 2.0f;
-		std::shared_ptr<Dogo::DogoUI::UIButton> button = std::make_shared<Dogo::DogoUI::UIButton>();
-		std::shared_ptr<Dogo::DogoUI::UIPanel> panel = std::make_shared<Dogo::DogoUI::UIPanel>();
-		Dogo::DogoUI::AddElement(panel);
-		button->visible = true;
-		panel->visible = true;
-		panel->color = { 1.0f, 0.0f, 1.0f };
-		panel->size = { 1280.0f / 2, 720.0f / 2 };
-		panel->pos = { 0.0f, 0.0f };
-		button->text = "Click Me!";
-		button->pos = { panel->pos.x / 2 - 50.0f,  panel->pos.y / 2 };
-		button->size = { 200.0f, 60.0f };
-		button->color = { 0.0f, 1.0f, 0.0f };
-		button->onClick = []() { DG_INFO("Button Clicked!"); };
-		panel->AddElement(button);
-
-
 	}
 	~Sandbox()
 	{

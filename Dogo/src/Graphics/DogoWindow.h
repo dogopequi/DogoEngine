@@ -35,7 +35,7 @@ namespace Dogo
 		void SwapInterval(uint32_t interval);
 		void ClearColor(float x, float y, float z, float a);
 		void PollEvents();
-		inline void SetEventCallback(const EventCallbackFn& callback)  { EventCallback = callback; }
+		void SetEventCallback(const EventCallbackFn& callback)  { EventCallback = callback; }
 		inline EventCallbackFn GetEventCallback() const { return EventCallback; }
 
 	private:
