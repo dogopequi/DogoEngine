@@ -22,7 +22,7 @@
 #include "Dogo/Renderer/Renderer2D.h"
 #include "Dogo/Renderer/UI/UI.h"
 #include "Graphics/DogoWindow.h"
-#include "AppLayer.h"
+#include "Examples/Pong.h"
 class Sandbox : public Dogo::Application
 {
 public:
@@ -67,10 +67,10 @@ public:
 	{
 		DG_TRACE("Hello Window");
 		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Sandbox::OnEvent));
-		AppLayer* exampleApp = new AppLayer();
-		exampleApp->window = m_Window;
-		exampleApp->OnAttach();
-		PushLayer(exampleApp);
+		Pong* pong = new Pong();
+		pong->window = m_Window;
+		pong->OnAttach();
+		PushLayer(pong);
 
 		Dogo::MemoryUsage::PrintUsage();
 		DogoECS::Init();

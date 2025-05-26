@@ -1,17 +1,17 @@
 #include "dgpch.h"
-#include "AppLayer.h"
+#include "Pong.h"
 #include "../vendor/DogoECS/include/DG_Component.h"
 #include "Dogo/Component/Component.h"
 #include "Dogo/Renderer/UI/UI.h"
 #include "Dogo/Input/Input.h"
 #include "Dogo/Renderer/Renderer2D.h"
-AppLayer::AppLayer()
+Pong::Pong()
 	: Layer("AppLayer")
 {
 	DG_INFO("Example App starting");
 }
 
-void AppLayer::OnAttach()
+void Pong::OnAttach()
 {
 	DG_INFO("AppLayer Attached");
 	Renderer = Dogo::Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl");
@@ -73,11 +73,11 @@ void AppLayer::OnAttach()
 
 	time = window->GetTime();
 }
-void AppLayer::OnDetach()
+void Pong::OnDetach()
 {
 	DG_INFO("AppLayer Detached");
 }
-void AppLayer::OnUpdate()
+void Pong::OnUpdate()
 {
 	double currentTime = window->GetTime();
 	double deltaTime = currentTime - time;

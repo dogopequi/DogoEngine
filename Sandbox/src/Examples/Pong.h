@@ -4,10 +4,10 @@
 #include "Dogo/Renderer/Renderer2D.h"
 #include "Dogo/Renderer/UI/UI.h"
 #include "Graphics/DogoWindow.h"
-class AppLayer : public Dogo::Layer
+class Pong : public Dogo::Layer
 {
 public:
-	AppLayer();
+	Pong();
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate() override;
