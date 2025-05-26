@@ -34,13 +34,13 @@ The licenses can be found in their respective folder.
 - [FreeType](https://freetype.org/)
 - [DogoECS](https://github.com/dogopequi/DogoECS)
 
+## Examples
+Pong made with the 2D Renderer:
 
+https://github.com/user-attachments/assets/ef83634d-ad5d-42e6-9592-23ba7e08ada8
 
 ## Implementation details
 
-To be added soon.
-
-## Usage
 2D Batch Renderer which can render Quads, Lines (2 vertices or 4 vertices), Circles, Rounded Rectangles and Triangles.
 
 3D Renderer can render 3D Objects and Lines natively, although it is not batched. I will develop a batched version when 2D Renderer is in a good spot and make a small game.
@@ -53,10 +53,8 @@ UI is in progress, at this point I can make a small 2D game, so I will be doing 
 3D (Just two models and a few lines, nothing exemplary yet):
 ![image](https://github.com/user-attachments/assets/2ed5c1ed-5513-444a-b491-f7ce831189d3)
 
-2D (Random shapes, nothing exemplary yet):
-![image](https://github.com/user-attachments/assets/7df232b1-6773-456a-b851-adcd6cad2d98)
-
-
+## Usage
+To be added soon.
 
 ## License
 
