@@ -18,6 +18,6 @@ public:
 	~Sandbox() = default;
 
 	void OnEvent(Dogo::Event& e) override;
-	Dogo::Renderer2D* Renderer;
+	std::shared_ptr<Dogo::Renderer2D> Renderer;
 
 };

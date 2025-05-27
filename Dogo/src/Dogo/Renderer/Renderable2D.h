@@ -22,7 +22,7 @@ namespace Dogo
 	class Renderable2D
 	{
 	public:
-		Renderable2D(const glm::vec3& pos, float* vertices, size_t vertSize, uint32_t* indices, size_t indiceSize, BufferLayout& layout, const std::wstring& vertex, const std::wstring& pixel)
+		Renderable2D(const glm::vec3& pos, float* vertices, uint32_t vertSize, uint32_t* indices, uint32_t indiceSize, BufferLayout& layout, const std::wstring& vertex, const std::wstring& pixel)
 			: m_Position(pos)
 		{
 			SetVertexAndPixelShader(vertex, pixel);

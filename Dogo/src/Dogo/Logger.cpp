@@ -27,7 +27,7 @@ void LogOutput(DG_LOG_LEVEL level, const char* msg, ...)
 	va_end(arg_ptr);
 
 	char outMessage2[32000] = { 0 };
-	sprintf(outMessage2, "%s%s\n", stringLevel[level], outMessage);
+	sprintf_s(outMessage2, "%s%s\n", stringLevel[level], outMessage);
 
 	printf(DG_COLOR_FORMAT[level]);
 	printf("%s", outMessage2);

@@ -7,12 +7,12 @@
 class Pong : public Dogo::Layer
 {
 public:
-	Pong(Dogo::Renderer2D* renderer);
+	Pong(std::shared_ptr<Dogo::Renderer2D> renderer);
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate() override;
 
-	Dogo::Renderer2D* Renderer;
+	std::shared_ptr<Dogo::Renderer2D> Renderer;
 	glm::vec3 pos;
 	std::shared_ptr<Dogo::DogoUI::UIButton> startbutton;
 	std::shared_ptr<Dogo::DogoUI::UIButton> pausebutton;

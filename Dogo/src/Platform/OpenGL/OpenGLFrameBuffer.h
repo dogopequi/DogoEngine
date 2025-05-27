@@ -17,7 +17,8 @@ namespace Dogo
         void Unbind();
         void Resize(uint32_t width, uint32_t height);
         uint32_t GetColorAttachmentID() const;
-
+		inline uint32_t GetWidth() const { return m_Width; }
+		inline uint32_t GetHeight() const { return m_Height; }
     private:
         GLuint m_FBO = 0;
         GLuint m_TCB = 0;

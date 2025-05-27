@@ -71,7 +71,7 @@ namespace DogoECS
 
         DG_EntityManager()
         {
-            for (int i = 0; i < MAX_ENTITIES; i++)
+            for (size_t i = 0; i < MAX_ENTITIES; i++)
             {
                 Entity e;
                 m_AvailableEntities.push(e);

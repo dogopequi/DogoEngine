@@ -20,8 +20,8 @@ namespace Dogo
                 vertexData.push_back(vertex.texCoords.x);
                 vertexData.push_back(vertex.texCoords.y);
             }
-            m_VertexBuffer.reset(VertexBuffer::Create(m_Vertices.size() * sizeof(assimpVertex), sizeof(assimpVertex), vertexData.data()));
-            m_IndexBuffer.reset(IndexBuffer::Create(m_Indices.size() * sizeof(uint32_t), m_Indices.data(), m_Indices.size()));
+            m_VertexBuffer.reset(VertexBuffer::Create(static_cast<uint32_t>(m_Vertices.size() * sizeof(assimpVertex)), static_cast<uint32_t>(sizeof(assimpVertex)), vertexData.data()));
+            m_IndexBuffer.reset(IndexBuffer::Create(static_cast<uint32_t>(m_Indices.size() * sizeof(uint32_t)), m_Indices.data(), static_cast<uint32_t>(m_Indices.size())));
             m_VertexBuffer->Bind();
             m_IndexBuffer->Bind();
             RenderAPI api = GraphicsContext::Get()->GetAPI();

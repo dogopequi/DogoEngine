@@ -90,7 +90,7 @@ project "Dogo"
 
     filter "system:windows"
         system "windows"
-        systemversion = "latest"
+        systemversion "latest"
 
         defines
         {
@@ -118,7 +118,7 @@ project "Dogo"
 
     filter "system:linux"
         system "linux"
-        systemversion = "latest"
+        systemversion "latest"
 
         defines
         {
@@ -222,7 +222,7 @@ project "Sandbox"
     
     filter "system:windows"
     system "windows"
-        systemversion = "latest"
+        systemversion "latest"
     
         defines
         {
@@ -231,7 +231,7 @@ project "Sandbox"
 
     filter "system:linux"
         system "linux"
-        systemversion = "latest"
+        systemversion "latest"
     
         defines
         {
@@ -308,7 +308,7 @@ if _OPTIONS["sandbox-mode"] ~= "app" then
     
         filter "system:windows"
         system "windows"
-            systemversion = "latest"
+            systemversion "latest"
     
             defines
             {
@@ -317,7 +317,7 @@ if _OPTIONS["sandbox-mode"] ~= "app" then
 
         filter "system:linux"
             system "linux"
-            systemversion = "latest"
+            systemversion "latest"
     
             defines
             {

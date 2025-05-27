@@ -25,6 +25,7 @@ namespace Dogo
 				break;
 			}
 		}
+		return nullptr;
     }
 	
 	Shader* Shader::Create(const std::wstring& filepath, const std::wstring& filepath2)
@@ -47,6 +48,7 @@ namespace Dogo
 				break;
 			}
 		}
+		return nullptr;
 	}
 	Shader* Shader::Create(const std::string& filepath, ShaderType type)
 	{
@@ -68,5 +70,6 @@ namespace Dogo
 				break;
 			}
 		}
+		return nullptr;
 	}
 }

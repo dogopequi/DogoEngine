@@ -4,20 +4,21 @@
 #include "Dogo/Renderer/FrameBuffer.h"
 #include "Dogo/Renderer/Shader.h"
 
-EditorLayer::EditorLayer(Dogo::Renderer2D* renderer, Dogo::DogoWindow* window, Dogo::Framebuffer* framebuffer)
+EditorLayer::EditorLayer(std::shared_ptr<Dogo::Renderer2D> renderer, Dogo::DogoWindow* window, std::shared_ptr<Dogo::Framebuffer> framebuffer)
 		: Layer("EditorLayer")
 	{
 		DG_TRACE("EditorLayer created");
 		Renderer = renderer;
 		Window = window;
 		Framebuffer = framebuffer;
-		viewport = std::make_shared<Dogo::DogoUI::UIViewport>();
-		viewport->color = { 0.1f, 0.1f, 0.1f };
-		viewport->pos = { 0.0f, 0.0f };
-		viewport->size = { Window->GetWidth(), Window->GetHeight() };
-		viewport->transparent = false;
-		viewport->visible = true;
-		Dogo::DogoUI::AddElement(viewport);
+		viewport = Dogo::DogoUI::UIViewport();
+		viewport.color = { 0.1f, 0.1f, 0.1f };
+		viewport.pos = { 200.0f, 100.0f };
+		viewport.size = { Window->GetWidth() / 2, Window->GetHeight() / 2 };
+		viewport.transparent = false;
+		viewport.visible = true;
+		viewport.framebufferSize = glm::vec2(static_cast<float>(framebuffer->GetWidth()) , static_cast<float>(framebuffer->GetHeight()));
+		Dogo::DogoUI::UseViewport = true;
 	}
 void EditorLayer::OnAttach()
 {
@@ -32,7 +33,8 @@ void EditorLayer::OnUpdate()
 	Framebuffer->Unbind();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, Framebuffer->GetColorAttachmentID());
-	viewport->Draw(Renderer, glm::mat4(1.0f));
+	Dogo::DogoUI::DrawViewport(viewport, Renderer, glm::mat4(1.0f));
+	Dogo::DogoUI::HandleInput(viewport);
 	Framebuffer->Bind();
 }
 

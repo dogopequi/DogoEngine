@@ -21,5 +21,6 @@ namespace Dogo
 			return nullptr;
 			break;
 		}
+		return nullptr;
     }
 }

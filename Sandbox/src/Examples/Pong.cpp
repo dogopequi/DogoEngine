@@ -5,7 +5,7 @@
 #include "Dogo/Renderer/UI/UI.h"
 #include "Dogo/Input/Input.h"
 #include "Dogo/Renderer/Renderer2D.h"
-Pong::Pong(Dogo::Renderer2D* renderer)
+Pong::Pong(std::shared_ptr<Dogo::Renderer2D> renderer)
 	: Layer("AppLayer")
 {
 	DG_INFO("Example App starting");
@@ -34,6 +34,7 @@ void Pong::OnAttach()
 	startbutton->pos = {panel->size.x / 2 - 50.0f, panel->size.y / 2 - startbutton->size.y / 2 };
 	startbutton->color = { 0.0f, 1.0f, 0.0f };
 	startbutton->onClick = [this]() { DG_INFO("Started game"); paused = false; };
+	startbutton->button = 0;
 
 	pausebutton->visible = true;
 	pausebutton->text = "Pause";
@@ -41,6 +42,7 @@ void Pong::OnAttach()
 	pausebutton->pos = { panel->size.x / 2 + 50.0f, panel->size.y / 2 - pausebutton->size.y / 2 };
 	pausebutton->color = { 0.0f, 1.0f, 0.0f };
 	pausebutton->onClick = [this]() { DG_INFO("Paused game"); paused = true; };
+	pausebutton->button = 0;
 	panel->AddElement(startbutton);
 	panel->AddElement(pausebutton);
 
@@ -54,12 +56,10 @@ void Pong::OnAttach()
 
 	ball = { window->GetWidth() / 2.0f, window->GetHeight() / 2.0f };
 
-	float angle = (rand() % 90) - 45;
+	float angle = float((rand() % 90) - 45);
 	float rad = glm::radians(angle);
 	glm::vec2 direction = glm::normalize(glm::vec2(cos(rad), sin(rad)));
 	velocity = direction * speed;
-
-	DG_INFO("bottom: %f, top: %f, left: %f, right: %f", bottom, top, left, right);
 
 	time = window->GetTime();
 }
@@ -73,9 +73,7 @@ void Pong::OnUpdate()
 	double deltaTime = currentTime - time;
 	time = currentTime;
 
-
-	Dogo::Input::Int2 mouse = Dogo::Input::GetMousePosition();
-	Dogo::DogoUI::HandleInput(glm::vec2(mouse.x, mouse.y), Dogo::Input::IsMouseButtonPressed(0)); // right now input is crazy, it calls this a bunch of times. will fix soon
+	Dogo::DogoUI::MousePosition = Dogo::Input::GetMousePosition();
 
 
 	std::string fpsText = "FPS: " + std::to_string((uint32_t)(1.0 / deltaTime));
@@ -176,7 +174,7 @@ void Pong::OnUpdate()
 
 			ball = glm::vec2(window->GetWidth() / 2.0f, window->GetHeight() / 2.0f);
 
-			angle = (rand() % 90) - 45;
+			angle = float((rand() % 90) - 45);
 			rad = glm::radians(angle);
 			glm::vec2 direction = glm::normalize(glm::vec2(cos(rad), sin(rad)));
 			velocity = direction * speed;

@@ -23,6 +23,7 @@ namespace Dogo
 			return nullptr;
 			break;
 		}
+		return nullptr;
 	}
 	IndexBuffer* IndexBuffer::Create(uint32_t size, uint32_t* data, uint32_t count)
 	{
@@ -40,6 +41,7 @@ namespace Dogo
 			return nullptr;
 			break;
 		}
+		return nullptr;
 	}
 	VertexBuffer* VertexBuffer::Create(uint32_t bufferSize, uint32_t componentSize, float* data)
 	{
@@ -57,5 +59,6 @@ namespace Dogo
 			return nullptr;
 			break;
 		}
+		return nullptr;
 	}
 }

@@ -68,6 +68,7 @@
 			m_Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			for (Dogo::Layer* layer : m_LayerStack)
 				layer->OnUpdate();
+			Dogo::DogoUI::HandleInput();
 			m_Window->SwapBuffers();
 			m_Window->PollEvents();
 		}
@@ -81,7 +82,7 @@
 		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Sandbox::OnEvent));
 #endif
 		DG_TRACE("Hello Window");
-		Renderer = Dogo::Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl");
+		Renderer = std::shared_ptr<Dogo::Renderer2D>(Dogo::Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl"));
 		Renderer->SetViewMatrix(glm::mat4(1.0f));
 		Renderer->SetProjectionMatrix(glm::orthoRH_NO(
 			0.0f,
@@ -116,7 +117,7 @@
 		//dispatcher.Dispatch<Dogo::KeyPressedEvent>(DG_BIND_EVENT_FN(Sandbox::KeyPressedCallBack));
 		//dispatcher.Dispatch<Dogo::KeyReleasedEvent>(DG_BIND_EVENT_FN(Sandbox::KeyReleasedCallBack));
 		//dispatcher.Dispatch<Dogo::MouseMovedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseMovedCallBack));
-		//dispatcher.Dispatch<Dogo::MouseButtonPressedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseButtonPressedCallBack));
+		dispatcher.Dispatch<Dogo::MouseButtonPressedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseButtonPressedCallBack));
 		//dispatcher.Dispatch<Dogo::MouseButtonReleasedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseButtonReleasedCallBack));
 		//dispatcher.Dispatch<Dogo::MouseScrolledEvent>(DG_BIND_EVENT_FN(Sandbox::MouseScrolledCallBack));
 	}

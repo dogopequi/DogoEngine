@@ -1,5 +1,6 @@
 #pragma once
 #include "Dogo/Logger.h"
+#include "glm/glm.hpp"
 // TODO: Needs work to handle edge cases (combo input when using alt and shift) need a better solution
 
 
@@ -254,20 +255,6 @@ namespace Dogo
 {
 	namespace Input
 	{
-		struct Int2
-		{
-			int32_t x;
-			int32_t y;
-
-			bool operator== (const Int2& other) const
-			{
-				return x == other.x && y == other.y;
-			}
-			bool operator!= (const Int2& other) const
-			{
-				return x != other.x || y != other.y;
-			}
-		};
 		enum class KeyState
 		{
 			KEY_NONE, PRESSED, REPEAT, RELEASED
@@ -282,12 +269,12 @@ namespace Dogo
 		constexpr int MAX_BUTTONS = 256;
 		inline ButtonState buttonStates[MAX_BUTTONS] = { ButtonState::BUTTON_NONE };
 
-		inline Int2 m_MousePosition;
-		inline Int2 m_Scroll;
+		inline glm::vec2 m_MousePosition;
+		inline glm::vec2 m_Scroll;
 		inline int32_t m_ScrollDelta;
 		inline int32_t m_Key;
 		inline int32_t m_Button;
-		inline Int2 m_LastMousePosition;
+		inline glm::vec2 m_LastMousePosition;
 		inline int32_t m_LastKey;
 		inline int32_t m_LastButton;
 		inline KeyState m_KeyState;
@@ -300,10 +287,10 @@ namespace Dogo
 		inline int32_t GetLastButton() { return m_LastButton; }
 		inline KeyState GetKeyState() { return m_KeyState; }
 		inline ButtonState GetButtonState() { return m_ButtonState; }
-		inline Int2 GetMousePosition() { return m_MousePosition; }
-		inline int32_t GetMouseX() { return m_MousePosition.x; }
-		inline int32_t GetMouseY() { return m_MousePosition.y; }
-		inline Int2 GetMouseScroll() { return m_Scroll; }
+		inline glm::vec2 GetMousePosition() { return m_MousePosition; }
+		inline float GetMouseX() { return m_MousePosition.x; }
+		inline float GetMouseY() { return m_MousePosition.y; }
+		inline glm::vec2 GetMouseScroll() { return m_Scroll; }
 		inline int32_t GetScrollX() { return m_Scroll.x; }
 		inline int32_t GetScrollY() { return m_Scroll.y; }
 		inline int32_t GetScrollDelta() { return m_ScrollDelta; }
@@ -378,14 +365,14 @@ namespace Dogo
 				buttonStates[button] = ButtonState::RELEASED;
 			}
 		}
-		inline void ProcessMousePos(Int2 mousepos) {
+		inline void ProcessMousePos(glm::vec2 mousepos) {
 			if (mousepos != Input::GetMousePosition())
 			{
 				Input::SetMousePos(mousepos.x, mousepos.y);
 				return;
 			}
 		}
-		inline void ProcessMouseScroll(Int2 scroll) {
+		inline void ProcessMouseScroll(glm::vec2 scroll) {
 			if (scroll != Input::GetMouseScroll())
 			{
 				Input::SetScroll(scroll.x, scroll.y);

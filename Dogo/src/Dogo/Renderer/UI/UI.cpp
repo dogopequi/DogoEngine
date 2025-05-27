@@ -6,7 +6,7 @@ namespace Dogo
 {
 	namespace DogoUI
 	{
-		void UIButton::Draw(Renderer2D* renderer, const glm::mat4 parentTransform)
+		void UIButton::Draw(std::shared_ptr<Renderer2D> renderer, const glm::mat4 parentTransform)
 		{
 			glm::mat4 transform = parentTransform * glm::translate(glm::mat4(1.0f), glm::vec3(pos, 0.0f));
 			renderer->Push(transform);
@@ -38,14 +38,32 @@ namespace Dogo
 
 			renderer->Pop();
 		}
-		bool UIButton::MouseHandler(const glm::vec2& mousePos, bool isPressed, const glm::mat4 parentTransform)
+		bool UIButton::MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform, const UIViewport& viewport)
 		{
-			glm::mat4 transform = parentTransform * glm::translate(glm::mat4(1.0f), glm::vec3(pos, 0.0f));
-			glm::vec2 localMouse = glm::vec2(glm::inverse(transform) * glm::vec4(mousePos, 0.0f, 1.0f));
+			glm::vec2 localMouse = mousePos - pos;
 
 			hovered = (localMouse.x >= 0 && localMouse.x <= size.x &&
 				localMouse.y >= 0 && localMouse.y <= size.y);
+			bool isPressed = Dogo::Input::IsMouseButtonPressed(button);
+			if (hovered)
+			{
+				if (isPressed && (Input::GetButtonState() != Input::ButtonState::RELEASED))
+				{
+					if (onClick) onClick();
+				}
+			}
 
+			return hovered;
+		}
+
+		bool UIButton::MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform)
+		{
+
+			glm::mat4 transform = parentTransform * glm::translate(glm::mat4(1.0f), glm::vec3(pos, 0.0f));
+			glm::vec2 localMouse = glm::vec2(glm::inverse(transform) * glm::vec4(mousePos, 0.0f, 1.0f));
+			hovered = (localMouse.x >= 0 && localMouse.x <= size.x &&
+				localMouse.y >= 0 && localMouse.y <= size.y);
+			bool isPressed = Dogo::Input::IsMouseButtonPressed(button);
 			if (hovered)
 			{
 				if (isPressed && (Input::GetButtonState() != Input::ButtonState::RELEASED))

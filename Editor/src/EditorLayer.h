@@ -7,14 +7,14 @@
 class EditorLayer : public Dogo::Layer
 {
 public:
-	EditorLayer(Dogo::Renderer2D* renderer, Dogo::DogoWindow* window, Dogo::Framebuffer* framebuffer);
+	EditorLayer(std::shared_ptr<Dogo::Renderer2D> renderer, Dogo::DogoWindow* window, std::shared_ptr<Dogo::Framebuffer> framebuffer);
 	~EditorLayer() = default;
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate() override;
 private:
-	std::shared_ptr<Dogo::DogoUI::UIViewport> viewport;
-	Dogo::Renderer2D* Renderer;
+	Dogo::DogoUI::UIViewport viewport;
 	Dogo::DogoWindow* Window;
-	Dogo::Framebuffer* Framebuffer;
+	std::shared_ptr<Dogo::Framebuffer> Framebuffer;
+	std::shared_ptr<Dogo::Renderer2D> Renderer;
 };

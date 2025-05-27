@@ -307,7 +307,7 @@ namespace Dogo{
 		m_Shader->SetUniform1i("mode", 1);
 		m_Shader->SetUniform1iv("textures", m_Samplers, 16);
 		glBindVertexArray(m_QuadsVertexArray);
-		glDrawElements(GL_TRIANGLES, m_QuadsCount * 6, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_QuadsCount * 6), GL_UNSIGNED_INT, nullptr);
 		m_QuadsCount = 0;
 	}
 	void OpenGLRenderer2D::Submit(Quad& renderable, Texture* tex)
@@ -680,7 +680,7 @@ namespace Dogo{
 				glm::vec2(u1, v1),
 				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
 				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-				face->glyph->advance.x
+				static_cast<uint32_t>(face->glyph->advance.x)
 			};
 
 			Characters.insert(std::pair<char, Character>(c, character));
@@ -786,7 +786,7 @@ namespace Dogo{
 		m_Shader->SetUniformMatrix4f("projection", m_Proj);
 		m_Shader->SetUniform1i("mode", 0);
 		glBindVertexArray(m_LinesVertexArray);
-		glDrawElements(GL_LINES, m_LinesCount * 2, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_LINES, static_cast<GLsizei>(m_LinesCount * 2), GL_UNSIGNED_INT, nullptr);
 		m_LinesCount = 0;
 	}
 	void OpenGLRenderer2D::QuadsFlush()
@@ -806,7 +806,7 @@ namespace Dogo{
 		}
 		m_Shader->SetUniform1iv("textures", m_Samplers, 16);
 		glBindVertexArray(m_QuadsVertexArray);
-		glDrawElements(GL_TRIANGLES, m_QuadsCount * 6, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_QuadsCount * 6), GL_UNSIGNED_INT, nullptr);
 		m_QuadsCount = 0;
 	}
 	void OpenGLRenderer2D::TrianglesFlush()
@@ -826,7 +826,7 @@ namespace Dogo{
 		}
 		m_Shader->SetUniform1iv("textures", m_Samplers, 16);
 		glBindVertexArray(m_TrianglesVertexArray);
-		glDrawElements(GL_TRIANGLES, m_TrianglesCount * 3, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_TrianglesCount * 3), GL_UNSIGNED_INT, nullptr);
 		m_TrianglesCount = 0;
 	}
 	void OpenGLRenderer2D::CirclesFlush()
@@ -846,7 +846,7 @@ namespace Dogo{
 		}
 		m_Shader->SetUniform1iv("textures", m_Samplers, 16);
 		glBindVertexArray(m_CirclesVertexArray);
-		glDrawElements(GL_TRIANGLES, m_CirclesCount * CIRCLE_SEGMENTS * 3, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_CirclesCount * CIRCLE_SEGMENTS * 3), GL_UNSIGNED_INT, nullptr);
 		m_CirclesCount = 0;
 	}
 	void OpenGLRenderer2D::RoundedRectFlush()
@@ -866,7 +866,7 @@ namespace Dogo{
 		}
 		m_Shader->SetUniform1iv("textures", m_Samplers, 16);
 		glBindVertexArray(m_RoundedRectVertexArray);
-		glDrawElements(GL_TRIANGLES, m_RoundedRectsCount * ROUNDED_RECT_SEGMENTS * 4 * 3, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_RoundedRectsCount * ROUNDED_RECT_SEGMENTS * 4 * 3), GL_UNSIGNED_INT, nullptr);
 		m_RoundedRectsCount = 0;
 	}
 	void OpenGLRenderer2D::ThickLineFlush()
@@ -886,7 +886,7 @@ namespace Dogo{
 		}
 		m_Shader->SetUniform1iv("textures", m_Samplers, 16);
 		glBindVertexArray(m_ThickLineVertexArray);
-		glDrawElements(GL_TRIANGLES, m_ThickLinesCount * 6, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_ThickLinesCount * 6), GL_UNSIGNED_INT, nullptr);
 		m_ThickLinesCount = 0;
 	}
 }

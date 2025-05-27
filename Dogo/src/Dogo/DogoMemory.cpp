@@ -2,13 +2,13 @@
 #include "DogoMemory.h"
 void* operator new(size_t size)
 {
-	Dogo::MemoryMetrics.TotalAllocated += size;
+	Dogo::MemoryMetrics.TotalAllocated += uint32_t(size);
 	//DG_TRACE("Allocating: %zu", size);
 	return malloc(size);
 }
 void operator delete(void* memory, size_t size)
 {
-	Dogo::MemoryMetrics.TotalFreed += size;
+	Dogo::MemoryMetrics.TotalFreed += uint32_t(size);
 	//DG_TRACE("Deallocating: %zu", size);
 	free(memory);
 }
