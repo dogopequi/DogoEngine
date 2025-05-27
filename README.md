@@ -47,7 +47,7 @@ https://github.com/user-attachments/assets/ef83634d-ad5d-42e6-9592-23ba7e08ada8
 
 PhysX is integrated, with more functionality to introduce. The DLLs are not included here and need to be built independently. I will consider making it part of the build process, or simply distribute them along with the engine, or build it statically aswell.
 
-Editor is in progress, but I need more functionality with UI, and more advanced OpenGL to render the framebuffer to the viewport.
+Editor is in progress, but I need more functionality with UI. Successfully draws game layer to framebuffer and renders to viewport, handling input.
 
 3D (Just two models and a few lines, nothing exemplary yet):
 
