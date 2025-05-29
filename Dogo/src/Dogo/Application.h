@@ -34,6 +34,7 @@ namespace Dogo
 		virtual bool MouseButtonPressedCallBack(MouseButtonPressedEvent& e);
 		virtual bool MouseButtonReleasedCallBack(MouseButtonReleasedEvent& e);
 		virtual bool MouseScrolledCallBack(MouseScrolledEvent& e);
+		virtual bool OnWindowResize(Dogo::WindowResizeEvent& e);
 	protected:
 		inline static DogoWindow* m_Window;
 		inline static LayerStack m_LayerStack;

@@ -61,8 +61,12 @@ namespace Dogo
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		DG_TRACE(e.ToString().c_str());
-		m_IsRunning = false;
 		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		return Application::OnWindowResize(e);
 	}
 	bool Application::KeyPressedCallBack(KeyPressedEvent& e)
 	{
@@ -403,6 +407,7 @@ namespace Dogo
 		dispatcher.Dispatch<MouseButtonPressedEvent>(DG_BIND_EVENT_FN(Application::MouseButtonPressedCallBack));
 		dispatcher.Dispatch<MouseButtonReleasedEvent>(DG_BIND_EVENT_FN(Application::MouseButtonReleasedCallBack));
 		dispatcher.Dispatch<MouseScrolledEvent>(DG_BIND_EVENT_FN(Application::MouseScrolledCallBack));
+		dispatcher.Dispatch<WindowResizeEvent>(DG_BIND_EVENT_FN(Application::OnWindowResize));
 	}
 
 

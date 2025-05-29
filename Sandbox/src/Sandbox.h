@@ -12,6 +12,7 @@ public:
 	bool MouseButtonPressedCallBack(Dogo::MouseButtonPressedEvent& e);
 	bool MouseButtonReleasedCallBack(Dogo::MouseButtonReleasedEvent& e);
 	bool MouseScrolledCallBack(Dogo::MouseScrolledEvent& e);
+	bool OnWindowResize(Dogo::WindowResizeEvent& e);
 	void Run() override;
 
 	Sandbox();

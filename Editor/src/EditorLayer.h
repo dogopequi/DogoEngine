@@ -12,9 +12,24 @@ public:
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate() override;
+
+	void SetupViewport();
 private:
+
 	Dogo::DogoUI::UIViewport viewport;
 	Dogo::DogoWindow* Window;
 	std::shared_ptr<Dogo::Framebuffer> Framebuffer;
 	std::shared_ptr<Dogo::Renderer2D> Renderer;
+
+	Dogo::DogoUI::Rect viewportRect{};
+	Dogo::DogoUI::Rect topmenuRect{};
+	Dogo::DogoUI::Rect leftpanelRect{};
+	Dogo::DogoUI::Rect rightpanelRect{};
+	Dogo::DogoUI::Rect bottompanelRect{};
+
+	std::shared_ptr<Dogo::DogoUI::UIPanel> topMenuPanel;
+	std::shared_ptr<Dogo::DogoUI::UIPanel> leftPanel;
+	std::shared_ptr<Dogo::DogoUI::UIPanel> rightPanel;
+	std::shared_ptr<Dogo::DogoUI::UIPanel> bottomPanel;
+
 };

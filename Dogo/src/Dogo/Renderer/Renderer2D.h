@@ -120,6 +120,7 @@ namespace Dogo
 		virtual Shader* ExposeShader() const = 0;
 		virtual void SetShader(Shader* shader) = 0;
 		virtual void DrawFrameBuffer(Quad& quad) = 0;
+		virtual void Reset() = 0;
 		//inline static void SetInstance(Renderer2D* instance) { m_Instance = instance; }
 		//inline static Renderer2D* GetInstance() { return m_Instance; }
 

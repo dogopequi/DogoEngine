@@ -22,7 +22,7 @@ void Pong::OnAttach()
 	startbutton = std::make_shared<Dogo::DogoUI::UIButton>();
 	pausebutton = std::make_shared<Dogo::DogoUI::UIButton>();
 	panel = std::make_shared<Dogo::DogoUI::UIPanel>();
-	Dogo::DogoUI::AddElement(panel);
+	Dogo::DogoUI::UIAddGamePanel(panel);
 	panel->visible = true;
 	panel->color = { 0.0f, 0.0f, 1.0f };
 	panel->size = { window->GetWidth(), 50.0f };
@@ -184,8 +184,7 @@ void Pong::OnUpdate()
 			ball = newBallPos;
 		}
 	}
-	///
 	Renderer->Flush();
-	Dogo::DogoUI::Render(Renderer);
+	Dogo::DogoUI::UIRenderGameElements(Renderer);
 	Renderer->RenderText();
 }

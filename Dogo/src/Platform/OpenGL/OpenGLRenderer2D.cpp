@@ -567,6 +567,22 @@ namespace Dogo{
 			m_TextureSlots[i].first = nullptr;
 		}
 	}
+	void OpenGLRenderer2D::Reset()
+	{
+		m_CirclesBuffer.empty();
+		m_CirclesCount = 0;
+		m_QuadsBuffer.empty();
+		m_QuadsCount = 0;
+		m_TrianglesBuffer.empty();
+		m_TrianglesCount = 0;
+		m_RoundedRectsBuffer.empty();
+		m_RoundedRectsCount = 0;
+		m_ThickLinesBuffer.empty();
+		m_ThickLinesCount = 0;
+		m_LinesBuffer.empty();
+		m_LinesCount = 0;
+		m_TextCommands.clear();
+	}
 	float OpenGLRenderer2D::GetFontHeight(float scale)
 	{
 		auto it = Characters.find('H');

@@ -150,8 +150,10 @@ namespace Dogo
 
 	void DogoWindow::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 	{
-		glViewport(0, 0, width, height);
 		DogoWindow* dogoWindow = static_cast<DogoWindow*>(glfwGetWindowUserPointer(window));
+		glViewport(0, 0, width, height);
+		dogoWindow->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		dogoWindow->SetHeight(height);
 		dogoWindow->SetWidth(width);
 		WindowResizeEvent e(width, height);

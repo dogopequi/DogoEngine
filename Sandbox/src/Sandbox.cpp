@@ -59,6 +59,10 @@
 		DG_TRACE(e.ToString().c_str());
 		return true;
 	}
+	bool Sandbox::OnWindowResize(Dogo::WindowResizeEvent& e)
+	{
+		return Application::OnWindowResize(e);
+	}
 
 	void Sandbox::Run()
 	{
@@ -68,7 +72,7 @@
 			m_Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			for (Dogo::Layer* layer : m_LayerStack)
 				layer->OnUpdate();
-			Dogo::DogoUI::HandleInput();
+			Dogo::DogoUI::UIHandleGameInput();
 			m_Window->SwapBuffers();
 			m_Window->PollEvents();
 		}
@@ -120,4 +124,5 @@
 		dispatcher.Dispatch<Dogo::MouseButtonPressedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseButtonPressedCallBack));
 		//dispatcher.Dispatch<Dogo::MouseButtonReleasedEvent>(DG_BIND_EVENT_FN(Sandbox::MouseButtonReleasedCallBack));
 		//dispatcher.Dispatch<Dogo::MouseScrolledEvent>(DG_BIND_EVENT_FN(Sandbox::MouseScrolledCallBack));
+		dispatcher.Dispatch<Dogo::WindowResizeEvent>(DG_BIND_EVENT_FN(Sandbox::OnWindowResize));
 	}

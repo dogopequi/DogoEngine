@@ -48,7 +48,8 @@ namespace Dogo
 
 		m_Width = width;
 		m_Height = height;
-		glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+		Bind();
+
 		glDeleteTextures(1, &m_TCB);
 		glDeleteRenderbuffers(1, &m_RBO);
 
@@ -66,9 +67,12 @@ namespace Dogo
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			DG_FATAL("ERROR: Framebuffer is not complete after resize");
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, m_Width, m_Height);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		Unbind();
 	}
+
 	uint32_t OpenGLFrameBuffer::GetColorAttachmentID() const
 	{
 		return m_TCB;
