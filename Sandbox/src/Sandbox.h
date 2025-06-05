@@ -14,11 +14,13 @@ public:
 	bool MouseScrolledCallBack(Dogo::MouseScrolledEvent& e);
 	bool OnWindowResize(Dogo::WindowResizeEvent& e);
 	void Run() override;
-
+	
 	Sandbox();
 	~Sandbox() = default;
 
 	void OnEvent(Dogo::Event& e) override;
 	std::shared_ptr<Dogo::Renderer2D> Renderer;
+
+	bool resize = false;
 
 };

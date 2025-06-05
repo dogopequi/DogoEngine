@@ -19,6 +19,8 @@ namespace Dogo
         uint32_t GetColorAttachmentID() const;
 		inline uint32_t GetWidth() const { return m_Width; }
 		inline uint32_t GetHeight() const { return m_Height; }
+        inline uint32_t GetX() const { return m_Height; }
+        inline uint32_t GetY() const { return m_Width; }
     private:
         GLuint m_FBO = 0;
         GLuint m_TCB = 0;

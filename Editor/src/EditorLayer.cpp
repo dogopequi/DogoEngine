@@ -34,9 +34,9 @@ void EditorLayer::OnDetach()
 void EditorLayer::OnUpdate()
 {
 	Framebuffer->Unbind();
-	glViewport(0, 0, Window->GetWidth(), Window->GetHeight());
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	Window->Viewport(0, 0, Window->GetWidth(), Window->GetHeight());
+	Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	Window->ClearBuffers();
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, Framebuffer->GetColorAttachmentID());
 	Dogo::DogoUI::UseViewport = true;
@@ -47,6 +47,11 @@ void EditorLayer::OnUpdate()
 	Dogo::DogoUI::UIHandleEditorInput();
 
 	Framebuffer->Bind();
+}
+
+void EditorLayer::OnResizeNotify()
+{
+	SetupViewport();
 }
 
 void EditorLayer::SetupViewport()
@@ -106,7 +111,7 @@ void EditorLayer::SetupViewport()
 	Dogo::DogoUI::UIAddEditorPanel(leftPanel);
 	Dogo::DogoUI::UIAddEditorPanel(rightPanel);
 	Dogo::DogoUI::UIAddEditorPanel(bottomPanel);
-
+	Framebuffer->Resize(static_cast<uint32_t>(viewportRect.width), static_cast<uint32_t>(viewportRect.height));
 	viewport.color = { 0.1f, 0.1f, 0.1f };
 	viewport.pos = viewportRect.pos;
 	viewport.size = { viewportRect.width, viewportRect.height };

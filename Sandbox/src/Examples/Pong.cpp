@@ -23,38 +23,9 @@ void Pong::OnAttach()
 	pausebutton = std::make_shared<Dogo::DogoUI::UIButton>();
 	panel = std::make_shared<Dogo::DogoUI::UIPanel>();
 	Dogo::DogoUI::UIAddGamePanel(panel);
-	panel->visible = true;
-	panel->color = { 0.0f, 0.0f, 1.0f };
-	panel->size = { window->GetWidth(), 50.0f };
-	panel->pos = { 0.0f, 0.0f};
-
-	startbutton->visible = true;
-	startbutton->text = "Start";
-	startbutton->size = { 100.0f, 30.0f };
-	startbutton->pos = {panel->size.x / 2 - 50.0f, panel->size.y / 2 - startbutton->size.y / 2 };
-	startbutton->color = { 0.0f, 1.0f, 0.0f };
-	startbutton->onClick = [this]() { DG_INFO("Started game"); paused = false; };
-	startbutton->button = 0;
-
-	pausebutton->visible = true;
-	pausebutton->text = "Pause";
-	pausebutton->size = { 100.0f, 30.0f };
-	pausebutton->pos = { panel->size.x / 2 + 50.0f, panel->size.y / 2 - pausebutton->size.y / 2 };
-	pausebutton->color = { 0.0f, 1.0f, 0.0f };
-	pausebutton->onClick = [this]() { DG_INFO("Paused game"); paused = true; };
-	pausebutton->button = 0;
 	panel->AddElement(startbutton);
 	panel->AddElement(pausebutton);
-
-	player = (window->GetHeight() - panel->size.y) / 2.0f;
-	other = player;
-
-	bottom = window->GetHeight() - panel->size.y - height;
-	top = height*2;
-	left = height;
-	right = window->GetWidth() - height - width;
-
-	ball = { window->GetWidth() / 2.0f, window->GetHeight() / 2.0f };
+	Setup();
 
 	float angle = float((rand() % 90) - 45);
 	float rad = glm::radians(angle);
@@ -187,4 +158,59 @@ void Pong::OnUpdate()
 	Renderer->Flush();
 	Dogo::DogoUI::UIRenderGameElements(Renderer);
 	Renderer->RenderText();
+}
+
+void Pong::OnResizeNotify()
+{
+	Setup();
+}
+
+void Pong::Setup()
+{
+	float windowWidth = window->GetWidth();
+	float windowHeight = window->GetHeight();
+
+	panel->visible = true;
+	panel->color = { 0.0f, 0.0f, 1.0f };
+	panel->size = { windowWidth, 50.0f };
+	panel->pos = { 0.0f, 0.0f };
+
+	float buttonWidth = 100.0f;
+	float buttonHeight = 30.0f;
+	float buttonY = panel->size.y / 2.0f - buttonHeight / 2.0f;
+	float buttonSpacing = 20.0f;
+
+	startbutton->visible = true;
+	startbutton->text = "Start";
+	startbutton->size = { buttonWidth, buttonHeight };
+	startbutton->pos = { windowWidth / 2.0f - buttonWidth - buttonSpacing / 2.0f, buttonY };
+	startbutton->color = { 0.0f, 1.0f, 0.0f };
+	startbutton->onClick = [this]() { DG_INFO("Started game"); paused = false; };
+	startbutton->button = 0;
+
+	pausebutton->visible = true;
+	pausebutton->text = "Pause";
+	pausebutton->size = { buttonWidth, buttonHeight };
+	pausebutton->pos = { windowWidth / 2.0f + buttonSpacing / 2.0f, buttonY };
+	pausebutton->color = { 0.0f, 1.0f, 0.0f };
+	pausebutton->onClick = [this]() { DG_INFO("Paused game"); paused = true; };
+	pausebutton->button = 0;
+
+	float playAreaTop = panel->size.y;
+	float playAreaHeight = windowHeight - panel->size.y;
+	float paddleHeight = 80.0f;
+	float paddleWidth = 20.0f;
+
+
+	player = playAreaHeight / 2.0f + playAreaTop;
+	other = player;
+
+
+	bottom = windowHeight - paddleHeight;
+	top = playAreaTop + paddleHeight;
+	left = paddleWidth;
+	right = windowWidth - paddleWidth - paddleWidth;
+
+	ball = { windowWidth / 2.0f, windowHeight / 2.0f };
+
 }

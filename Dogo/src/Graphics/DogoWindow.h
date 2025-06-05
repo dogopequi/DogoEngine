@@ -34,6 +34,8 @@ namespace Dogo
 		inline void SetHeight(uint32_t height) { m_Height = height; }
 		void SwapInterval(uint32_t interval);
 		void ClearColor(float x, float y, float z, float a);
+		void ClearBuffers();
+		void Viewport(int x, int y, int z, int a);
 		void PollEvents();
 		void SetEventCallback(const EventCallbackFn& callback)  { EventCallback = callback; }
 		inline EventCallbackFn GetEventCallback() const { return EventCallback; }

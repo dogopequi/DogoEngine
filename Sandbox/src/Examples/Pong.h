@@ -11,7 +11,8 @@ public:
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate() override;
-
+	void OnResizeNotify() override;
+	void Setup();
 	std::shared_ptr<Dogo::Renderer2D> Renderer;
 	glm::vec3 pos;
 	std::shared_ptr<Dogo::DogoUI::UIButton> startbutton;

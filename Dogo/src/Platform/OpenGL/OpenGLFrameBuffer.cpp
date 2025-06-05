@@ -67,7 +67,6 @@ namespace Dogo
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			DG_FATAL("ERROR: Framebuffer is not complete after resize");
-		glViewport(0, 0, m_Width, m_Height);
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		Unbind();

@@ -12,10 +12,9 @@ public:
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate() override;
-
-	void SetupViewport();
+	void OnResizeNotify() override;
 private:
-
+	void SetupViewport();
 	Dogo::DogoUI::UIViewport viewport;
 	Dogo::DogoWindow* Window;
 	std::shared_ptr<Dogo::Framebuffer> Framebuffer;

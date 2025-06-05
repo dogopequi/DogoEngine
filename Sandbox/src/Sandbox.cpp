@@ -61,7 +61,19 @@
 	}
 	bool Sandbox::OnWindowResize(Dogo::WindowResizeEvent& e)
 	{
-		return Application::OnWindowResize(e);
+		Renderer->Reset();
+		Renderer->SetProjectionMatrix(glm::orthoRH_NO(
+			0.0f,
+			static_cast<float>(m_Window->GetWidth()),
+			static_cast<float>(m_Window->GetHeight()),
+			0.0f,
+			-1.0f,
+			1.0f));
+		m_Window->Viewport(0, 0, m_Window->GetWidth(), m_Window->GetHeight());
+		for (Dogo::Layer* layer : m_LayerStack)
+			layer->OnResizeNotify();
+		resize = true;
+		return true;
 	}
 
 	void Sandbox::Run()
@@ -70,8 +82,18 @@
 		while (!m_Window->WindowShouldClose() && m_Window != nullptr)
 		{
 			m_Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			m_Window->ClearBuffers();
 			for (Dogo::Layer* layer : m_LayerStack)
+			{
+				if (resize)
+				{
+					m_Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+					m_Window->ClearBuffers();
+					resize = false;
+					continue;
+				}
 				layer->OnUpdate();
+			}
 			Dogo::DogoUI::UIHandleGameInput();
 			m_Window->SwapBuffers();
 			m_Window->PollEvents();

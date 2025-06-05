@@ -70,10 +70,16 @@ public:
 	bool OnWindowResize(Dogo::WindowResizeEvent& e)
 	{
 		Renderer->Reset();
-		Framebuffer->Resize(e.GetWidth(), e.GetHeight());
-		editorLayer->SetupViewport();
+		Renderer->SetProjectionMatrix(glm::orthoRH_NO(
+			0.0f,
+			static_cast<float>(m_Window->GetWidth()),
+			static_cast<float>(m_Window->GetHeight()),
+			0.0f,
+			-1.0f,
+			1.0f));
+		for (Dogo::Layer* layer : m_LayerStack)
+			layer->OnResizeNotify();
 		resize = true;
-		Framebuffer->Bind();
 		return true;
 	}
 
@@ -96,14 +102,14 @@ public:
 		while (!m_Window->WindowShouldClose() && m_Window != nullptr)
 		{
 			m_Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+			m_Window->ClearBuffers();
 			Framebuffer->Bind();
 			for (Dogo::Layer* layer : m_LayerStack)
 			{
 				if (resize)
 				{
-					Framebuffer->Bind();
-					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+					m_Window->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+					m_Window->ClearBuffers();
 					resize = false;
 					continue;
 				}

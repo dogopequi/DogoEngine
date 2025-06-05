@@ -23,8 +23,8 @@ namespace Dogo
 		virtual void SwapBuffer() = 0;
 		virtual void Shutdown() = 0;
 		virtual void ClearColor(float x, float y, float z, float a) = 0;
-
-
+		virtual void ClearBuffers() = 0;
+		virtual void Viewport(int x, int y, int z, int a) = 0;
 
 		static void Create(RenderAPI api);
 

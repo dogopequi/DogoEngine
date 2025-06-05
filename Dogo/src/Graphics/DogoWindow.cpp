@@ -9,32 +9,24 @@ namespace Dogo
 		m_Width = width;
 		m_Height = height;
 		m_Name = name;
-		GraphicsContext::Create(RenderAPI::OpenGL);
-		glfwSetErrorCallback(ErrorCallback);
 
 		if (!glfwInit())
 		{
 			DG_ERROR("Failed to initialize GLFW");
 			return;
 		}
-
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
 		window = glfwCreateWindow(width, height, name.data(), nullptr, nullptr);
 		if (!window)
 		{
 			DG_ERROR("Failed to create GLFW window");
 			glfwTerminate();
 			return;
-		}
-
+		}		
 		glfwMakeContextCurrent(window);
-		if (!gladLoadGL()) {
-			DG_WARN("Failed to initialize Glad!");
-			return;
-		}
+		GraphicsContext::Create(RenderAPI::OpenGL);
+		m_Context = GraphicsContext::Get();
+
+		glfwSetErrorCallback(ErrorCallback);
 		glfwSetWindowUserPointer(window, this); // where `this` is DogoWindow*
 		glfwSetKeyCallback(window, KeyCallback);
 		glfwSetMouseButtonCallback(window, MouseButtonCallback);
@@ -66,7 +58,10 @@ namespace Dogo
 	{
 		glfwSwapBuffers(window);
 	}
-
+	void DogoWindow::Viewport(int x, int y, int z, int a)
+	{
+		m_Context->Viewport(x, y, z, a);
+	}
 	void DogoWindow::SwapInterval(uint32_t interval)
 	{
 		glfwSwapInterval(interval);
@@ -74,8 +69,12 @@ namespace Dogo
 
 	void DogoWindow::ClearColor(float x, float y, float z, float a)
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(x, y, z, a);
+		m_Context->ClearColor(x, y, z, a);
+	}
+
+	void DogoWindow::ClearBuffers()
+	{
+		m_Context->ClearBuffers();
 	}
 
 	void DogoWindow::PollEvents()
@@ -151,9 +150,8 @@ namespace Dogo
 	void DogoWindow::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 	{
 		DogoWindow* dogoWindow = static_cast<DogoWindow*>(glfwGetWindowUserPointer(window));
-		glViewport(0, 0, width, height);
 		dogoWindow->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		dogoWindow->ClearBuffers();
 		dogoWindow->SetHeight(height);
 		dogoWindow->SetWidth(width);
 		WindowResizeEvent e(width, height);
