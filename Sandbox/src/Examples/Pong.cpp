@@ -50,9 +50,9 @@ void Pong::OnUpdate()
 	std::string fpsText = "FPS: " + std::to_string((uint32_t)(1.0 / deltaTime));
 	Renderer->SubmitText(fpsText.c_str(), 1.0f, panel->size.y / 2 - panel->size.y / 4, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	std::string playerScoreText = "Player 1's score: " + std::to_string(playerScore);
-	Renderer->SubmitText(playerScoreText.c_str(), window->GetWidth() / 2 - 300.0f, (panel->size.y / 2 - panel->size.y / 4), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	Renderer->SubmitText(playerScoreText.c_str(), window->GetWidth() / 6, (panel->size.y / 2 - panel->size.y / 4), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 	std::string otherScoreText = " Player 2's score: " + std::to_string(otherScore);
-	Renderer->SubmitText(otherScoreText.c_str(), (window->GetWidth() / 2 + 300.0f), (panel->size.y / 2 - panel->size.y / 4), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	Renderer->SubmitText(otherScoreText.c_str(), (window->GetWidth() - window->GetWidth() / 6 - (panel->size.y / 2 - panel->size.y / 4)), (panel->size.y / 2 - panel->size.y / 4), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
 	Renderer->Submit(Dogo::CreateQuad(left, player, glm::vec4(1.0f), width, height, 0.0f));
@@ -172,13 +172,13 @@ void Pong::Setup()
 
 	panel->visible = true;
 	panel->color = { 0.0f, 0.0f, 1.0f };
-	panel->size = { windowWidth, 50.0f };
+	panel->size = { windowWidth, windowHeight / 8 };
 	panel->pos = { 0.0f, 0.0f };
 
-	float buttonWidth = 100.0f;
-	float buttonHeight = 30.0f;
+	float buttonWidth = windowWidth / 8;
+	float buttonHeight = windowHeight / 20;
 	float buttonY = panel->size.y / 2.0f - buttonHeight / 2.0f;
-	float buttonSpacing = 20.0f;
+	float buttonSpacing = windowWidth / 12;
 
 	startbutton->visible = true;
 	startbutton->text = "Start";
@@ -198,8 +198,8 @@ void Pong::Setup()
 
 	float playAreaTop = panel->size.y;
 	float playAreaHeight = windowHeight - panel->size.y;
-	float paddleHeight = 80.0f;
-	float paddleWidth = 20.0f;
+	float paddleHeight = windowHeight / 8;
+	float paddleWidth = windowWidth / 10;
 
 
 	player = playAreaHeight / 2.0f + playAreaTop;
@@ -209,7 +209,7 @@ void Pong::Setup()
 	bottom = windowHeight - paddleHeight;
 	top = playAreaTop + paddleHeight;
 	left = paddleWidth;
-	right = windowWidth - paddleWidth - paddleWidth;
+	right = windowWidth - paddleWidth;
 
 	ball = { windowWidth / 2.0f, windowHeight / 2.0f };
 

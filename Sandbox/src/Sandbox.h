@@ -14,6 +14,8 @@ public:
 	bool MouseScrolledCallBack(Dogo::MouseScrolledEvent& e);
 	bool OnWindowResize(Dogo::WindowResizeEvent& e);
 	void Run() override;
+
+	void NotifyOnResize(Dogo::WindowResizeEvent& e);
 	
 	Sandbox();
 	~Sandbox() = default;

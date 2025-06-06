@@ -15,16 +15,16 @@ public:
 	void OnResizeNotify() override;
 private:
 	void SetupViewport();
-	Dogo::DogoUI::UIViewport viewport;
+	Dogo::Viewport viewport;
 	Dogo::DogoWindow* Window;
 	std::shared_ptr<Dogo::Framebuffer> Framebuffer;
 	std::shared_ptr<Dogo::Renderer2D> Renderer;
 
-	Dogo::DogoUI::Rect viewportRect{};
-	Dogo::DogoUI::Rect topmenuRect{};
-	Dogo::DogoUI::Rect leftpanelRect{};
-	Dogo::DogoUI::Rect rightpanelRect{};
-	Dogo::DogoUI::Rect bottompanelRect{};
+	Dogo::Rect viewportRect{};
+	Dogo::Rect topmenuRect{};
+	Dogo::Rect leftpanelRect{};
+	Dogo::Rect rightpanelRect{};
+	Dogo::Rect bottompanelRect{};
 
 	std::shared_ptr<Dogo::DogoUI::UIPanel> topMenuPanel;
 	std::shared_ptr<Dogo::DogoUI::UIPanel> leftPanel;

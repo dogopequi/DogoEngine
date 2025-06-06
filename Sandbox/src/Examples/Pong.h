@@ -20,7 +20,6 @@ public:
 	std::shared_ptr<Dogo::DogoUI::UIPanel> panel;
 	Dogo::DogoWindow* window;
 	double time;
-
 	// game
 	float player{};
 	float other{};

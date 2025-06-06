@@ -38,10 +38,10 @@ namespace Dogo
 
 			renderer->Pop();
 		}
-		bool UIButton::MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform, const UIViewport& viewport)
+		bool UIButton::MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform, const Viewport& viewport)
 		{
+			glm::mat4 transform = parentTransform * glm::translate(glm::mat4(1.0f), glm::vec3(pos, 0.0f));
 			glm::vec2 localMouse = mousePos - pos;
-
 			hovered = (localMouse.x >= 0 && localMouse.x <= size.x &&
 				localMouse.y >= 0 && localMouse.y <= size.y);
 			bool isPressed = Dogo::Input::IsMouseButtonPressed(button);

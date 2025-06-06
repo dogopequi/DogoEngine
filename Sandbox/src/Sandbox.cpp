@@ -69,9 +69,9 @@
 			0.0f,
 			-1.0f,
 			1.0f));
-		m_Window->Viewport(0, 0, m_Window->GetWidth(), m_Window->GetHeight());
 		for (Dogo::Layer* layer : m_LayerStack)
 			layer->OnResizeNotify();
+		m_Window->Viewport(0, 0, m_Window->GetWidth(), m_Window->GetHeight());
 		resize = true;
 		return true;
 	}
@@ -98,6 +98,11 @@
 			m_Window->SwapBuffers();
 			m_Window->PollEvents();
 		}
+	}
+
+	void Sandbox::NotifyOnResize(Dogo::WindowResizeEvent& e)
+	{
+		OnWindowResize(e);
 	}
 
 

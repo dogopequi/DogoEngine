@@ -1,5 +1,6 @@
 #pragma once
 #include "Dogo/Core.h"
+#include "Dogo/Logger.h"
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include "Dogo/Renderer/Texture.h"
@@ -35,6 +36,21 @@
 
 namespace Dogo
 {
+	struct Rect
+	{
+		glm::vec2 pos;
+		float width;
+		float height;
+	};
+	struct Viewport
+	{
+		glm::vec2 pos;
+		glm::vec2 size;
+		glm::vec3 color;
+		glm::vec2 framebufferSize;
+		bool transparent;
+		bool visible = false;
+	};
 	struct Vertex {
 		glm::vec3 position;
 		glm::vec4 color;
@@ -121,9 +137,6 @@ namespace Dogo
 		virtual void SetShader(Shader* shader) = 0;
 		virtual void DrawFrameBuffer(Quad& quad) = 0;
 		virtual void Reset() = 0;
-		//inline static void SetInstance(Renderer2D* instance) { m_Instance = instance; }
-		//inline static Renderer2D* GetInstance() { return m_Instance; }
-
 	protected:
 		Renderer2D() { m_TransformStack.push_back(glm::mat4(1.0f));
 		m_TransformBack = &m_TransformStack.back();
@@ -131,8 +144,5 @@ namespace Dogo
 
 		std::vector<glm::mat4> m_TransformStack;
 		const glm::mat4* m_TransformBack;
-
-	//private:
-	//	inline static Renderer2D* m_Instance;
 	};
 }

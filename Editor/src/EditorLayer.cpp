@@ -11,16 +11,16 @@ EditorLayer::EditorLayer(std::shared_ptr<Dogo::Renderer2D> renderer, Dogo::DogoW
 		Renderer = renderer;
 		Window = window;
 		Framebuffer = framebuffer;
-		viewport = Dogo::DogoUI::UIViewport();
+		viewport = Dogo::Viewport();
 		topMenuPanel = std::make_shared<Dogo::DogoUI::UIPanel>();
 		bottomPanel = std::make_shared<Dogo::DogoUI::UIPanel>();
 		leftPanel = std::make_shared<Dogo::DogoUI::UIPanel>();
 		rightPanel = std::make_shared<Dogo::DogoUI::UIPanel>();
-		SetupViewport();
 		Dogo::DogoUI::UIAddEditorPanel(topMenuPanel);
 		Dogo::DogoUI::UIAddEditorPanel(leftPanel);
 		Dogo::DogoUI::UIAddEditorPanel(rightPanel);
 		Dogo::DogoUI::UIAddEditorPanel(bottomPanel);
+		SetupViewport();
 		Dogo::DogoUI::UseViewport = true;
 	}
 void EditorLayer::OnAttach()
@@ -39,14 +39,15 @@ void EditorLayer::OnUpdate()
 	Window->ClearBuffers();
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, Framebuffer->GetColorAttachmentID());
+
 	Dogo::DogoUI::UseViewport = true;
 	Dogo::DogoUI::DrawViewport(viewport, Renderer, glm::mat4(1.0f));
 	Dogo::DogoUI::HandleViewportInput(viewport);
 	Dogo::DogoUI::UseViewport = false;
 	Dogo::DogoUI::UIRenderEditorElements(Renderer);
 	Dogo::DogoUI::UIHandleEditorInput();
-
 	Framebuffer->Bind();
+
 }
 
 void EditorLayer::OnResizeNotify()
@@ -56,11 +57,6 @@ void EditorLayer::OnResizeNotify()
 
 void EditorLayer::SetupViewport()
 {
-	Dogo::DogoUI::m_EditorUIPanels.clear();
-	topMenuPanel = std::make_shared<Dogo::DogoUI::UIPanel>();
-	leftPanel = std::make_shared<Dogo::DogoUI::UIPanel>();
-	rightPanel = std::make_shared<Dogo::DogoUI::UIPanel>();
-	bottomPanel = std::make_shared<Dogo::DogoUI::UIPanel>();
 	float windowWidth = static_cast<float>(Window->GetWidth());
 	float windowHeight = static_cast<float>(Window->GetHeight());
 
@@ -107,11 +103,7 @@ void EditorLayer::SetupViewport()
 	bottomPanel->size = { bottompanelRect.width, bottompanelRect.height };
 	bottomPanel->pos = bottompanelRect.pos;
 	Dogo::DogoUI::WindowSize = { static_cast<float>(Window->GetWidth()), static_cast<float>(Window->GetHeight()) };
-	Dogo::DogoUI::UIAddEditorPanel(topMenuPanel);
-	Dogo::DogoUI::UIAddEditorPanel(leftPanel);
-	Dogo::DogoUI::UIAddEditorPanel(rightPanel);
-	Dogo::DogoUI::UIAddEditorPanel(bottomPanel);
-	Framebuffer->Resize(static_cast<uint32_t>(viewportRect.width), static_cast<uint32_t>(viewportRect.height));
+	Framebuffer->Resize(Window->GetWidth(), Window->GetHeight());
 	viewport.color = { 0.1f, 0.1f, 0.1f };
 	viewport.pos = viewportRect.pos;
 	viewport.size = { viewportRect.width, viewportRect.height };

@@ -6,22 +6,6 @@ namespace Dogo
 {
 	namespace DogoUI
 	{
-		struct Rect
-		{
-			glm::vec2 pos;
-			float width;
-			float height;
-		};
-
-		struct UIViewport
-		{
-			glm::vec2 pos;
-			glm::vec2 size;
-			glm::vec3 color;
-			glm::vec2 framebufferSize;
-			bool transparent;
-			bool visible = false;
-		};
 		struct UIElement
 		{
 			glm::vec2 pos;
@@ -30,7 +14,7 @@ namespace Dogo
 			bool transparent;
 			bool visible = true;
 			virtual void Draw(std::shared_ptr<Renderer2D> renderer, const glm::mat4 parentTransform) = 0;
-			virtual bool MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform, const UIViewport& viewport) = 0;
+			virtual bool MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform, const Viewport& viewport) = 0;
 			virtual bool MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform) = 0;
 		};
 
@@ -42,7 +26,7 @@ namespace Dogo
 			uint32_t button;
 
 			void Draw(std::shared_ptr<Renderer2D> renderer, const glm::mat4 parentTransform) override;
-			bool MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform, const UIViewport& viewport) override;
+			bool MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform, const Viewport& viewport) override;
 			bool MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform) override;
 		};
 
@@ -69,7 +53,7 @@ namespace Dogo
 				));
 				renderer->Pop();
 			}
-			inline bool MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform, const UIViewport& viewport) override
+			inline bool MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform, const Viewport& viewport) override
 			{
 				glm::mat4 transform = parentTransform * glm::translate(glm::mat4(1.0f), glm::vec3(pos, 0.0f));
 				glm::vec2 localMouse = mousePos - pos;
@@ -116,17 +100,17 @@ namespace Dogo
 		{
 			m_EditorUIPanels.push_front(element);
 		}
-		inline void HandleViewportInput(const UIViewport& viewport)
+		inline void HandleViewportInput(const Viewport& viewport)
 		{
-			glm::mat4 root = glm::mat4(1.0f) * glm::translate(glm::mat4(1.0f), glm::vec3(viewport.pos, 0.0f));
-			if (UseViewport && viewport.visible == true)
+			if (UseViewport && viewport.visible)
 			{
 				glm::vec2 localMouse = MousePosition - viewport.pos;
-				glm::vec2 framebufferMouse = localMouse * (viewport.framebufferSize / viewport.size);;
+
 				if (localMouse.x < 0 || localMouse.y < 0 ||
 					localMouse.x > viewport.size.x || localMouse.y > viewport.size.y)
 					return;
-
+				glm::vec2 framebufferMouse = localMouse * (viewport.framebufferSize / viewport.size);
+				glm::mat4 root = glm::mat4(1.0f);
 
 				for (auto& element : m_GameUIPanels) {
 					if (element->visible) {
@@ -170,24 +154,24 @@ namespace Dogo
 		{
 			glm::mat4 root = glm::mat4(1.0f);
 			for (auto& element : m_EditorUIPanels) {
-				//glEnable(GL_SCISSOR_TEST);
-				//glScissor(
-				//	element->pos.x,
-				//	WindowSize.y - element->pos.y - element->size.y,
-				//	element->size.x,
-				//	element->size.y
-				//);
+				glEnable(GL_SCISSOR_TEST);
+				glScissor(
+					element->pos.x,
+					WindowSize.y - element->pos.y - element->size.y,
+					element->size.x,
+					element->size.y
+				);
 
 				if (element->visible) {
 					element->Draw(renderer, root);
 				}
 			}
-			//glDisable(GL_SCISSOR_TEST);
+			glDisable(GL_SCISSOR_TEST);
 			glDepthFunc(GL_ALWAYS);
 			renderer->Flush();
 		}
 
-		inline void DrawViewport(const UIViewport& viewport, std::shared_ptr<Renderer2D> renderer, const glm::mat4 parentTransform)
+		inline void DrawViewport(const Viewport& viewport, std::shared_ptr<Renderer2D> renderer, const glm::mat4 parentTransform)
 		{
 			glm::mat4 transform = parentTransform * glm::translate(glm::mat4(1.0f), glm::vec3(viewport.pos, 0.0f));
 			renderer->Push(transform);

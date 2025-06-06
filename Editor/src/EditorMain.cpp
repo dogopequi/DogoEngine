@@ -16,7 +16,7 @@ public:
         DG_TRACE("Launching Editor");
 		m_Window = new Dogo::DogoWindow(1920, 1080, "Dogo Editor");
 		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Editor::OnEvent));
-		Sandbox* game = new Sandbox();
+		game = new Sandbox();
 		Renderer = std::shared_ptr<Dogo::Renderer2D>(Dogo::Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl"));
 		Renderer->SetViewMatrix(glm::mat4(1.0f));
 		Renderer->SetProjectionMatrix(glm::orthoRH_NO(
@@ -77,8 +77,7 @@ public:
 			0.0f,
 			-1.0f,
 			1.0f));
-		for (Dogo::Layer* layer : m_LayerStack)
-			layer->OnResizeNotify();
+		game->NotifyOnResize(e);
 		resize = true;
 		return true;
 	}
@@ -128,6 +127,7 @@ private:
 	std::shared_ptr<Dogo::Renderer2D> Renderer;
 	EditorLayer* editorLayer;
 	bool resize = false;
+	Sandbox* game;
 };
 
 Dogo::Application* Dogo::CreateApplication()
