@@ -67,7 +67,7 @@ namespace Dogo
 		inline void SetViewPos(glm::vec3 pos) { m_ViewPos = pos; }
 
 	private:
-		std::deque<std::pair<const Model&, const TransformComponent&>> m_RenderQueue;
+		std::deque<const Model*> m_RenderQueue;
 		std::deque<const Line*> m_RenderQueueLines;
 		std::unique_ptr<MatrixPass2> MVP;
 

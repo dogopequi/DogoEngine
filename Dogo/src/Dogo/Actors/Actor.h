@@ -1,12 +1,8 @@
 #pragma once
 #include "Dogo/Renderer/AssimpModel.h"
-#include "Entity.h"
 #include "Dogo/Physics/DG_Physics.h"
 namespace Dogo
 {
-	class TransformComponent;
-	class StaticMeshComponent;
-	class DynamicMeshComponent;
 	class Actor
 	{
 	public:
@@ -16,7 +12,6 @@ namespace Dogo
 
 		void Update();
 		
-		inline TransformComponent* GetTC() const { return TC; }
 
 		void SetPosition(float x, float y, float z);
 
@@ -34,8 +29,6 @@ namespace Dogo
 		void AddImpulse(glm::vec3 force);
 
 	protected:
-		DogoECS::Entity* m_Entity;
-		TransformComponent* TC;
 		Model* m_Model;
 	};
 }

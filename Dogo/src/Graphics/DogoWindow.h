@@ -55,5 +55,7 @@ namespace Dogo
 		static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 		static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
 		static void WindowCloseCallback(GLFWwindow* window);
+
+
 	};
 }

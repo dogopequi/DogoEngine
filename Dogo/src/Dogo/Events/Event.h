@@ -55,7 +55,7 @@ namespace Dogo {
 	class EventDispatcher
 	{
 		template<typename T>
-		using EventFn = std::function<bool(T&)>;
+		using EventFn = std::function<void(T&)>;
 	public:
 		EventDispatcher(Event& event)
 			: m_Event(event)
@@ -63,14 +63,12 @@ namespace Dogo {
 		}
 
 		template<typename T>
-		bool Dispatch(EventFn<T> func)
+		void Dispatch(EventFn<T> func)
 		{
 			if (m_Event.GetEventType() == T::GetStaticType())
 			{
-				m_Event.Handled = func(*(T*)&m_Event);
-				return true;
+				func(*(T*)&m_Event);
 			}
-			return false;
 		}
 	private:
 		Event& m_Event;

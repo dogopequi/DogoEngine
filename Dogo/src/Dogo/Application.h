@@ -8,7 +8,9 @@
 #include "Events/MouseEvent.h"
 #include "Renderer/Camera.h"
 #include "Graphics/DogoWindow.h"
-
+#include "Dogo/Renderer/Renderer2D.h"
+#include "Dogo/ThreadPool.h"
+#include "Dogo/Component/Components.h"
 namespace Dogo
 {
 	#if DG_PLATFORM_WINDOWS
@@ -23,34 +25,40 @@ namespace Dogo
 		virtual void PushLayer(Layer* layer);
 		virtual void PushOverlay(Layer* layer);
 
-		virtual void Run() = 0;
+		virtual void Run() final;
+	protected:
+		virtual void Tick() = 0;
+		virtual void OnWindowCloseEvent(WindowCloseEvent& e) {}
+		virtual void OnKeyPressedEvent(KeyPressedEvent& e) {}
+		virtual void OnKeyReleasedEvent(KeyReleasedEvent& e) {}
+		virtual void OnMouseMovedEvent(MouseMovedEvent& e) {}
+		virtual void OnMouseButtonPressedEvent(MouseButtonPressedEvent& e) {}
+		virtual void OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e) {}
+		virtual void OnMouseScrolledEvent(MouseScrolledEvent& e) {}
+		virtual void OnWindowResizeEvent(WindowResizeEvent& e) {}
+
+
+	private:
 		virtual void OnEvent(Event& e);
-
+		void OnWindowClose(WindowCloseEvent& e);
+		void KeyPressedCallBack(KeyPressedEvent& e);
+		void KeyReleasedCallBack(KeyReleasedEvent& e);
+		void MouseMovedCallBack(MouseMovedEvent& e);
+		void MouseButtonPressedCallBack(MouseButtonPressedEvent& e);
+		void MouseButtonReleasedCallBack(MouseButtonReleasedEvent& e);
+		void MouseScrolledCallBack(MouseScrolledEvent& e);
+		void OnWindowResize(Dogo::WindowResizeEvent& e);
 	protected:
-		virtual bool OnWindowClose(WindowCloseEvent& e);
-		virtual bool KeyPressedCallBack(KeyPressedEvent& e);
-		virtual bool KeyReleasedCallBack(KeyReleasedEvent& e);
-		virtual bool MouseMovedCallBack(MouseMovedEvent& e);
-		virtual bool MouseButtonPressedCallBack(MouseButtonPressedEvent& e);
-		virtual bool MouseButtonReleasedCallBack(MouseButtonReleasedEvent& e);
-		virtual bool MouseScrolledCallBack(MouseScrolledEvent& e);
-		virtual bool OnWindowResize(Dogo::WindowResizeEvent& e);
-	protected:
-		inline static DogoWindow* m_Window;
-		inline static LayerStack m_LayerStack;
-
-		bool m_IsRunning;
-
-
-		////temp
-		//bool firstMouse = true;
-		//float lastX = 800.0f / 2.0;
-		//float lastY = 600.0 / 2.0;
-
-		////temp
-		//void processInput(float time);
-		
-		//std::shared_ptr<Camera> m_Camera;
+		DogoECS::DG_EntityManager* entityManager;
+		DogoECS::DG_ComponentManager* componentManager;
+		DogoWindow* m_Window;
+		LayerStack m_LayerStack;
+		std::shared_ptr<Renderer2D> m_Renderer;
+		std::atomic<bool> m_Running{ true };
+	private:
+		void DrawFrame();
+	private:
+		ThreadPool m_Pool;
 	};
 	Application* CreateApplication();
 }

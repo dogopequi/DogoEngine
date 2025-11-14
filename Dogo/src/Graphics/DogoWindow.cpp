@@ -27,7 +27,7 @@ namespace Dogo
 		m_Context = GraphicsContext::Get();
 
 		glfwSetErrorCallback(ErrorCallback);
-		glfwSetWindowUserPointer(window, this); // where `this` is DogoWindow*
+		glfwSetWindowUserPointer(window, this);
 		glfwSetKeyCallback(window, KeyCallback);
 		glfwSetMouseButtonCallback(window, MouseButtonCallback);
 		glfwSetCursorPosCallback(window, CursorPositionCallback);
@@ -82,7 +82,6 @@ namespace Dogo
 		glfwPollEvents();
 	}
 
-	// Callbacks
 	void DogoWindow::ErrorCallback(int error, const char* description)
 	{
 		DG_ERROR("GLFW Error [%d]: {%s}", error, description);
@@ -154,6 +153,7 @@ namespace Dogo
 		dogoWindow->ClearBuffers();
 		dogoWindow->SetHeight(height);
 		dogoWindow->SetWidth(width);
+		dogoWindow->Viewport(0, 0, width, height);
 		WindowResizeEvent e(width, height);
 		dogoWindow->GetEventCallback()(e);
 	}

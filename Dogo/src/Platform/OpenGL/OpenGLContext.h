@@ -20,6 +20,7 @@ namespace Dogo
 		bool Init() override;
 		void SwapBuffer() override;
 		void Shutdown() override;
+		void Finish() override;
 		void ClearColor(float x, float y, float z, float a) override;
 		void ClearBuffers() override;
 		void Viewport(int x, int y, int z, int a) override;

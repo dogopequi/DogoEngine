@@ -1,7 +1,6 @@
 #include "dgpch.h"
 #include "Pong.h"
 #include "../vendor/DogoECS/include/DG_Component.h"
-#include "Dogo/Component/Component.h"
 #include "Dogo/Renderer/UI/UI.h"
 #include "Dogo/Input/Input.h"
 #include "Dogo/Renderer/Renderer2D.h"
@@ -15,8 +14,6 @@ Pong::Pong(std::shared_ptr<Dogo::Renderer2D> renderer)
 void Pong::OnAttach()
 {
 	DG_INFO("AppLayer Attached");
-	//Dogo::Texture* lebron = Dogo::Texture::Create("../Dogo/resources/Textures/lebron.png", "legacy", Dogo::TextureType::twoD, "lebron");
-	//Dogo::Texture* rat = Dogo::Texture::Create("..Dogo/resources/Textures/rat.png", "legacy", Dogo::TextureType::twoD, "rat");
 	pos = glm::vec3(0.0f, 0.0f, 0.0f);
 	Renderer->LoadFont("../Dogo/resources/Fonts/arial.ttf", 20);
 	startbutton = std::make_shared<Dogo::DogoUI::UIButton>();

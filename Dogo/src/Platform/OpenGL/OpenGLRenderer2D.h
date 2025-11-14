@@ -34,7 +34,6 @@ namespace Dogo
 		void Submit(Quad& renderable, Texture* tex = nullptr) override;
 		void Submit(Triangle& renderable, Texture* tex = nullptr) override;
 		void Submit(Circle& renderable, Texture* tex = nullptr) override;
-		void Submit(RoundedRect& renderable, Texture* tex = nullptr) override;
 		void Submit(ThickLine& renderable, Texture* tex = nullptr) override;
 		void Submit(Line2D& renderable)override;
 		void SubmitText(const std::string& text, float x, float y, float scale, const glm::vec3& color = glm::vec3(1.0f)) override;
@@ -58,7 +57,6 @@ namespace Dogo
 		void QuadsFlush();
 		void TrianglesFlush();
 		void CirclesFlush();
-		void RoundedRectFlush();
 		void ThickLineFlush();
 
 	protected:
@@ -84,9 +82,6 @@ namespace Dogo
 		GLuint m_CirclesVertexBuffer{};
 		GLuint m_CirclesIndexBuffer{};
 
-		GLuint m_RoundedRectVertexArray{};
-		GLuint m_RoundedRectVertexBuffer{};
-		GLuint m_RoundedRectIndexBuffer{};
 
 		GLuint m_ThickLineVertexArray{};
 		GLuint m_ThickLineVertexBuffer{};
@@ -117,9 +112,6 @@ namespace Dogo
 		size_t m_CirclesCount = 0;
 		std::array<uint32_t, MAX_CIRCLE_INDICES> m_CirclesIndices;
 
-		std::array<RoundedRect, MAX_ROUNDED_RECTS> m_RoundedRectsBuffer;
-		size_t m_RoundedRectsCount = 0;
-		std::array<uint32_t, MAX_ROUNDED_RECT_INDICES> m_RoundedRectsIndices;
 
 		std::array<ThickLine, MAX_THICK_LINES> m_ThickLinesBuffer;
 		size_t m_ThickLinesCount = 0;

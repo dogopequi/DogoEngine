@@ -40,7 +40,6 @@ workspace "Dogo"
     IncludeDir["GLFW"] = "Dogo/vendor/GLFW/include"
     
     include "Dogo/vendor/glad"
-    include "Dogo/vendor/DogoECS"
     include "Dogo/vendor/GLFW"
 
 project "Dogo"
@@ -81,7 +80,6 @@ project "Dogo"
     }
     links
     {
-        "DogoECS",
         "glad",
         "GLFW",
 		"opengl32.lib",
@@ -216,8 +214,7 @@ project "Sandbox"
     links {
         "Dogo",
         "glad",
-        "GLFW",
-        "DogoECS"
+        "GLFW"
     }
     
     filter "system:windows"

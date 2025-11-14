@@ -113,59 +113,6 @@ namespace Dogo{
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_CirclesIndices), m_CirclesIndices.data(), GL_STATIC_DRAW);
 
 		}
-		///////////// ROUNDED RECT
-		{
-			glCreateVertexArrays(1, &m_RoundedRectVertexArray);
-			glBindVertexArray(m_RoundedRectVertexArray);
-
-
-			glCreateBuffers(1, &m_RoundedRectVertexBuffer);
-			glBindBuffer(GL_ARRAY_BUFFER, m_RoundedRectVertexBuffer);
-			glBufferData(GL_ARRAY_BUFFER, MAX_ROUNDED_RECT_VERTICES * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
-
-			glEnableVertexArrayAttrib(m_RoundedRectVertexArray, 0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, position));
-			glEnableVertexArrayAttrib(m_RoundedRectVertexArray, 1);
-			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, color));
-			glEnableVertexArrayAttrib(m_RoundedRectVertexArray, 2);
-			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
-			glEnableVertexArrayAttrib(m_RoundedRectVertexArray, 3);
-			glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, normal));
-			glEnableVertexArrayAttrib(m_RoundedRectVertexArray, 4);
-			glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texIndex));
-
-			uint32_t offset = 0;
-			for (size_t r = 0; r < MAX_ROUNDED_RECTS; ++r)
-			{
-				uint32_t centerIndex = offset;
-				uint32_t arcStart = offset + 1;
-
-				for (int corner = 0; corner < 4; ++corner)
-				{
-					uint32_t cornerStart = arcStart + corner * (ROUNDED_RECT_SEGMENTS + 1);
-
-					for (int seg = 0; seg < ROUNDED_RECT_SEGMENTS; ++seg)
-					{
-						uint32_t i0 = centerIndex;
-						uint32_t i1 = cornerStart + seg;
-						uint32_t i2 = cornerStart + seg + 1;
-
-						size_t indexOffset = (r * ROUNDED_RECT_SEGMENTS * 4 + corner * ROUNDED_RECT_SEGMENTS + seg) * 3;
-						m_RoundedRectsIndices[indexOffset + 0] = i0;
-						m_RoundedRectsIndices[indexOffset + 1] = i1;
-						m_RoundedRectsIndices[indexOffset + 2] = i2;
-					}
-				}
-
-				offset += 1 + 4 * (ROUNDED_RECT_SEGMENTS + 1); 
-			}
-
-
-			glCreateBuffers(1, &m_RoundedRectIndexBuffer);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RoundedRectIndexBuffer);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_RoundedRectsIndices), m_RoundedRectsIndices.data(), GL_STATIC_DRAW);
-
-		}
 		////////////// THICK LINES
 		{
 			glCreateVertexArrays(1, &m_ThickLineVertexArray);
@@ -448,53 +395,6 @@ namespace Dogo{
 			renderable.vertices[i].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
 		m_CirclesBuffer[m_CirclesCount++] = renderable;
 	}
-	void OpenGLRenderer2D::Submit(RoundedRect& renderable, Texture* tex)
-	{
-		if (renderable.vertices[0].texIndex != 0.0f)
-		{
-			boolean found = false;
-			for (size_t i = 0; i < m_TextureSlots.size(); i++)
-			{
-				if (m_TextureSlots[i].first == nullptr)
-					continue;
-				if (m_TextureSlots[i].second == (uint16_t)renderable.vertices[0].texIndex && m_TextureSlots[i].first->GetID() == tex->GetID())
-				{
-					found = true;
-					break;
-				}
-			}
-			if (found == false)
-			{
-				bool available = false;
-				for (size_t i = 0; i < m_TextureSlots.size(); i++)
-				{
-					if (m_TextureSlots[i].second == 0)
-					{
-						m_TextureSlots[i].second = (uint16_t)renderable.vertices[0].texIndex;
-						m_TextureSlots[i].first = tex;
-						available = true;
-						break;
-					}
-				}
-				if (!available)
-				{
-					Flush();
-					m_QuadsCount = 0;
-					m_TextureSlots[0].second = (uint16_t)renderable.vertices[0].texIndex;
-					m_TextureSlots[0].first = tex;
-				}
-			}
-		}
-		if (m_RoundedRectsCount >= MAX_ROUNDED_RECTS)
-		{
-			Flush();
-			m_RoundedRectsCount = 0;
-		}
-		int numVertices = 1 + 4 * (ROUNDED_RECT_SEGMENTS + 1);
-		for (int i = 0; i < numVertices; i++)
-			renderable.vertices[i].position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
-		m_RoundedRectsBuffer[m_RoundedRectsCount++] = renderable;
-	}
 	void OpenGLRenderer2D::Submit(ThickLine& renderable, Texture* tex)
 	{
 		if (renderable.vertices[0].texIndex != 0.0f)
@@ -558,7 +458,6 @@ namespace Dogo{
 		QuadsFlush();
 		TrianglesFlush();
 		CirclesFlush();
-		RoundedRectFlush();
 		ThickLineFlush();
 		LinesFlush();
 		for (size_t i = 0; i < m_TextureSlots.size(); i++)
@@ -575,8 +474,6 @@ namespace Dogo{
 		m_QuadsCount = 0;
 		m_TrianglesBuffer.empty();
 		m_TrianglesCount = 0;
-		m_RoundedRectsBuffer.empty();
-		m_RoundedRectsCount = 0;
 		m_ThickLinesBuffer.empty();
 		m_ThickLinesCount = 0;
 		m_LinesBuffer.empty();
@@ -793,7 +690,7 @@ namespace Dogo{
 	}
 	void OpenGLRenderer2D::LinesFlush()
 	{
-		glLineWidth(5.0f);
+		glLineWidth(1.0f);
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_LinesVertexBuffer);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_LinesBuffer), m_LinesBuffer.data());
@@ -864,26 +761,6 @@ namespace Dogo{
 		glBindVertexArray(m_CirclesVertexArray);
 		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_CirclesCount * CIRCLE_SEGMENTS * 3), GL_UNSIGNED_INT, nullptr);
 		m_CirclesCount = 0;
-	}
-	void OpenGLRenderer2D::RoundedRectFlush()
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_RoundedRectVertexBuffer);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(m_RoundedRectsBuffer), m_RoundedRectsBuffer.data());
-		m_Shader->Bind();
-		m_Shader->SetUniformMatrix4f("view", m_View);
-		m_Shader->SetUniformMatrix4f("projection", m_Proj);
-		m_Shader->SetUniform1i("mode", 0);
-		for (size_t i = 0; i < m_TextureSlots.size(); i++)
-		{
-			if (m_TextureSlots[i].second != 0 && m_TextureSlots[i].first != nullptr)
-			{
-				m_TextureSlots[i].first->Bind(m_TextureSlots[i].second);
-			}
-		}
-		m_Shader->SetUniform1iv("textures", m_Samplers, 16);
-		glBindVertexArray(m_RoundedRectVertexArray);
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_RoundedRectsCount * ROUNDED_RECT_SEGMENTS * 4 * 3), GL_UNSIGNED_INT, nullptr);
-		m_RoundedRectsCount = 0;
 	}
 	void OpenGLRenderer2D::ThickLineFlush()
 	{
