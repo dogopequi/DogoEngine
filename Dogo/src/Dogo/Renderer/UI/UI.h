@@ -1,7 +1,7 @@
 #pragma once
 #include "glm/common.hpp"
-#include "Dogo/Renderer/Renderer2D.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Dogo/Utils/Logger.h"
 namespace Dogo
 {
 	namespace DogoUI
@@ -49,6 +49,8 @@ namespace Dogo
 					glm::vec4(color, 0.5f),
 					size.x,
 					size.y,
+					0,
+					0,
 					0.0f
 				));
 				renderer->Pop();
@@ -180,7 +182,7 @@ namespace Dogo
 				0.0f,
 				glm::vec4(viewport.color, 1.0f),
 				viewport.size.x,
-				viewport.size.y,
+				viewport.size.y, 0,0,
 				1.0f
 			));
 			renderer->Pop();

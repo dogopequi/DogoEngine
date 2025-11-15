@@ -1,5 +1,5 @@
 #include "dgpch.h"
-#include "Buffers.h"
+#include "Dogo/Renderer/Core/Buffers.h"
 #include "Platform/OpenGL/OpenGLVertexArrayBuffer.h"
 #include "Platform/OpenGL/OpenGLIndexBuffer.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Event.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 
 namespace Dogo {
 

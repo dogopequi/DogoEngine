@@ -1,6 +1,6 @@
 #include "dgpch.h"
 #include "Camera.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 
 namespace Dogo
 {

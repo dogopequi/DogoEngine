@@ -1,28 +1,26 @@
 #include "dgpch.h"
 #include "Dogo/Core.h"
 #include "Application.h"
-#include "Logger.h"
+#include "Dogo/Utils/Logger.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
 #include "Platform/OpenGL/OpenGLIndexBuffer.h"
 #include "Platform/OpenGL/OpenGLVertexArrayBuffer.h"
-#include "Dogo/Renderer/Buffers.h"
+#include "Dogo/Renderer/Core/Buffers.h"
 #include "Platform/OpenGL/OpenGLTexture.h"
-#include "Dogo/Timer.h"
+#include "Dogo/Utils/Timer.h"
 #include <stb/stb_image.h>
-#include "Dogo/Renderer/Renderable2D.h"
-#include "Dogo/Renderer/SimpleRenderer2D.h"
-#include "Dogo/DogoMemory.h"
-#include "Renderer/AssimpModel.h"
-#include "Renderer/AssimpRenderer.h"
-#include "Physics/DG_Physics.h"
-#include "Actors/Actor.h"
-#include "Dogo/Renderer/Line.h"
+#include "Dogo/Renderer/2D/Renderable2D.h"
+#include "Dogo/Renderer/2D/SimpleRenderer2D.h"
+#include "Dogo/Utils/DogoMemory.h"
+#include "Dogo/Renderer/3D/AssimpModel.h"
+#include "Dogo/Renderer/3D/AssimpRenderer.h"
+#include "Dogo/Physics/DG_Physics.h"
+#include "Dogo/Actors/Actor.h"
+#include "Dogo/Renderer/3D/Line.h"
 #include "Dogo/Renderer/UI/UI.h"
 
 namespace Dogo
 {
-	constexpr size_t NUM_ENTITIES = 5000;
-	constexpr size_t NUM_COMPONENTS = 10000;
 	Application::Application() : m_Pool(2)
 	{
 		m_Window = new Dogo::DogoWindow(1280, 720, "Dogo Window");

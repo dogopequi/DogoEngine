@@ -1,6 +1,6 @@
 #include "dgpch.h"
 #include "GraphicsContext.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 #include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Dogo

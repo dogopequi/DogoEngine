@@ -19,7 +19,7 @@ namespace Dogo
 
 	void AssimpRenderer::Submit(const Actor& renderable)
 	{
-		m_RenderQueue.push_back(renderable.GetModel());
+		/*m_RenderQueue.push_back(renderable.GetModel());*/
 	}
 	void AssimpRenderer::Submit(const Line& renderable)
 	{

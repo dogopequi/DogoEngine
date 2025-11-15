@@ -2,42 +2,17 @@
 #include "Actor.h"
 namespace Dogo
 {
-	Actor::Actor(float x, float y, float z)
+	GameObject::GameObject(const glm::vec3& pos)
+	{
+		DogoECS::DG_EntityManager* entityManager = GetEntityManager();
+		DogoECS::DG_ComponentManager* compManager = GetComponentManager();
+		m_Entity = entityManager->CreateEntity();
+		m_PosComp = compManager->AddComponent<Dogo::PositionComponent>(m_Entity);
+	}
+	Actor2D::Actor2D(const glm::vec3& pos) : GameObject(pos)
 	{
 	}
-	Actor::~Actor()
+	Actor::Actor(const glm::vec3& pos) : GameObject(pos)
 	{
 	}
-	void Actor::AddDynamicModel(Model* model)
-	{
-		m_Model = model;
-	}
-
-	void Actor::AddStaticModel(Model* model)
-	{
-		m_Model = model;
-
-	}
-	void Actor::Update()
-	{
-	}
-
-
-	void Actor::SetPosition(float x, float y, float z)
-	{
-	}
-
-	glm::vec3 Actor::GetPosition() const
-	{
-		return glm::vec3(0.0f);
-	}
-
-	void Actor::AddForce(glm::vec3 force)
-	{
-	}
-	void Actor::AddImpulse(glm::vec3 force)
-	{
-	}
-
-
 }

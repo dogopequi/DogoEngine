@@ -1,5 +1,5 @@
 #pragma once
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 #if DG_PLATFORM_WINDOWS
 #include <glad/glad.h>
 #endif

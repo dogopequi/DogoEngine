@@ -1,15 +1,15 @@
 #pragma once
 #include "Dogo/Core.h"
-#include "LayerStack.h"
+#include "Dogo/App/LayerStack.h"
 #include "Platform/OpenGL/OpenGLShader.h"
-#include "Events/Event.h"
-#include "Events/ApplicationEvent.h"
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
-#include "Renderer/Camera.h"
+#include "Dogo/Events/Event.h"
+#include "Dogo/Events/ApplicationEvent.h"
+#include "Dogo/Events/KeyEvent.h"
+#include "Dogo/Events/MouseEvent.h"
+#include "Dogo/Renderer/Camera.h"
 #include "Graphics/DogoWindow.h"
-#include "Dogo/Renderer/Renderer2D.h"
-#include "Dogo/ThreadPool.h"
+#include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Dogo/Utils/ThreadPool.h"
 #include "Dogo/Component/Components.h"
 namespace Dogo
 {

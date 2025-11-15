@@ -1,11 +1,15 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "PxPhysicsAPI.h"
-#include "SnippetPrint.h"
-#include "SnippetPVD.h"
-#include "SnippetUtils.h"
+#ifndef PHYSX_SNIPPET_PVD_H
+#define PHYSX_SNIPPET_PVD_H
+
+#define PVD_HOST "127.0.0.1"
+
+#endif
+
 #include "foundation/PxPhysicsVersion.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 namespace Dogo
 {
 	using namespace physx;

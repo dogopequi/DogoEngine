@@ -1,6 +1,6 @@
 #pragma once
-#include "Dogo/Application.h"
-#include "Dogo/Renderer/Renderer2D.h"
+#include "Dogo/App/Application.h"
+#include "Dogo/Renderer/2D/Renderer2D.h"
 class Sandbox : public Dogo::Application
 {
 public:

@@ -3,7 +3,7 @@
 #include "Dogo/Core.h"
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include "Line.h"
+#include "Dogo/Renderer/3D/Line.h"
 #include "Dogo/Actors/Actor.h"
 namespace Dogo
 {

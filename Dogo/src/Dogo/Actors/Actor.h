@@ -1,34 +1,51 @@
 #pragma once
-#include "Dogo/Renderer/AssimpModel.h"
 #include "Dogo/Physics/DG_Physics.h"
+#include "Dogo/Component/Components.h"
 namespace Dogo
 {
-	class Actor
+	class GameObject
+	{
+	public:
+		GameObject() = delete;
+		GameObject(const glm::vec3& pos);
+
+		virtual DogoECS::Entity* GetEntity() const { return m_Entity; }
+
+		virtual void Tick(float delta) {};
+
+	protected:
+		DogoECS::Entity* m_Entity;
+		PositionComponent* m_PosComp;
+
+	};
+
+	class Actor2D : public GameObject
+	{
+	public:
+		Actor2D() = delete;
+		Actor2D(const glm::vec3& pos);
+
+	private:
+	};
+
+	class Actor : public GameObject
 	{
 	public:
 		Actor() = delete;
-		Actor(float x, float y, float z);
-		~Actor();
+		Actor(const glm::vec3& pos);
 
-		void Update();
-		
+	private:
 
-		void SetPosition(float x, float y, float z);
+	};
 
-		glm::vec3 GetPosition() const;
-
-		Model* GetModel() const
-		{
-			return m_Model;
-		}
-		void AddDynamicModel(Model* model);
-		void AddStaticModel(Model* model);
+	class Test2DActor : public Actor2D
+	{
+	public:
+		Test2DActor() = delete;
+		Test2DActor(const glm::vec3& pos) : Actor2D(pos) {}
 
 
-		void AddForce(glm::vec3 force);
-		void AddImpulse(glm::vec3 force);
-
-	protected:
-		Model* m_Model;
+	private:
+		SpriteRendererComponent* spriteRenderer;
 	};
 }

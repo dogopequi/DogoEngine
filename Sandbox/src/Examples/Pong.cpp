@@ -3,7 +3,8 @@
 #include "../vendor/DogoECS/include/DG_Component.h"
 #include "Dogo/Renderer/UI/UI.h"
 #include "Dogo/Input/Input.h"
-#include "Dogo/Renderer/Renderer2D.h"
+#include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Test.h"
 Pong::Pong(std::shared_ptr<Dogo::Renderer2D> renderer)
 	: Layer("AppLayer")
 {
@@ -52,8 +53,8 @@ void Pong::OnUpdate()
 	Renderer->SubmitText(otherScoreText.c_str(), (window->GetWidth() - window->GetWidth() / 6 - (panel->size.y / 2 - panel->size.y / 4)), (panel->size.y / 2 - panel->size.y / 4), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
-	Renderer->Submit(Dogo::CreateQuad(left, player, glm::vec4(1.0f), width, height, 0.0f));
-	Renderer->Submit(Dogo::CreateQuad(right, other, glm::vec4(1.0f), width, height, 0.0f));
+	Renderer->Submit(Dogo::CreateQuad(left, player, glm::vec4(1.0f), width, height,0, 0, 0.0f));
+	Renderer->Submit(Dogo::CreateQuad(right, other, glm::vec4(1.0f), width, height, 0,0, 0.0f));
 
 	// could have just used a quad, but i wanted to show off lines, i guess
 	Renderer->Submit(Dogo::CreateLine2D(glm::vec3(left, top, 0.0f), glm::vec3(right + width, top, 0.0f)
@@ -161,6 +162,7 @@ void Pong::OnResizeNotify()
 {
 	Setup();
 }
+
 
 void Pong::Setup()
 {

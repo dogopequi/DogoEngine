@@ -1,6 +1,6 @@
 #include "dgpch.h"
 #include "OpenGLFrameBuffer.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 namespace Dogo
 {
 	OpenGLFrameBuffer::OpenGLFrameBuffer(uint32_t width, uint32_t height)

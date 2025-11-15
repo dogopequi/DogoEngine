@@ -2,7 +2,7 @@
 #include "FrameBuffer.h"
 #include "Platform/OpenGL/OpenGLFrameBuffer.h"
 #include "Graphics/GraphicsContext.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 
 namespace Dogo
 {

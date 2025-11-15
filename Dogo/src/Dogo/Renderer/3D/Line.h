@@ -1,11 +1,11 @@
 #pragma once
 #include "Dogo/Core.h"
 #include "glm/glm.hpp"
-#include "VertexHash.h"
-#include "Shader.h"
-#include "Buffers.h"
+#include "Dogo/Renderer/Core/VertexHash.h"
+#include "Dogo/Renderer/Core/Shader.h"
+#include "Dogo/Renderer/Core/Buffers.h"
 #include "Graphics/GraphicsContext.h"
-#include "Texture.h"
+#include "Dogo/Renderer/Core/Texture.h"
 
 namespace Dogo
 {

@@ -1,6 +1,6 @@
 #include "dgpch.h"
 #include "OpenGLShader.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 namespace Dogo
 {
 	OpenGLShader::OpenGLShader(const std::string& shaderSource, ShaderType type)

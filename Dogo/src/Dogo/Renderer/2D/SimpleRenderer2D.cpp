@@ -51,17 +51,17 @@ void Dogo::SimpleRenderer2D::Flush()
 		renderable->GetPixelShader()->SetUniform3f("viewPos", m_ViewPos);
 		if(renderable->GetMaterial().diffuse != nullptr)
 		{
-			renderable->GetMaterial().diffuse->Bind(0, "material.diffuse");
+			renderable->GetMaterial().diffuse->Bind(0);
 			renderable->GetPixelShader()->SetUniform1i("material.diffuse", 0);
 		}
 		if (renderable->GetMaterial().specular != nullptr)
 		{
-			renderable->GetMaterial().specular->Bind(1, "material.specular");
+			renderable->GetMaterial().specular->Bind(1);
 			renderable->GetPixelShader()->SetUniform1i("material.specular", 1);
 		}
 		if (renderable->GetMaterial().emission != nullptr)
 		{
-			renderable->GetMaterial().emission->Bind(2, "material.emission");
+			renderable->GetMaterial().emission->Bind(2);
 			renderable->GetPixelShader()->SetUniform1i("material.emission", 2);
 		}
 		renderable->GetPixelShader()->SetUniform1f("material.shininess", renderable->GetMaterial().shininess);

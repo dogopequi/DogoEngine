@@ -545,13 +545,11 @@ namespace Dogo{
 
 		atlasHeight += rowHeight;
 
-		// Create atlas texture
 		GLuint atlasTex;
 		glGenTextures(1, &atlasTex);
 		glBindTexture(GL_TEXTURE_2D, atlasTex);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 1024, atlasHeight, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
 
-		// Set texture parameters
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

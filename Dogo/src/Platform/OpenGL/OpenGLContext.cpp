@@ -1,5 +1,5 @@
 #include "dgpch.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 #include "OpenGLContext.h"
 #include <GLFW/glfw3.h>
 namespace Dogo

@@ -1,5 +1,5 @@
 #pragma once
-#include "Dogo/Renderer/Buffers.h"
+#include "Dogo/Renderer/Core/Buffers.h"
 namespace Dogo
 {
 	class OpenGLBuffer : public VertexBuffer

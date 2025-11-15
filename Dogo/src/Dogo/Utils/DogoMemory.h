@@ -1,5 +1,5 @@
 #pragma once
-#include "Logger.h"
+#include "Dogo/Utils/Logger.h"
 namespace Dogo
 {
 	struct MemoryUsage

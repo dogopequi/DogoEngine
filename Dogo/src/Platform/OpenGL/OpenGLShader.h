@@ -1,5 +1,5 @@
 #pragma once
-#include "Dogo/Renderer/Shader.h"
+#include "Dogo/Renderer/Core/Shader.h"
 #include <glm/common.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

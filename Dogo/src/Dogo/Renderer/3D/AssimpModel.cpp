@@ -37,7 +37,7 @@ namespace Dogo
             m_Textures.resize(textures.size());
             for (int i = 0; i < textures.size(); i++)
             {
-                m_Textures[i].reset(Texture::Create(textures[i]->GetFilePath(), textures[i]->GetType(), TextureType::twoD, textures[i]->GetName()));
+                m_Textures[i].reset(TextureManager::Create(textures[i]->GetFilePath(), TextureType::T_2D, FilterMode::BILINEAR, Wrapping::CLAMP_TO_EDGE, true));
             }
         }
 
@@ -52,20 +52,21 @@ namespace Dogo
             uint32_t heightNr = 1;
             for (uint32_t i = 0; i < m_Textures.size(); i++)
             {
-                std::string number;
-                std::string name = m_Textures[i]->GetType();
-                if (name == "texture_diffuse")
-                    number = std::to_string(diffuseNr++);
-                else if (name == "texture_specular")
-                    number = std::to_string(specularNr++);
-                else if (name == "texture_normal")
-                    number = std::to_string(normalNr++);
-                else if (name == "texture_height")
-                    number = std::to_string(heightNr++);
+                // BROKEN
+                //std::string number;
+                //ImageType name = m_Textures[i]->GetType();
+                //if (name == "texture_diffuse")
+                //    number = std::to_string(diffuseNr++);
+                //else if (name == "texture_specular")
+                //    number = std::to_string(specularNr++);
+                //else if (name == "texture_normal")
+                //    number = std::to_string(normalNr++);
+                //else if (name == "texture_height")
+                //    number = std::to_string(heightNr++);
 
-                std::string test = ((name + number).c_str());
-                m_PixelShader->SetUniform1i((name + number).c_str(), i);
-                m_Textures[i]->Bind(i);
+                //std::string test = ((name + number).c_str());
+                //m_PixelShader->SetUniform1i((name + number).c_str(), i);
+                //m_Textures[i]->Bind(i);
             }
             glActiveTexture(GL_TEXTURE0);
 
@@ -199,7 +200,7 @@ namespace Dogo
                 }
                 if (!skip)
                 {
-                    Texture* texture = Texture::Create((m_Directory + "/" + str.C_Str()), name, TextureType::twoD, str.C_Str());
+                    Texture* texture = TextureManager::Create((m_Directory + "/" + str.C_Str()), TextureType::T_2D, FilterMode::BILINEAR, Wrapping::CLAMP_TO_EDGE, true);
                     textures.push_back(texture);
                     m_TexturesLoaded.push_back(texture);
                 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 #include "glm/glm.hpp"
 // TODO: Needs work to handle edge cases (combo input when using alt and shift) need a better solution
 

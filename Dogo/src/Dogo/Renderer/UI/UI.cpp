@@ -1,6 +1,6 @@
 #include "dgpch.h"
 #include "UI.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 #include "Dogo/Input/Input.h"
 namespace Dogo
 {
@@ -15,7 +15,7 @@ namespace Dogo
 				1.0f,
 				glm::vec4(color, 0.1f),
 				size.x - 2.0f,
-				size.y - 2.0f,
+				size.y - 2.0f, 0, 0,
 				0.0f
 			));
 			renderer->Submit(CreateQuad(
@@ -23,7 +23,7 @@ namespace Dogo
 				0.0f,
 				glm::vec4(color, 1.0f),
 				size.x,
-				size.y,
+				size.y, 0, 0,
 				0.0f
 			));
 			float textWidth = renderer->ComputeTextWidth(text, 0.5f);

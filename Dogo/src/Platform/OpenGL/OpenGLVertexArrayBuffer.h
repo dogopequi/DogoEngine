@@ -1,7 +1,7 @@
 #pragma once
 #include "OpenGLIndexBuffer.h"
 #include "OpenGLBuffer.h"
-#include "Dogo/Renderer/Buffers.h"
+#include "Dogo/Renderer/Core/Buffers.h"
 #if DG_PLATFORM_WINDOWS
 #include <glad/glad.h>
 #endif

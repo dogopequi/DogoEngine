@@ -2,7 +2,7 @@
 #include "Renderer2D.h"
 #include "Platform/OpenGL/OpenGLRenderer2D.h"
 #include "Graphics/GraphicsContext.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 namespace Dogo
 {
 	Renderer2D* Renderer2D::Create(const std::wstring& vertex, const std::wstring& pixel)
@@ -48,7 +48,7 @@ namespace Dogo
 			float y = center.y + radius * glm::sin(angle);
 
 			float u = 0.5f + 0.5f * glm::cos(angle);
-			float v = 0.5f + 0.5f * glm::sin(angle);
+			float v = 0.5f - 0.5f * glm::sin(angle);
 
 			c.vertices[i + 1] = {
 				glm::vec3(x, y, 0.0f),
@@ -61,40 +61,35 @@ namespace Dogo
 		return c;
 	
 	}
-	Quad CreateQuad(float x, float y, const glm::vec4& color, float width, float height, float texID)
+	Quad CreateQuad(float x, float y, const glm::vec4& color, float width, float height, float pivotX, float pivotY, float texID)
 	{
 		Quad quad;
-		quad.vertices[0].position = { x, y, 0.0f };
-		quad.vertices[1].position = { x + width, y, 0.0f };
-		quad.vertices[2].position = { x + width, y + height, 0.0f };
-		quad.vertices[3].position = { x, y + height, 0.0f };
 
-		// Set the normal vector for each vertex (assuming a flat 2D quad)
-		quad.vertices[0].normal = { 0.0f, 0.0f, 1.0f };
-		quad.vertices[1].normal = { 0.0f, 0.0f, 1.0f };
-		quad.vertices[2].normal = { 0.0f, 0.0f, 1.0f };
-		quad.vertices[3].normal = { 0.0f, 0.0f, 1.0f };
+		float left = x - pivotX;
+		float right = x + (width - pivotX);
+		float bottom = y - pivotY;
+		float top = y + (height - pivotY);
 
-		// Set texture coordinates for each vertex (assuming a basic texture mapping)
-		quad.vertices[0].texcoord = { 0.0f, 0.0f };
-		quad.vertices[1].texcoord = { 1.0f, 0.0f };
-		quad.vertices[2].texcoord = { 1.0f, 1.0f };
-		quad.vertices[3].texcoord = { 0.0f, 1.0f };
+		quad.vertices[0].position = { left,  bottom, 0.0f };
+		quad.vertices[1].position = { right, bottom, 0.0f };
+		quad.vertices[2].position = { right, top,    0.0f };
+		quad.vertices[3].position = { left,  top,    0.0f };
 
-		// Apply the color to each vertex
-		quad.vertices[0].color = { color.x, color.y, color.z, color.w };
-		quad.vertices[1].color = { color.x, color.y, color.z, color.w };
-		quad.vertices[2].color = { color.x, color.y, color.z, color.w };
-		quad.vertices[3].color = { color.x, color.y, color.z, color.w };
+		for (int i = 0; i < 4; ++i)
+		{
+			quad.vertices[i].normal = { 0.0f, 0.0f, 1.0f };
+			quad.vertices[i].texIndex = texID;
+			quad.vertices[i].color = color;
+		}
 
-		// Apply texture index to each vertex
-		quad.vertices[0].texIndex = texID;
-		quad.vertices[1].texIndex = texID;
-		quad.vertices[2].texIndex = texID;
-		quad.vertices[3].texIndex = texID;
+		quad.vertices[0].texcoord = { 0.0f, 1.0f };
+		quad.vertices[1].texcoord = { 1.0f, 1.0f };
+		quad.vertices[2].texcoord = { 1.0f, 0.0f };
+		quad.vertices[3].texcoord = { 0.0f, 0.0f };
 
 		return quad;
 	}
+
 
 	Line2D CreateLine2D(const glm::vec3& start, const glm::vec3& end, const glm::vec4& color)
 	{
@@ -118,9 +113,9 @@ namespace Dogo
 		glm::vec3 p1 = { origin + scale, 0.0f, 0.0f };             
 		glm::vec3 p2 = { origin + scale / 2.0f, height, 0.0f };    
 
-		glm::vec2 uv0 = { 0.0f, 0.0f };
-		glm::vec2 uv1 = { 1.0f, 0.0f };
-		glm::vec2 uv2 = { 0.5f, 1.0f };
+		glm::vec2 uv0 = { 0.0f, 1.0f };
+		glm::vec2 uv1 = { 1.0f, 1.0f };
+		glm::vec2 uv2 = { 0.5f, 0.0f };
 
 		glm::vec3 normal = { 0.0f, 0.0f, 1.0f };
 
@@ -146,7 +141,7 @@ namespace Dogo
 
 		for (int i = 0; i < 4; i++) {
 			quad.vertices[i].color = color;
-			quad.vertices[i].texcoord = glm::vec2(0.0f);
+			quad.vertices[i].texcoord = glm::vec2(0.0f, 1.0f);
 			quad.vertices[i].texIndex = texIndex;
 			quad.vertices[i].normal = glm::vec3(0.0f, 0.0f, 1.0f);
 		}

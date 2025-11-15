@@ -1,7 +1,7 @@
 #pragma once
-#include "Dogo/Layer.h"
-#include "Dogo/Logger.h"
-#include "Dogo/Renderer/Renderer2D.h"
+#include "Dogo/App/Layer.h"
+#include "Dogo/Utils/Logger.h"
+#include "Dogo/Renderer/2D/Renderer2D.h"
 #include "Dogo/Renderer/UI/UI.h"
 #include "Graphics/DogoWindow.h"
 class Pong : public Dogo::Layer
@@ -36,7 +36,6 @@ public:
 	float speed = 500.0f;
 	float angle{};
 	float rad{};
-	// constraints
 
 	float top{};
 	float bottom{};

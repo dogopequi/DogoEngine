@@ -2,13 +2,13 @@
 #include "Dogo/Core.h"
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include "Dogo/Renderer/Renderer2D.h"
-#include "Dogo/Renderer/Buffers.h"
+#include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Dogo/Renderer/Core/Buffers.h"
 #include "glad/glad.h"
-#include "Dogo/Renderer/Shader.h"
-#include "Dogo/Renderer/Texture.h"
+#include "Dogo/Renderer/Core/Shader.h"
+#include "Dogo/Renderer/Core/Texture.h"
 #include "ft2build.h"
-#include "Dogo/Renderer/Shader.h"
+#include "Dogo/Renderer/Core/Shader.h"
 #include FT_FREETYPE_H
 namespace Dogo
 {

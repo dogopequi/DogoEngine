@@ -1,5 +1,5 @@
 #pragma once
-#include "Dogo/Application.h"
+#include "Dogo/App/Application.h"
 //#include <tchar.h>
 extern Dogo::Application* Dogo::CreateApplication();
 

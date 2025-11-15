@@ -1,8 +1,8 @@
 #include "dgpch.h"
-#include "Shader.h"
+#include "Dogo/Renderer/Core/Shader.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Graphics/GraphicsContext.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 namespace Dogo
 {
     Shader* Shader::Create(const std::wstring& filepath, ShaderType type)

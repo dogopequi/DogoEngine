@@ -1,5 +1,5 @@
 #include "dgpch.h"
-#include "Logger.h"
+#include "Dogo/Utils/Logger.h"
 
 const char* DG_COLOR_FORMAT[6] =
 {

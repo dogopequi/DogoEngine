@@ -1,10 +1,10 @@
 #pragma once
 #include "Dogo/Core.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Utils/Logger.h"
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include "Dogo/Renderer/Texture.h"
-#include "Dogo/Renderer/Shader.h"
+#include "Dogo/Renderer/Core/Texture.h"
+#include "Dogo/Renderer/Core/Shader.h"
 #define TWO_D_MAX_TEXTURES 16
 
 #define MAX_QUADS 1000
@@ -30,6 +30,8 @@
 
 namespace Dogo
 {
+
+
 	struct Rect
 	{
 		glm::vec2 pos;
@@ -52,6 +54,7 @@ namespace Dogo
 		glm::vec3 normal;
 		float texIndex;
 	};
+
 	struct LineVertex {
 		glm::vec3 position;
 		glm::vec4 color;
@@ -89,7 +92,7 @@ namespace Dogo
 	};
 
 	Circle GenerateCircle(glm::vec2 center, float radius, glm::vec4 color, float texID);
-	Quad CreateQuad(float x, float y, const glm::vec4& color, float width, float height, float texID);
+	Quad CreateQuad(float x, float y, const glm::vec4& color, float width, float height, float pivotX, float pivotY, float texID);
 	Line2D CreateLine2D(const glm::vec3& start, const glm::vec3& end, const glm::vec4& color);
 	Triangle CreateTriangle(float origin, const glm::vec4& color, float scale, float texID);
 	ThickLine CreateThickLine(const glm::vec2& p0, const glm::vec2& p1, float thickness, const glm::vec4& color, float texIndex);

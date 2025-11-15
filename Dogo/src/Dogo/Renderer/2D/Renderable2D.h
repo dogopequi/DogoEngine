@@ -1,15 +1,15 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "Shader.h"
-#include "Buffers.h"
+#include "Dogo/Renderer/Core/Shader.h"
+#include "Dogo/Renderer/Core/Buffers.h"
 #include "Graphics/GraphicsContext.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
 #include "Platform/OpenGL/OpenGLIndexBuffer.h"
 #include "Platform/OpenGL/OpenGLVertexArrayBuffer.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Platform/OpenGL/OpenGLTexture.h"
-#include "Dogo/Renderer/Buffers.h"
-#include "Dogo/Logger.h"
+#include "Dogo/Renderer/Core/Buffers.h"
+#include "Dogo/Utils/Logger.h"
 namespace Dogo
 {
 	struct Material

@@ -1,5 +1,5 @@
 #pragma once
-#include "Dogo/Renderer/FrameBuffer.h"
+#include "Dogo/Renderer/Core/FrameBuffer.h"
 #ifdef DG_PLATFORM_WINDOWS
 #include <glad/glad.h>
 #else

@@ -1,6 +1,6 @@
 #pragma once
 #include <Dogo/Core.h>
-#include "Events/Event.h"
+#include "Dogo/Events/Event.h"
 namespace Dogo
 {
 	class DG_API Layer
