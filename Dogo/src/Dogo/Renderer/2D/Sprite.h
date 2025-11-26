@@ -1,6 +1,6 @@
 #pragma once
-#include "Dogo/Renderer/Core/TextureManager.h"
 #include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Dogo/Renderer/Core/Texture.h"
 namespace Dogo
 {
 	enum class Pivot {
@@ -11,61 +11,39 @@ namespace Dogo
 	public:
 
 		Sprite();
+		Sprite(Sprite&&) noexcept = default;
+		Sprite& operator=(Sprite&&) noexcept = default;
 
-		Sprite(Sprite&&) = default;
-		Sprite& operator=(Sprite&&) = default;
+		Sprite(const Sprite&) = default;
+		Sprite& operator=(const Sprite&) = default;
 
-		Sprite(const Sprite&) = delete;
-		Sprite& operator=(const Sprite&) = delete;
-
-		Sprite(const std::string& name, const std::string& filepath, TextureType textureType, FilterMode filter, Wrapping wrap, float width, float height, Pivot pivot, const glm::vec4& color = glm::vec4(1.0f), bool mipmaps = true);
-		Sprite(const std::string& name, const std::string& filepath, TextureType textureType, FilterMode filter, Wrapping wrap, float width, float height, const glm::vec4& color = glm::vec4(1.0f), bool mipmaps = true);
+		Sprite(const std::string& name, std::string_view filepath, float width, float height, Pivot pivot = Pivot::BottomLeft, const glm::vec4& color = glm::vec4(1.0f), const UV& uv = UV());
 		~Sprite() = default;
 
-		bool ChangeTexture(const std::string& filepath, TextureType textureType, FilterMode filter, Wrapping wrap, bool mipmaps);
-		bool GenerateMipMaps();
-		bool ChangeFiltering(FilterMode filter);
-		bool ChangeWrapping(Wrapping wrap);
-		bool ChangeTextureType(TextureType type);
+		void ChangeTexture(std::string_view filepath);
 		void ChangePivotPoint(float x, float y);
 		void SetDimensions(float width, float height);
 
-		inline Texture* GetTexture() const { return m_Tex.get(); }
+		inline std::optional<TextureAsset> GetTexture() const { return m_Texture; }
 		inline std::string_view GetName() const{ return m_Name; }
 		inline void SetName(const std::string& name) { m_Name = name; }
 		inline float GetWidth() const { return m_Width; }
 		inline float GetHeight() const { return m_Height; }
 		inline float GetPivotX() const { return m_PivotX; }
 		inline float GetPivotY() const { return m_PivotY; }
-		inline bool IsMipMap() const { return m_GenerateMipMaps; }
-		inline FilterMode GetFilterMode() const {
-			if (m_Tex == nullptr)
-				throw 1;
-			return m_Tex->GetFilterMode();
-		}
-		inline Wrapping GetWrapping() const {
-			if (m_Tex == nullptr)
-				throw 1;
-			return m_Tex->GetWrapping();
-		}
-		inline TextureType GetTextureType() const {
-			if (m_Tex == nullptr)
-				throw 1;
-			return m_Tex->GetTextureType();
-		}
-
-
+		inline UV GetUV() const { return m_UV; }
+		inline void SetUV(const UV& uv){ m_UV = uv; }
 
 	private:
-		void Init(const std::string& filepath, TextureType textureType, FilterMode filter, Wrapping wrap, bool mipmaps);
 
 		std::string m_Name;
 		glm::vec4 m_Color;
-		std::unique_ptr<Texture> m_Tex;
+		std::optional<TextureAsset> m_Texture;
 		Pivot m_Pivot;
 		float m_Width, m_Height;
 		float m_PivotX, m_PivotY;
 		bool m_GenerateMipMaps;
+		UV m_UV;
 	};
 }
 

@@ -29,6 +29,7 @@ workspace "Dogo"
     PhysXLibDebug = "Dogo/vendor/PhysX/lib/debug/**.lib"
     PhysXLibRelease = "Dogo/vendor/PhysX/lib/release/**.lib"
     GLMinclude = "Dogo/vendor/glm/include"
+    IMGUIinclude = "Dogo/vendor/imgui"
     ASSIMPinclude = "Dogo/vendor/assimp/include"
     ASSIMPlib = "Dogo/vendor/assimp/lib/x64"
     FreeTypeInclude = "Dogo/vendor/FreeType/include"
@@ -38,6 +39,8 @@ workspace "Dogo"
     IncludeDir["glad"] = "Dogo/vendor/glad/include"
     IncludeDir["DogoECS"] = "Dogo/vendor/DogoECS/include"
     IncludeDir["GLFW"] = "Dogo/vendor/GLFW/include"
+    IncludeDir["OpenAL"] = "Dogo/vendor/OpenAL/include"
+    OpenALlib = "Dogo/vendor/OpenAL/lib/Win64/OpenAL32.lib"
     
     include "Dogo/vendor/glad"
     include "Dogo/vendor/GLFW"
@@ -46,7 +49,7 @@ project "Dogo"
     location "Dogo"
     kind "StaticLib"
     language "C++"
-    cppdialect "C++17"
+    cppdialect "C++23"
     staticruntime "on"
 
     targetdir ("bin/".. outputDir .. "/%{prj.name}")
@@ -58,7 +61,14 @@ project "Dogo"
     files
     {
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+        IMGUIinclude .. "/imgui.cpp",
+        IMGUIinclude .. "/imgui_draw.cpp",
+        IMGUIinclude .. "/imgui_demo.cpp",
+        IMGUIinclude .. "/imgui_tables.cpp",
+        IMGUIinclude .. "/imgui_widgets.cpp",
+        IMGUIinclude .. "/backends/imgui_impl_glfw.cpp",
+        IMGUIinclude .. "/backends/imgui_impl_opengl3.cpp"
     }
 
     includedirs
@@ -66,12 +76,14 @@ project "Dogo"
         "%{prj.name}/src",
         STBinclude,
         GLMinclude,
+        IMGUIinclude,
         "%{IncludeDir.glad}",
         "%{IncludeDir.DogoECS}",
         "%{IncludeDir.GLFW}",
         ASSIMPinclude,
         PHYSXinclude,
-        FreeTypeInclude
+        FreeTypeInclude,
+        "%{IncludeDir.OpenAL}"
     }
 
     libdirs
@@ -84,6 +96,7 @@ project "Dogo"
         "GLFW",
 		"opengl32.lib",
         "assimp-vc143-mt.lib",
+        OpenALlib
     }
 
     filter "system:windows"
@@ -186,7 +199,7 @@ project "Sandbox"
     end
     
     language "C++"
-    cppdialect "C++17"
+    cppdialect "C++23"
     staticruntime "on"
         
     targetdir ("bin/".. outputDir .. "/%{prj.name}")
@@ -205,16 +218,18 @@ project "Sandbox"
         "Dogo/src",
         STBinclude,
         GLMinclude,
+        IMGUIinclude,
         "%{IncludeDir.glad}",
         "%{IncludeDir.DogoECS}",
         "%{IncludeDir.GLFW}",
-        PHYSXinclude
+        PHYSXinclude,
+        "%{IncludeDir.OpenAL}"
     }
-    
     links {
         "Dogo",
         "glad",
-        "GLFW"
+        "GLFW",
+        OpenALlib
     }
     
     filter "system:windows"

@@ -6,11 +6,13 @@
 #include "Dogo/Events/ApplicationEvent.h"
 #include "Dogo/Events/KeyEvent.h"
 #include "Dogo/Events/MouseEvent.h"
-#include "Dogo/Renderer/Camera.h"
+#include "Dogo/Renderer/Core/Camera.h"
 #include "Graphics/DogoWindow.h"
 #include "Dogo/Renderer/2D/Renderer2D.h"
 #include "Dogo/Utils/ThreadPool.h"
 #include "Dogo/Component/Components.h"
+#include "Dogo/Renderer/Core/Camera.h"
+#include "imgui.h"
 namespace Dogo
 {
 	#if DG_PLATFORM_WINDOWS
@@ -20,7 +22,7 @@ namespace Dogo
 	{
 	public:
 		Application();
-		virtual ~Application() = default;
+		virtual ~Application();
 
 		virtual void PushLayer(Layer* layer);
 		virtual void PushOverlay(Layer* layer);
@@ -51,14 +53,17 @@ namespace Dogo
 	protected:
 		DogoECS::DG_EntityManager* entityManager;
 		DogoECS::DG_ComponentManager* componentManager;
-		DogoWindow* m_Window;
+		std::shared_ptr<DogoWindow> m_Window;
 		LayerStack m_LayerStack;
 		std::shared_ptr<Renderer2D> m_Renderer;
 		std::atomic<bool> m_Running{ true };
 	private:
-		void DrawFrame();
+		void Frame();
 	private:
+		std::unique_ptr<Camera> m_Camera;
 		ThreadPool m_Pool;
+		double m_LastDelta = 0;
+
 	};
 	Application* CreateApplication();
 }

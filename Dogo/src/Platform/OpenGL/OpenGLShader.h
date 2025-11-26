@@ -24,11 +24,10 @@ namespace Dogo
 		~OpenGLShader();
 
 		bool GetIsValid() const { return isValid; }
-		uint32_t GetID() const { return m_RendererID; }
 
 		void Bind();
 		void Unbind();
-
+		uint32_t GetRendererID() const override { return m_RendererID; }
 		void CreateShader(const std::string& shaderSource, ShaderType type);
 		void SetUniform1iv(const std::string& name, int32_t* value, uint32_t count, uint8_t index = 0) override;
 		void SetUniform1i(const std::string& name, int32_t value, uint8_t index = 0) override;

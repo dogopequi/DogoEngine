@@ -6,7 +6,7 @@
 
 namespace Dogo
 {
-    Framebuffer* Framebuffer::Create(uint32_t width, uint32_t height)
+	std::unique_ptr<Framebuffer> Framebuffer::Create(uint32_t width, uint32_t height)
     {
 		RenderAPI api = GraphicsContext::GetAPI();
 		{
@@ -16,7 +16,7 @@ namespace Dogo
 				DG_FATAL("No API specified");
 				break;
 			case Dogo::RenderAPI::OpenGL:
-				return new OpenGLFrameBuffer(width, height);
+				return std::make_unique<OpenGLFrameBuffer>(OpenGLFrameBuffer(width, height));
 				break;
 			case Dogo::RenderAPI::VULKAN:
 				DG_FATAL("Not Implemented");

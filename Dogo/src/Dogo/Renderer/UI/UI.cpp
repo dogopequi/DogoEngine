@@ -10,22 +10,22 @@ namespace Dogo
 		{
 			glm::mat4 transform = parentTransform * glm::translate(glm::mat4(1.0f), glm::vec3(pos, 0.0f));
 			renderer->Push(transform);
-			renderer->Submit(CreateQuad(
-				1.0f,
-				1.0f,
-				glm::vec4(color, 0.1f),
-				size.x - 2.0f,
-				size.y - 2.0f, 0, 0,
-				0.0f
-			));
-			renderer->Submit(CreateQuad(
-				0.0f,
-				0.0f,
-				glm::vec4(color, 1.0f),
-				size.x,
-				size.y, 0, 0,
-				0.0f
-			));
+			//renderer->Submit(CreateQuad(
+			//	1.0f,
+			//	1.0f,
+			//	glm::vec4(color, 0.1f),
+			//	size.x - 2.0f,
+			//	size.y - 2.0f, 0, 0,
+			//	0.0f
+			//));
+			//renderer->Submit(CreateQuad(
+			//	0.0f,
+			//	0.0f,
+			//	glm::vec4(color, 1.0f),
+			//	size.x,
+			//	size.y, 0, 0,
+			//	0.0f
+			//));
 			float textWidth = renderer->ComputeTextWidth(text, 0.5f);
 			float textHeight = renderer->GetFontHeight(0.5f);
 
@@ -47,7 +47,7 @@ namespace Dogo
 			bool isPressed = Dogo::Input::IsMouseButtonPressed(button);
 			if (hovered)
 			{
-				if (isPressed && (Input::GetButtonState() != Input::ButtonState::RELEASED))
+				if (isPressed)
 				{
 					if (onClick) onClick();
 				}
@@ -66,7 +66,7 @@ namespace Dogo
 			bool isPressed = Dogo::Input::IsMouseButtonPressed(button);
 			if (hovered)
 			{
-				if (isPressed && (Input::GetButtonState() != Input::ButtonState::RELEASED))
+				if (isPressed)
 				{
 					if (onClick) onClick();
 				}

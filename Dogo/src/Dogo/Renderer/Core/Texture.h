@@ -8,7 +8,7 @@
 #endif
 namespace Dogo
 {
-	enum class TextureType
+	enum class TextureDimension
 	{
 		T_1D, T_2D, T_3D
 	};
@@ -20,23 +20,19 @@ namespace Dogo
 	{
 		REPEAT, MIRRORED_REPEAT, CLAMP_TO_EDGE, CLAMP_TO_BORDER
 	};
+	enum class TextureType
+	{
+		SPECULAR, DIFFUSE, NORMAL, HEIGHT
+	};
 	class Texture
 	{
 	public:
-		friend class TextureManager;
 		virtual ~Texture() = default;
-		virtual void Bind(uint32_t textureUnit) const = 0;
-		virtual void Unbind(uint32_t textureUnit) const = 0;
+		virtual void Bind(uint32_t slot) const = 0;
 
-		virtual void UpdateTexture(const std::string& filepath,  TextureType textureType, FilterMode filter, Wrapping wrap, bool mipmap) = 0;
+		virtual void UpdateTexture(const std::string& filepath) = 0;
 		virtual uint32_t GetRendererID() const = 0;
-		virtual uint32_t GetID() const = 0;
-		virtual void SetID(uint32_t id) = 0;
 		virtual std::string GetFilePath() const = 0;
-		virtual FilterMode GetFilterMode() const = 0;
-		virtual Wrapping GetWrapping() const = 0;
-		virtual TextureType GetTextureType() const = 0;
-		virtual bool IsMipMap() const = 0;
 
 
 		static GLenum WrapToOpenGL(Wrapping wrap)
@@ -69,23 +65,9 @@ namespace Dogo
 				return GL_LINEAR;
 			}
 		}
-		static GLenum TexD_ToOpenGL(TextureType d)
-		{
-			switch (d)
-			{
-			case TextureType::T_1D:
-				return GL_TEXTURE_1D;
-			case TextureType::T_2D:
-				return GL_TEXTURE_2D;
-			case TextureType::T_3D:
-				return GL_TEXTURE_3D;
-			default:
-				return GL_TEXTURE_2D;
-			}
-		}
 
+		static std::shared_ptr<Texture> Create(const std::string& filepath);
 	protected:
-		static Texture* Create(const std::string& filepath, TextureType textureType, FilterMode filter, Wrapping wrap,  bool mipmap);
-		virtual void Init(const std::string& filepath, TextureType textureType, FilterMode filter, Wrapping wrap, bool mipmap) = 0;
+		virtual void Init(const std::string& filepath) = 0;
 	};
 }

@@ -9,13 +9,12 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include "Dogo/Renderer/Core/TextureManager.h"
 namespace Dogo
 {
     class Mesh
     {
     public:
-        Mesh(const std::shared_ptr<BufferLayout> layout, const std::shared_ptr<Shader>& vertex, const std::shared_ptr<Shader>& pixel, const std::vector<assimpVertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Texture*>& textures);
+        Mesh(const std::shared_ptr<BufferLayout> layout, const std::shared_ptr<Shader>& vertex, const std::shared_ptr<Shader>& pixel, const std::vector<assimpVertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<std::shared_ptr<Texture>>& textures);
         ~Mesh() {}
 
         inline void SetLayout() const { m_VertexBuffer->SetLayout(*m_Layout); }
@@ -66,7 +65,7 @@ namespace Dogo
 
         void ProcessNode(aiNode* node, const aiScene* scene);
         Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
-        std::vector<Texture*> LoadMaterialTextures(aiMaterial* material, aiTextureType type, const std::string& name);
+        std::vector<std::shared_ptr<Texture>> LoadMaterialTextures(aiMaterial* material, aiTextureType type, const std::string& name);
         inline void SetVertexAndPixelShader(const std::wstring& vertex, const std::wstring& pixel)
         {
             RenderAPI api = GraphicsContext::GetAPI();
@@ -94,7 +93,7 @@ namespace Dogo
         std::vector<Mesh> m_Meshes;
         std::string m_Directory;
 
-        std::vector<Texture*> m_TexturesLoaded;
+        std::vector<std::shared_ptr<Texture>> m_TexturesLoaded;
 
         std::shared_ptr<Shader> m_VertexShader;
         std::shared_ptr<Shader> m_PixelShader;

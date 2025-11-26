@@ -7,13 +7,18 @@ namespace Dogo
 	OpenGLContext::OpenGLContext()
 	{
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-		if (!gladLoadGL()) {
+
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 			DG_WARN("Failed to initialize Glad!");
 			return;
 		}
+		DG_INFO("OpenGL Info:");
+		DG_INFO("  Vendor: %s", glGetString(GL_VENDOR));
+		DG_INFO("  Renderer: %s", glGetString(GL_RENDERER));
+		DG_INFO("  Version: %s", glGetString(GL_VERSION));
 	}
 	OpenGLContext::~OpenGLContext()
 	{
@@ -25,11 +30,6 @@ namespace Dogo
 	}
 	bool OpenGLContext::Init()
 	{
-		DG_INFO("OpenGL Info:");
-		DG_INFO("  Vendor: %s", glGetString(GL_VENDOR));
-		DG_INFO("  Renderer: %s", glGetString(GL_RENDERER));
-		DG_INFO("  Version: %s", glGetString(GL_VERSION));
-
 		return true;
 	}
 	void OpenGLContext::Shutdown()

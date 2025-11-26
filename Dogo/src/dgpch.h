@@ -24,7 +24,8 @@
 #include <codecvt>
 #include <locale>
 #include <deque>
-
+#include <random>
+#include <filesystem>
 #ifdef DG_PLATFORM_WINDOWS
 	#include "Windows.h"
 	#include "windowsx.h"

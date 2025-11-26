@@ -7,11 +7,11 @@
 class Pong : public Dogo::Layer
 {
 public:
-	Pong(std::shared_ptr<Dogo::Renderer2D> renderer);
+	Pong(const std::string& name, std::shared_ptr<Dogo::DogoWindow> window);
 	void OnAttach() override;
 	void OnDetach() override;
-	void OnUpdate() override;
-	void OnResizeNotify() override;
+	void OnUpdate(double delta) override;
+	void OnResize() override;
 	void Setup();
 	std::shared_ptr<Dogo::Renderer2D> Renderer;
 	glm::vec3 pos;

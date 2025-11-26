@@ -2,24 +2,22 @@
 #include "Graphics/GraphicsContext.h"
 #include "Dogo/Utils/Logger.h"
 #include "Dogo/Renderer/Core/Texture.h"
-#include "Platform/OpenGL/OpenGLTexture.h"
+#include "Platform/OpenGL/OpenGLTexture2D.h"
 namespace Dogo
 {
-    Texture* Texture::Create(const std::string& filepath, TextureType textureType, FilterMode filter, Wrapping wrap, bool mipmap)
+	std::shared_ptr<Texture> Texture::Create(const std::string& filepath)
     {
 		RenderAPI api = GraphicsContext::Get()->GetAPI();
 		switch (api)
 		{
 		case RenderAPI::OpenGL:
-			return new OpenGLTexture(filepath, textureType, filter, wrap, mipmap);
-			break;
+			return std::make_shared<OpenGLTexture2D>(filepath);
 		case RenderAPI::VULKAN:
 			DG_FATAL("VULKAN not implemented");
-			break;
-		default:
-			DG_FATAL("Invalid API to create TextureManager");
 			return nullptr;
-			break;
+		default:
+			DG_FATAL("Invalid API.");
+			return nullptr;
 		}
 		return nullptr;
     }

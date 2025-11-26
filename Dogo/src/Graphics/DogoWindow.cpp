@@ -1,7 +1,9 @@
 #include "dgpch.h"
 #include "DogoWindow.h"
 #include "Dogo/Utils/Logger.h"
-
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 namespace Dogo
 {
 	DogoWindow::DogoWindow(int width, int height, std::string_view name)
@@ -35,6 +37,24 @@ namespace Dogo
 		glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
 		glfwSetWindowCloseCallback(window, WindowCloseCallback);
 
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+		// Setup Dear ImGui style
+		ImGui::StyleColorsDark();
+		//ImGui::StyleColorsLight();
+		float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor());
+		// Setup scaling
+		ImGuiStyle& style = ImGui::GetStyle();
+		style.ScaleAllSizes(main_scale);        // Bake a fixed style scale. (until we have a solution for dynamic style scaling, changing this requires resetting Style + calling this again)
+		style.FontScaleDpi = main_scale;        // Set initial font scale. (using io.ConfigDpiScaleFonts=true makes this unnecessary. We leave both here for documentation purpose)
+
+		// Setup Platform/Renderer backends
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplOpenGL3_Init("#version 130");
 		m_IsRunning = true;
 	}
 
@@ -90,7 +110,6 @@ namespace Dogo
 	void DogoWindow::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
 		DogoWindow* dogoWindow = static_cast<DogoWindow*>(glfwGetWindowUserPointer(window));
-
 		if (action == GLFW_PRESS) {
 			Input::ProcessKey(key, true);
 			KeyPressedEvent e(key, false);

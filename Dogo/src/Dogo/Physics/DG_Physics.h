@@ -25,7 +25,7 @@ namespace Dogo
 
 		static PxShape* GetShape(float x, float y, float z)
 		{
-			return gPhysics->createShape(physx::PxBoxGeometry(x, y, z), *gMaterial);
+			return gPhysics->createShape(physx::PxBoxGeometry(x, y, z), *gMaterial, true);
 		}
 		static PxRigidDynamic* GetRigidDynamic(const  physx::PxTransform& t)
 		{

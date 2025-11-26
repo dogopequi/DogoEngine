@@ -6,10 +6,8 @@ extern Dogo::Application* Dogo::CreateApplication();
 //#if DG_PLATFORM_WINDOWS
 //int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 //{
-//	// Allocate a new console window
 //	AllocConsole();
 //
-//	// Redirect stdout to the new console
 //	freopen("CONOUT$", "w", stdout);
 //	auto app = Dogo::CreateApplication();
 //	app->SetWindowsInstance(hInstance);

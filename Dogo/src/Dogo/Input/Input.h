@@ -281,12 +281,6 @@ namespace Dogo
 		inline ButtonState m_ButtonState;
 
 
-		inline int32_t GetKey() { return m_Key; }
-		inline int32_t GetLastKey() { return m_LastKey; }
-		inline int32_t GetButton() { return m_Button; }
-		inline int32_t GetLastButton() { return m_LastButton; }
-		inline KeyState GetKeyState() { return m_KeyState; }
-		inline ButtonState GetButtonState() { return m_ButtonState; }
 		inline glm::vec2 GetMousePosition() { return m_MousePosition; }
 		inline float GetMouseX() { return m_MousePosition.x; }
 		inline float GetMouseY() { return m_MousePosition.y; }
@@ -294,18 +288,7 @@ namespace Dogo
 		inline int32_t GetScrollX() { return m_Scroll.x; }
 		inline int32_t GetScrollY() { return m_Scroll.y; }
 		inline int32_t GetScrollDelta() { return m_ScrollDelta; }
-		inline void SetKey(int32_t key)
-		{
-			m_LastKey = m_Key;
-			m_Key = key;
-		}
-		inline void SetButton(int32_t button)
-		{
-			m_LastButton = m_Button;
-			m_Button = button;
-		}
-		inline void SetKeyState(KeyState state) { m_KeyState = state; }
-		inline void SetButtonState(ButtonState state) { m_ButtonState = state; }
+
 		inline void SetMousePos(int32_t x, int32_t y)
 		{
 			m_MousePosition.x = x;
@@ -325,12 +308,23 @@ namespace Dogo
 		inline bool IsKeyPressed(int32_t keycode)
 		{
 			if (keycode < 0 || keycode >= MAX_KEYS) return false;
-			return keyStates[keycode] == KeyState::PRESSED || keyStates[keycode] == KeyState::REPEAT;
+			return keyStates[keycode] == KeyState::PRESSED;
 		}
 
 		inline bool IsMouseButtonPressed(int32_t button) {
 			if (button < 0 || button >= MAX_BUTTONS) return false;
-			return buttonStates[button] == ButtonState::PRESSED || buttonStates[button] == ButtonState::REPEAT;
+			return buttonStates[button] == ButtonState::PRESSED;
+		}
+
+		inline bool IsKeyRepeated(int32_t keycode)
+		{
+			if (keycode < 0 || keycode >= MAX_KEYS) return false;
+			return keyStates[keycode] == KeyState::REPEAT;
+		}
+
+		inline bool IsMouseButtonRepeated(int32_t button) {
+			if (button < 0 || button >= MAX_BUTTONS) return false;
+			return  buttonStates[button] == ButtonState::REPEAT;
 		}
 
 
@@ -396,19 +390,19 @@ namespace Dogo
 			return "'";
 		case DG_KEY_COMMA:
 		{
-			if (Input::GetLastKey() == DG_KEY_RIGHT_SHIFT) { Input::ProcessKey(DG_KEY_SEMICOLON, false); return ";"; }
+			if (Input::IsKeyPressed(DG_KEY_RIGHT_SHIFT)) { Input::ProcessKey(DG_KEY_SEMICOLON, false); return ";"; }
 			return ",";
 		}
 		case DG_KEY_MINUS:
 			return "-";
 		case DG_KEY_PERIOD:
 		{
-			if (Input::GetLastKey() == DG_KEY_RIGHT_SHIFT) { Input::ProcessKey(DG_KEY_COLON, false); return ":"; }
+			if (Input::IsKeyPressed(DG_KEY_RIGHT_SHIFT)) { Input::ProcessKey(DG_KEY_COLON, false); return ":"; }
 			return ".";
 		}
 		case DG_KEY_0:
 		{
-			if (Input::GetLastKey() == DG_KEY_RIGHT_SHIFT) { Input::ProcessKey(DG_KEY_EQUAL, false); return "="; }
+			if (Input::IsKeyPressed(DG_KEY_RIGHT_SHIFT)) { Input::ProcessKey(DG_KEY_EQUAL, false); return "="; }
 			return "0";
 		}
 		case DG_KEY_1:
@@ -425,7 +419,7 @@ namespace Dogo
 			return "6";
 		case DG_KEY_7:
 		{
-			if (Input::GetLastKey() == DG_KEY_LEFT_SHIFT) { Input::ProcessKey(DG_KEY_SLASH, false); return "/"; }
+			if (Input::IsKeyPressed(DG_KEY_LEFT_SHIFT)) { Input::ProcessKey(DG_KEY_SLASH, false); return "/"; }
 			return "7";
 		}
 		case DG_KEY_8:
@@ -486,27 +480,27 @@ namespace Dogo
 			return "Z";
 		case DG_KEY_GRAVE_ACCENT:
 		{
-			if (Input::GetLastKey() == DG_KEY_LEFT_ALT) { Input::ProcessKey(DG_KEY_LEFT_BRACKET, false); return "["; }
+			if (Input::IsKeyPressed(DG_KEY_LEFT_ALT)) { Input::ProcessKey(DG_KEY_LEFT_BRACKET, false); return "["; }
 			return "`";
 		}
 		case DG_KEY_PLUS:
 		{
-			if (Input::GetLastKey() == DG_KEY_LEFT_ALT) { Input::ProcessKey(DG_KEY_RIGHT_BRACKET, false); return "]"; }
+			if (Input::IsKeyPressed(DG_KEY_LEFT_ALT)) { Input::ProcessKey(DG_KEY_RIGHT_BRACKET, false); return "]"; }
 			return "+";
 		}
 		case DG_KEY_ACUTE_ACCENT:
 		{
-			if (Input::GetLastKey() == DG_KEY_LEFT_ALT) { Input::ProcessKey(DG_KEY_LEFT_CURLY_BRACKET, false); return "{"; }
+			if (Input::IsKeyPressed(DG_KEY_LEFT_ALT)) { Input::ProcessKey(DG_KEY_LEFT_CURLY_BRACKET, false); return "{"; }
 			return "´";
 		}
 		case DG_KEY_CEDILHA:
 		{
-			if (Input::GetLastKey() == DG_KEY_LEFT_ALT) { Input::ProcessKey(DG_KEY_RIGHT_CURLY_BRACKET, false); return "}"; }
+			if (Input::IsKeyPressed(DG_KEY_LEFT_ALT)) { Input::ProcessKey(DG_KEY_RIGHT_CURLY_BRACKET, false); return "}"; }
 			return "ç";
 		}
 		case DG_KEY_DEGREE:
 		{
-			if (Input::GetLastKey() == DG_KEY_LEFT_ALT) { Input::ProcessKey(DG_KEY_BACKSLASH, false); return "\\"; }
+			if (Input::IsKeyPressed(DG_KEY_LEFT_ALT)) { Input::ProcessKey(DG_KEY_BACKSLASH, false); return "\\"; }
 			return "º";
 		}
 		case DG_KEY_ESCAPE:

@@ -210,7 +210,6 @@ namespace Dogo
 			std::vector<GLchar> infoLog(maxLength);
 			glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
-			// We don't need the shader anymore.
 			glDeleteShader(shader);
 			std::string msg = shadertype + " Shader compilation failure!";
 			DG_ERROR((const char*)infoLog.data());

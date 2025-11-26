@@ -4,12 +4,19 @@
 #include "Dogo/Renderer/UI/UI.h"
 #include "Dogo/Input/Input.h"
 #include "Dogo/Renderer/2D/Renderer2D.h"
-#include "Test.h"
-Pong::Pong(std::shared_ptr<Dogo::Renderer2D> renderer)
-	: Layer("AppLayer")
+#include "Snake.h"
+Pong::Pong(const std::string& name, std::shared_ptr<Dogo::DogoWindow> window)
+	: Layer(name, window)
 {
 	DG_INFO("Example App starting");
-	Renderer = renderer;
+	Renderer = std::shared_ptr<Dogo::Renderer2D>(Dogo::Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl"));
+	Renderer->SetProjectionMatrix(glm::orthoRH_NO(
+		0.0f,
+		static_cast<float>(m_Window->GetWidth()),
+		static_cast<float>(m_Window->GetHeight()),
+		0.0f,
+		-1.0f,
+		1.0f));
 }
 
 void Pong::OnAttach()
@@ -36,7 +43,7 @@ void Pong::OnDetach()
 {
 	DG_INFO("AppLayer Detached");
 }
-void Pong::OnUpdate()
+void Pong::OnUpdate(double delta)
 {
 	double currentTime = window->GetTime();
 	double deltaTime = currentTime - time;
@@ -45,27 +52,27 @@ void Pong::OnUpdate()
 	Dogo::DogoUI::MousePosition = Dogo::Input::GetMousePosition();
 
 
-	std::string fpsText = "FPS: " + std::to_string((uint32_t)(1.0 / deltaTime));
-	Renderer->SubmitText(fpsText.c_str(), 1.0f, panel->size.y / 2 - panel->size.y / 4, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	std::string playerScoreText = "Player 1's score: " + std::to_string(playerScore);
-	Renderer->SubmitText(playerScoreText.c_str(), window->GetWidth() / 6, (panel->size.y / 2 - panel->size.y / 4), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-	std::string otherScoreText = " Player 2's score: " + std::to_string(otherScore);
-	Renderer->SubmitText(otherScoreText.c_str(), (window->GetWidth() - window->GetWidth() / 6 - (panel->size.y / 2 - panel->size.y / 4)), (panel->size.y / 2 - panel->size.y / 4), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	//std::string fpsText = "FPS: " + std::to_string((uint32_t)(1.0 / deltaTime));
+	//Renderer->SubmitText(fpsText.c_str(), 1.0f, panel->size.y / 2 - panel->size.y / 4, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	//std::string playerScoreText = "Player 1's score: " + std::to_string(playerScore);
+	//Renderer->SubmitText(playerScoreText.c_str(), window->GetWidth() / 6, (panel->size.y / 2 - panel->size.y / 4), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+	//std::string otherScoreText = " Player 2's score: " + std::to_string(otherScore);
+	//Renderer->SubmitText(otherScoreText.c_str(), (window->GetWidth() - window->GetWidth() / 6 - (panel->size.y / 2 - panel->size.y / 4)), (panel->size.y / 2 - panel->size.y / 4), 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
-	Renderer->Submit(Dogo::CreateQuad(left, player, glm::vec4(1.0f), width, height,0, 0, 0.0f));
-	Renderer->Submit(Dogo::CreateQuad(right, other, glm::vec4(1.0f), width, height, 0,0, 0.0f));
+	////Renderer->Submit(Dogo::CreateQuad(left, player, width, height,0, 0), glm::vec4(1.0f));
+	////Renderer->Submit(Dogo::CreateQuad(right, other, width, height, 0,0), glm::vec4(1.0f));
 
-	// could have just used a quad, but i wanted to show off lines, i guess
-	Renderer->Submit(Dogo::CreateLine2D(glm::vec3(left, top, 0.0f), glm::vec3(right + width, top, 0.0f)
-		, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
-	Renderer->Submit(Dogo::CreateLine2D(glm::vec3(left, bottom + height, 0.0f), glm::vec3(right + width, bottom + height, 0.0f)
-		, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
-	Renderer->Submit(Dogo::CreateLine2D(glm::vec3(left, bottom + height, 0.0f), glm::vec3(left, top, 0.0f)
-		, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
-	Renderer->Submit(Dogo::CreateLine2D(glm::vec3(right + width, bottom + height, 0.0f), glm::vec3(right + width, top, 0.0f)
-		, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
-	Renderer->Submit(Dogo::GenerateCircle(ball, radius, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), 0.0f));
+	//// could have just used a quad, but i wanted to show off lines, i guess
+	//Renderer->Submit(Dogo::CreateLine2D(glm::vec3(left, top, 0.0f), glm::vec3(right + width, top, 0.0f)
+	//	, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
+	//Renderer->Submit(Dogo::CreateLine2D(glm::vec3(left, bottom + height, 0.0f), glm::vec3(right + width, bottom + height, 0.0f)
+	//	, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
+	//Renderer->Submit(Dogo::CreateLine2D(glm::vec3(left, bottom + height, 0.0f), glm::vec3(left, top, 0.0f)
+	//	, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
+	//Renderer->Submit(Dogo::CreateLine2D(glm::vec3(right + width, bottom + height, 0.0f), glm::vec3(right + width, top, 0.0f)
+	//	, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
+	//Renderer->Submit(Dogo::GenerateCircle(ball, radius, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), 0.0f));
 
 	if (!paused)
 	{
@@ -158,7 +165,7 @@ void Pong::OnUpdate()
 	Renderer->RenderText();
 }
 
-void Pong::OnResizeNotify()
+void Pong::OnResize()
 {
 	Setup();
 }
@@ -213,3 +220,4 @@ void Pong::Setup()
 	ball = { windowWidth / 2.0f, windowHeight / 2.0f };
 
 }
+

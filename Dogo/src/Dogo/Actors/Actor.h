@@ -3,30 +3,46 @@
 #include "Dogo/Component/Components.h"
 namespace Dogo
 {
-	class GameObject
-	{
-	public:
-		GameObject() = delete;
-		GameObject(const glm::vec3& pos);
+    class GameObject
+    {
+    public:
+        GameObject() = delete;
+        GameObject(const glm::vec3& pos);
 
-		virtual DogoECS::Entity* GetEntity() const { return m_Entity; }
+        virtual inline DogoECS::Entity* GetEntity() const { return m_Entity; }
+        virtual inline void Tick(double delta)  {}
+        virtual inline void Init() {}
 
-		virtual void Tick(float delta) {};
+        template<typename ComponentType, typename... Args>
+        ComponentType* AddComponent(Args&&... args)
+        {
+            ComponentType* comp = ECS::AddComponent<ComponentType>(m_Entity, std::forward<Args>(args)...);
+            if (!comp) return nullptr;
 
-	protected:
-		DogoECS::Entity* m_Entity;
-		PositionComponent* m_PosComp;
+            m_ComponentCache[typeid(ComponentType)] = comp;
+            return comp;
+        }
 
-	};
 
-	class Actor2D : public GameObject
-	{
-	public:
-		Actor2D() = delete;
-		Actor2D(const glm::vec3& pos);
+        template<typename ComponentType>
+        ComponentType* GetComponent() const
+        {
+            auto it = m_ComponentCache.find(typeid(ComponentType));
+            if (it != m_ComponentCache.end())
+            {
+                return static_cast<ComponentType*>(it->second);
+            }
 
-	private:
-	};
+            ComponentType* comp = ECS::GetComponent<ComponentType>(m_Entity);
+            if (comp)
+                m_ComponentCache[typeid(ComponentType)] = comp;
+            return comp;
+        }
+    private:
+        DogoECS::Entity* m_Entity;
+        mutable std::unordered_map<std::type_index, void*> m_ComponentCache;
+    };
+
 
 	class Actor : public GameObject
 	{
@@ -38,14 +54,33 @@ namespace Dogo
 
 	};
 
-	class Test2DActor : public Actor2D
+    class Actor2D : public GameObject
+    {
+    public:
+        Actor2D() = delete;
+        Actor2D(const glm::vec3& pos);
+
+    private:
+
+    };
+
+	class Snake : public Actor2D
 	{
 	public:
-		Test2DActor() = delete;
-		Test2DActor(const glm::vec3& pos) : Actor2D(pos) {}
-
+        Snake() = delete;
+        Snake(const glm::vec3& pos);
+		
+        void Tick(double delta) override;
 
 	private:
-		SpriteRendererComponent* spriteRenderer;
 	};
+
+    class Apple : public Actor2D
+    {
+    public:
+        Apple() = delete;
+        Apple(const glm::vec3& pos);
+
+    private:
+    };
 }

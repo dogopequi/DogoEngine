@@ -5,33 +5,30 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Dogo/Renderer/Core/Texture.h"
 #include "Dogo/Renderer/Core/Shader.h"
-#define TWO_D_MAX_TEXTURES 16
+#include "Dogo/Renderer/Core/Camera.h"
+#include "Dogo/Systems/AssetSystem.h"
 
-#define MAX_QUADS 1000
-#define MAX_LINES 1000
-#define MAX_TRIANGLES 1000
-#define MAX_CIRCLES 1000
-#define MAX_THICK_LINES 1000
 #define MAX_CHARACTERS 100
 
 #define CIRCLE_SEGMENTS 32
+#define CIRCLE_VERTICES CIRCLE_SEGMENTS + 2
+#define MAX_CIRCLE_VERTICES (MAX_CIRCLES * (CIRCLE_VERTICES))
+#define CIRCLE_INDICES 3 * CIRCLE_SEGMENTS
 
-#define MAX_QUAD_VERTICES (MAX_QUADS * 4)
-#define MAX_LINE_VERTICES (MAX_LINES * 2)
-#define MAX_TRIANGLE_VERTICES (MAX_TRIANGLES * 3)
-#define MAX_CIRCLE_VERTICES (MAX_CIRCLES * (CIRCLE_SEGMENTS + 2))
-#define MAX_THICK_LINES_VERTICES (MAX_THICK_LINES * 4)
+#define MAX_CIRCLE_INDICES (MAX_CIRCLES * CIRCLE_INDICES)
 
-#define MAX_QUAD_INDICES (MAX_QUADS * 6)
-#define MAX_LINE_INDICES (MAX_LINES * 2)
-#define MAX_TRIANGLE_INDICES (MAX_TRIANGLES * 3)
-#define MAX_CIRCLE_INDICES (MAX_CIRCLES * 3 * CIRCLE_SEGMENTS)
-#define MAX_THICK_LINES_INDICES (MAX_THICK_LINES * 6)
 
 namespace Dogo
 {
 
-
+	struct UV
+	{
+		glm::vec2 uvMin;
+		glm::vec2 uvMax;
+		UV() : uvMin(0.0f, 0.0f), uvMax(1.0f, 1.0f) {}
+		UV(const glm::vec2& min, const glm::vec2& max) : uvMin(min), uvMax(max) {}
+		UV(float xMin, float yMin, float xMax, float yMax): uvMin(xMin, yMin), uvMax(xMax, yMax) {}
+	};
 	struct Rect
 	{
 		glm::vec2 pos;
@@ -47,11 +44,11 @@ namespace Dogo
 		bool transparent;
 		bool visible = false;
 	};
+
 	struct Vertex {
 		glm::vec3 position;
 		glm::vec4 color;
 		glm::vec2 texcoord;
-		glm::vec3 normal;
 		float texIndex;
 	};
 
@@ -91,11 +88,12 @@ namespace Dogo
 		glm::mat4 transform;
 	};
 
-	Circle GenerateCircle(glm::vec2 center, float radius, glm::vec4 color, float texID);
-	Quad CreateQuad(float x, float y, const glm::vec4& color, float width, float height, float pivotX, float pivotY, float texID);
-	Line2D CreateLine2D(const glm::vec3& start, const glm::vec3& end, const glm::vec4& color);
-	Triangle CreateTriangle(float origin, const glm::vec4& color, float scale, float texID);
-	ThickLine CreateThickLine(const glm::vec2& p0, const glm::vec2& p1, float thickness, const glm::vec4& color, float texIndex);
+	Circle GenerateCircle(glm::vec2 center, float radius);
+	Quad CreateQuad(float x, float y, float width, float height, float pivotX, float pivotY, const UV& uv = UV());
+	Line2D CreateLine2D(const glm::vec2& start, const glm::vec2& end, const glm::vec4& color);
+	Triangle CreateTriangle(float origin, float scale);
+	ThickLine CreateThickLine(const glm::vec2& p0, const glm::vec2& p1, float thickness);
+	UV GetTileUV(int tileX, int tileY, int tileWidth, int tileHeight, int atlasWidth, int atlasHeight);
 	
 	class Renderer2D
 	{
@@ -106,18 +104,34 @@ namespace Dogo
 		virtual void SetProjectionMatrix(const glm::mat4& proj) = 0;
 		virtual void SetModelMatrix(const glm::mat4& model) = 0;
 		virtual void SetTransformMatrix(const glm::mat4& model) = 0;
+
 		virtual glm::mat4 GetViewMatrix() = 0;
 		virtual glm::mat4 GetProjectionMatrix() = 0;
 		virtual glm::mat4 GetModelMatrix() = 0;
 		virtual glm::mat4 GetTransformMatrix() = 0;
 		virtual glm::mat4 GetTransformBack();
+
 		virtual void SetViewPos(const glm::vec3& pos) = 0;
-		virtual void Submit(Quad& renderable, Texture* tex = nullptr) = 0;
-		virtual void Submit(Triangle& renderable, Texture* tex = nullptr) = 0;
-		virtual void Submit(Circle& renderable, Texture* tex = nullptr) = 0;
-		virtual void Submit(ThickLine& renderable, Texture* tex = nullptr) = 0;
-		virtual void Submit(Line2D& renderable) = 0;
+
+		virtual void PreLoadTexture(const TextureAsset& texture) = 0;
+		virtual void Submit(const Quad& renderable, const glm::vec4& color) = 0;
+		virtual void Submit(const Quad& renderable, const TextureAsset& texture) = 0;
+		virtual void Submit(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color) = 0;
+		virtual void Submit(const glm::vec2& pos, const glm::vec2& size, const TextureAsset& texture) = 0;
+		virtual void Submit(const Triangle& renderable, const TextureAsset& texture) = 0;
+		virtual void Submit(const Circle& renderable, const TextureAsset& texture) = 0;
+		virtual void Submit(const ThickLine& renderable, const TextureAsset& texture) = 0;
+		virtual void Submit(const Triangle& renderable, const glm::vec4& color) = 0;
+		virtual void Submit(const Circle& renderable, const glm::vec4& color) = 0;
+		virtual void Submit(const ThickLine& renderable, const glm::vec4& color) = 0;
+		virtual void Submit(const Line2D& renderable) = 0;
 		virtual void SubmitText(const std::string& text, float x, float y, float scale, const glm::vec3& color = glm::vec3(1.0f)) = 0;
+		
+		virtual void RenderFrameBuffer(uint32_t framebufferID, uint32_t width, uint32_t height) = 0;
+
+		virtual void BeginBatch() = 0;
+		virtual void EndBatch() = 0;
+
 		virtual void Flush() = 0;
 		virtual void Push(const glm::mat4& mat, boolean override = false);
 		virtual void Pop();
@@ -127,8 +141,7 @@ namespace Dogo
 		virtual float GetFontHeight(float scale) = 0;
 		virtual Shader* ExposeShader() const = 0;
 		virtual void SetShader(Shader* shader) = 0;
-		virtual void DrawFrameBuffer(Quad& quad) = 0;
-		virtual void Reset() = 0;
+		virtual void Begin(const std::weak_ptr<Camera>& cam) = 0;
 	protected:
 		Renderer2D() { m_TransformStack.push_back(glm::mat4(1.0f));
 		m_TransformBack = &m_TransformStack.back();

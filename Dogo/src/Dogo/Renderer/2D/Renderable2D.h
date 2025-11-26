@@ -7,7 +7,7 @@
 #include "Platform/OpenGL/OpenGLIndexBuffer.h"
 #include "Platform/OpenGL/OpenGLVertexArrayBuffer.h"
 #include "Platform/OpenGL/OpenGLShader.h"
-#include "Platform/OpenGL/OpenGLTexture.h"
+#include "Platform/OpenGL/OpenGLTexture2D.h"
 #include "Dogo/Renderer/Core/Buffers.h"
 #include "Dogo/Utils/Logger.h"
 namespace Dogo

@@ -4,7 +4,7 @@ namespace Dogo
     class Framebuffer
     {
     public:
-        static Framebuffer* Create(uint32_t width, uint32_t height);
+        static std::unique_ptr<Framebuffer> Create(uint32_t width, uint32_t height);
         virtual ~Framebuffer() = default;
         virtual void Bind() = 0;
         virtual void Unbind() = 0;

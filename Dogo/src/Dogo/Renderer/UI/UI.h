@@ -43,16 +43,14 @@ namespace Dogo
 						child->Draw(renderer, transform);
 				}
 
-				renderer->Submit(CreateQuad(
-					0.0f,
-					0.0f,
-					glm::vec4(color, 0.5f),
-					size.x,
-					size.y,
-					0,
-					0,
-					0.0f
-				));
+				//renderer->Submit(CreateQuad(
+				//	0.0f,
+				//	0.0f,
+				//	size.x,
+				//	size.y,
+				//	0,
+				//	0,
+				//), glm::vec4(color, 0.5f));
 				renderer->Pop();
 			}
 			inline bool MouseHandler(const glm::vec2& mousePos, const glm::mat4 parentTransform, const Viewport& viewport) override
@@ -177,14 +175,12 @@ namespace Dogo
 		{
 			glm::mat4 transform = parentTransform * glm::translate(glm::mat4(1.0f), glm::vec3(viewport.pos, 0.0f));
 			renderer->Push(transform);
-			renderer->DrawFrameBuffer(CreateQuad(
-				0.0f,
-				0.0f,
-				glm::vec4(viewport.color, 1.0f),
-				viewport.size.x,
-				viewport.size.y, 0,0,
-				1.0f
-			));
+			//renderer->DrawFrameBuffer(CreateQuad(
+			//	0.0f,
+			//	0.0f,
+			//	viewport.size.x,
+			//	viewport.size.y, 0,0,
+			//), 0);
 			renderer->Pop();
 		}
 	}

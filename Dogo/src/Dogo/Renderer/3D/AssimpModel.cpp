@@ -3,7 +3,7 @@
 
 namespace Dogo
 {
-        Mesh::Mesh(const std::shared_ptr<BufferLayout> layout, const std::shared_ptr<Shader>& vertex, const std::shared_ptr<Shader>& pixel, const std::vector<assimpVertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Texture*>& textures) : m_VertexShader(vertex), m_PixelShader(pixel), m_Indices(indices), m_Vertices(vertices)
+        Mesh::Mesh(const std::shared_ptr<BufferLayout> layout, const std::shared_ptr<Shader>& vertex, const std::shared_ptr<Shader>& pixel, const std::vector<assimpVertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<std::shared_ptr<Texture>>& textures) : m_VertexShader(vertex), m_PixelShader(pixel), m_Indices(indices), m_Vertices(vertices)
         {
             m_Layout = layout;
             m_VertexArray.reset(VertexArray::Create());
@@ -37,7 +37,7 @@ namespace Dogo
             m_Textures.resize(textures.size());
             for (int i = 0; i < textures.size(); i++)
             {
-                m_Textures[i].reset(TextureManager::Create(textures[i]->GetFilePath(), TextureType::T_2D, FilterMode::BILINEAR, Wrapping::CLAMP_TO_EDGE, true));
+                m_Textures[i] = Texture::Create(textures[i]->GetFilePath());
             }
         }
 
@@ -52,21 +52,41 @@ namespace Dogo
             uint32_t heightNr = 1;
             for (uint32_t i = 0; i < m_Textures.size(); i++)
             {
-                // BROKEN
-                //std::string number;
-                //ImageType name = m_Textures[i]->GetType();
-                //if (name == "texture_diffuse")
+                std::string number;
+                std::string name;
+                //switch (type)
+                //{
+                //case TextureType::DIFFUSE:
+                //{
                 //    number = std::to_string(diffuseNr++);
-                //else if (name == "texture_specular")
-                //    number = std::to_string(specularNr++);
-                //else if (name == "texture_normal")
-                //    number = std::to_string(normalNr++);
-                //else if (name == "texture_height")
-                //    number = std::to_string(heightNr++);
-
-                //std::string test = ((name + number).c_str());
-                //m_PixelShader->SetUniform1i((name + number).c_str(), i);
-                //m_Textures[i]->Bind(i);
+                //    name = "diffuse";
+                //    break;
+                //}
+                //case TextureType::SPECULAR:
+                //{
+                //    number = std::to_string(diffuseNr++);
+                //    name = "specular";
+                //    break;
+                //}
+                //case TextureType::NORMAL:
+                //{
+                //    number = std::to_string(diffuseNr++);
+                //    name = "normal";
+                //    break;
+                //}
+                //case TextureType::HEIGHT:
+                //{
+                //    number = std::to_string(diffuseNr++);
+                //    name = "height";
+                //    break;
+                //}
+                //default:
+                //{
+                //    continue;
+                //}
+                //}
+                m_PixelShader->SetUniform1i((name + number).c_str(), i);
+                m_Textures[i]->Bind(i);
             }
             glActiveTexture(GL_TEXTURE0);
 
@@ -123,7 +143,7 @@ namespace Dogo
         {
             std::vector<assimpVertex> vertices;
             std::vector<uint32_t> indices;
-            std::vector<Texture*> textures;
+            std::vector<std::shared_ptr<Texture>> textures;
 
             for (uint32_t i = 0; i < mesh->mNumVertices; i++)
             {
@@ -143,7 +163,7 @@ namespace Dogo
                     vectorN.z = mesh->mNormals[i].z;
                     vertex.normals = vectorN;
                 }
-                if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+                if (mesh->mTextureCoords[0])
                 {
                     glm::vec2 vec;
                     vec.x = mesh->mTextureCoords[0][i].x;
@@ -165,25 +185,25 @@ namespace Dogo
             if (mesh->mMaterialIndex >= 0)
             {
                 aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-                std::vector<Texture*> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+                std::vector<std::shared_ptr<Texture>> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
                 textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-                std::vector<Texture*> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+                std::vector<std::shared_ptr<Texture>> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
                 textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
-                std::vector<Texture*> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+                std::vector<std::shared_ptr<Texture>> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
                 textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 
-                std::vector<Texture*> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+                std::vector<std::shared_ptr<Texture>> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
                 textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
             }
 
             return Mesh(m_Layout, m_VertexShader, m_PixelShader, vertices, indices, textures);
 
         }
-        std::vector<Texture*> Model::LoadMaterialTextures(aiMaterial* material, aiTextureType type, const std::string& name)
+        std::vector<std::shared_ptr<Texture>> Model::LoadMaterialTextures(aiMaterial* material, aiTextureType type, const std::string& name)
         {
-            std::vector<Texture*> textures;
+            std::vector<std::shared_ptr<Texture>> textures;
             for (unsigned int i = 0; i < material->GetTextureCount(type); i++)
             {
                 aiString str;
@@ -200,7 +220,7 @@ namespace Dogo
                 }
                 if (!skip)
                 {
-                    Texture* texture = TextureManager::Create((m_Directory + "/" + str.C_Str()), TextureType::T_2D, FilterMode::BILINEAR, Wrapping::CLAMP_TO_EDGE, true);
+                    std::shared_ptr<Texture> texture = Texture::Create((m_Directory + "/" + str.C_Str()));
                     textures.push_back(texture);
                     m_TexturesLoaded.push_back(texture);
                 }
