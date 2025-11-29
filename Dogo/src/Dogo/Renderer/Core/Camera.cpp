@@ -3,15 +3,14 @@
 
 namespace Dogo
 {
-    void Camera::Init(float a, float b, float c, float d)
+    void Camera::Init(float a, float b, float c, float d, const glm::vec3& pos)
     {
-        UpdateVectors();
-        UpdateViewMatrix();
+        SetPosition(pos);
         if (m_Type == CameraType::PERSPECTIVE)
             SetPerspective(a, b, c, d);
         else
             SetOrthographic(a, b, c, d);
-        m_RenderTarget = Framebuffer::Create(800, 600);
+        m_RenderTarget = std::unique_ptr<Framebuffer>(Framebuffer::Create(800, 600));
     }
 
     void Camera::UpdateVectors()

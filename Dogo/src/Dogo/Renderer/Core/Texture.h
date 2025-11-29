@@ -66,7 +66,7 @@ namespace Dogo
 			}
 		}
 
-		static std::shared_ptr<Texture> Create(const std::string& filepath);
+		static Texture* Create(const std::string& filepath);
 	protected:
 		virtual void Init(const std::string& filepath) = 0;
 	};

@@ -6,7 +6,7 @@
 #include "Dogo/Renderer/2D/Renderer2D.h"
 #include "Snake.h"
 Pong::Pong(const std::string& name, std::shared_ptr<Dogo::DogoWindow> window)
-	: Layer(name, window)
+	: Layer2D(name, window)
 {
 	DG_INFO("Example App starting");
 	Renderer = std::shared_ptr<Dogo::Renderer2D>(Dogo::Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl"));

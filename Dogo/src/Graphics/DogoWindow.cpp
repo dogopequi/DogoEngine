@@ -17,6 +17,7 @@ namespace Dogo
 			DG_ERROR("Failed to initialize GLFW");
 			return;
 		}
+		GraphicsContext::Create(RenderAPI::OpenGL);
 		window = glfwCreateWindow(width, height, name.data(), nullptr, nullptr);
 		if (!window)
 		{
@@ -25,9 +26,8 @@ namespace Dogo
 			return;
 		}		
 		glfwMakeContextCurrent(window);
-		GraphicsContext::Create(RenderAPI::OpenGL);
 		m_Context = GraphicsContext::Get();
-
+		m_Context->Init();
 		glfwSetErrorCallback(ErrorCallback);
 		glfwSetWindowUserPointer(window, this);
 		glfwSetKeyCallback(window, KeyCallback);
@@ -120,11 +120,11 @@ namespace Dogo
 			KeyReleasedEvent e(key);
 			dogoWindow->GetEventCallback()(e);
 		}
-		else if (action == GLFW_REPEAT) {
-			Input::ProcessKey(key, true);
-			KeyPressedEvent e(key, true);
-			dogoWindow->GetEventCallback()(e);
-		}
+		//else if (action == GLFW_REPEAT) {
+		//	Input::ProcessKey(key, true);
+		//	KeyPressedEvent e(key, true);
+		//	dogoWindow->GetEventCallback()(e);
+		//}
 	}
 
 	void DogoWindow::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)

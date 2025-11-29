@@ -9,8 +9,6 @@
 #include "Platform/OpenGL/OpenGLTexture2D.h"
 #include "Dogo/Utils/Timer.h"
 #include <stb/stb_image.h>
-#include "Dogo/Renderer/2D/Renderable2D.h"
-#include "Dogo/Renderer/2D/SimpleRenderer2D.h"
 #include "Dogo/Utils/DogoMemory.h"
 #include "Dogo/Renderer/3D/AssimpModel.h"
 #include "Dogo/Renderer/3D/AssimpRenderer.h"
@@ -55,12 +53,12 @@ namespace Dogo
 	}
 
 
-	void Application::PushLayer(Layer* layer)
+	void Application::PushLayer(Layer2D* layer)
 	{
 		m_LayerStack.PushLayer(layer);
 	}
 
-	void Application::PushOverlay(Layer* layer)
+	void Application::PushOverlay(Layer2D* layer)
 	{
 		m_LayerStack.PushOverlay(layer);
 	}
@@ -72,26 +70,34 @@ namespace Dogo
 	void Application::OnWindowResize(WindowResizeEvent& e)
 	{
 		m_Camera->SetOrthographic(m_Window->GetWidth(), m_Window->GetHeight(), 0.1, 100.0f);
-		for (Dogo::Layer* layer : m_LayerStack)
+		m_Camera->SetRenderTargetSize(m_Window->GetWidth(), m_Window->GetHeight());
+		for (Dogo::Layer2D* layer : m_LayerStack)
 			layer->OnResizeNotify();
 		OnWindowResizeEvent(e);
 		Frame();
 	}
 	void Application::Frame()
 	{
+		double now = m_Window->GetTime();
+		double dt = now - m_LastDelta;
+		m_LastDelta = now;
+
 		m_Window->PollEvents();
 		m_Window->ClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		m_Window->ClearBuffers();
+
+		PhysicsSystem::Update(dt);
+		AudioSystem2D::Update();
 		Tick();
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		for (Dogo::Layer* layer : m_LayerStack)
+
+		for (Dogo::Layer2D* layer : m_LayerStack)
 		{
-			double now = m_Window->GetTime();
-			double dt = now - m_LastDelta;
-			m_LastDelta = now;
-			layer->OnUpdate(dt);
+			layer->Update(dt);
+
 			m_Window->Viewport(0, 0, m_Window->GetWidth(), m_Window->GetHeight());
 			m_Renderer->SetViewMatrix(m_Camera->GetViewMatrix());
 			m_Renderer->SetProjectionMatrix(m_Camera->GetProjectionMatrix());
@@ -101,6 +107,7 @@ namespace Dogo
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		Dogo::DogoUI::UIHandleGameInput();
+		Input::Update();
 		m_Window->SwapBuffers();
 	}
 	void Application::KeyPressedCallBack(KeyPressedEvent& e)
@@ -134,34 +141,6 @@ namespace Dogo
 		while (!m_Window->WindowShouldClose() && m_Window != nullptr)
 		{
 			Frame();
-		
-
-		GLenum err;
-		while ((err = glGetError()) != GL_NO_ERROR) {
-			switch (err) {
-			case GL_INVALID_ENUM:
-				std::cout << "OpenGL Error: GL_INVALID_ENUM" << std::endl;
-				break;
-			case GL_INVALID_VALUE:
-				std::cout << "OpenGL Error: GL_INVALID_VALUE" << std::endl;
-				break;
-			case GL_INVALID_OPERATION:
-				std::cout << "OpenGL Error: GL_INVALID_OPERATION" << std::endl;
-				break;
-			case GL_STACK_OVERFLOW:
-				std::cout << "OpenGL Error: GL_STACK_OVERFLOW" << std::endl;
-				break;
-			case GL_STACK_UNDERFLOW:
-				std::cout << "OpenGL Error: GL_STACK_UNDERFLOW" << std::endl;
-				break;
-			case GL_OUT_OF_MEMORY:
-				std::cout << "OpenGL Error: GL_OUT_OF_MEMORY" << std::endl;
-				break;
-			default:
-				std::cout << "Unknown OpenGL Error" << std::endl;
-				break;
-			}
-		}
 		}
 	}
 

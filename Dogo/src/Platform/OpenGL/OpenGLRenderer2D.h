@@ -83,9 +83,6 @@ namespace Dogo
 		glm::mat4 m_Transform = glm::mat4(1.0f);
 		glm::vec3 m_ViewPos{};
 
-		static constexpr const size_t Quad_MaxCount = 1000;
-		static constexpr const size_t Quad_MaxVertexCount = Quad_MaxCount * 4;
-		static constexpr const size_t Quad_MaxIndexCount = Quad_MaxCount * 6;
 		uint32_t Quad_IndexCount = 0;
 		Vertex* QuadBuffer = nullptr;
 		Vertex* QuadBufferPtr = nullptr;
@@ -93,9 +90,6 @@ namespace Dogo
 		GLuint m_QuadsVertexBuffer{};
 		GLuint m_QuadsIndexBuffer{};
 
-		static constexpr const size_t Triangle_MaxCount = 1000;
-		static constexpr const size_t Triangle_MaxVertexCount = Triangle_MaxCount * 3;
-		static constexpr const size_t Triangle_MaxIndexCount = Triangle_MaxCount * 3;
 		uint32_t Triangle_IndexCount = 0;
 		Vertex* TriangleBuffer = nullptr;
 		Vertex* TriangleBufferPtr = nullptr;
@@ -103,12 +97,6 @@ namespace Dogo
 		GLuint m_TrianglesVertexBuffer{};
 		GLuint m_TrianglesIndexBuffer{};
 
-		static constexpr const size_t Circle_Segments = 16;
-		static constexpr const size_t Circle_Vertices = Circle_Segments + 2;
-		static constexpr const size_t Circle_Indices = Circle_Segments * 3;
-		static constexpr const size_t Circle_MaxCount = 1000;
-		static constexpr const size_t Circle_MaxVertexCount = Circle_MaxCount * Circle_Vertices;
-		static constexpr const size_t Circle_MaxIndexCount = Circle_MaxCount * Circle_Indices;
 		uint32_t Circle_IndexCount = 0;
 		Vertex* CircleBuffer = nullptr;
 		Vertex* CircleBufferPtr = nullptr;
@@ -116,9 +104,6 @@ namespace Dogo
 		GLuint m_CirclesVertexBuffer{};
 		GLuint m_CirclesIndexBuffer{};
 
-		static constexpr const size_t ThickLine_MaxCount = 1000;
-		static constexpr const size_t ThickLine_MaxVertexCount = ThickLine_MaxCount * 4;
-		static constexpr const size_t ThickLine_MaxIndexCount = ThickLine_MaxCount * 6;
 		uint32_t ThickLine_IndexCount = 0;
 		Vertex* ThickLineBuffer = nullptr;
 		Vertex* ThickLineBufferPtr = nullptr;
@@ -126,8 +111,6 @@ namespace Dogo
 		GLuint m_ThickLineVertexBuffer{};
 		GLuint m_ThickLineIndexBuffer{};
 
-		static constexpr const size_t Line2D_MaxCount = 1000;
-		static constexpr const size_t Line2D_MaxVertexCount = Line2D_MaxCount * 2;
 		LineVertex* Line2DBuffer = nullptr;
 		LineVertex* Line2DBufferPtr = nullptr;
 		uint32_t Line2D_VertexCount = 0;

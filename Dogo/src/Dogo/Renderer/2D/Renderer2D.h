@@ -6,29 +6,19 @@
 #include "Dogo/Renderer/Core/Texture.h"
 #include "Dogo/Renderer/Core/Shader.h"
 #include "Dogo/Renderer/Core/Camera.h"
-#include "Dogo/Systems/AssetSystem.h"
-
-#define MAX_CHARACTERS 100
-
-#define CIRCLE_SEGMENTS 32
-#define CIRCLE_VERTICES CIRCLE_SEGMENTS + 2
-#define MAX_CIRCLE_VERTICES (MAX_CIRCLES * (CIRCLE_VERTICES))
-#define CIRCLE_INDICES 3 * CIRCLE_SEGMENTS
-
-#define MAX_CIRCLE_INDICES (MAX_CIRCLES * CIRCLE_INDICES)
-
+#include "Dogo/Systems/Assets/Assets.h"
+#include "UV.h"
 
 namespace Dogo
 {
-
-	struct UV
+	namespace RendererConstants
 	{
-		glm::vec2 uvMin;
-		glm::vec2 uvMax;
-		UV() : uvMin(0.0f, 0.0f), uvMax(1.0f, 1.0f) {}
-		UV(const glm::vec2& min, const glm::vec2& max) : uvMin(min), uvMax(max) {}
-		UV(float xMin, float yMin, float xMax, float yMax): uvMin(xMin, yMin), uvMax(xMax, yMax) {}
-	};
+		static constexpr const size_t Circle_Segments = 32;
+		static constexpr const size_t Circle_Vertices = Circle_Segments + 2;
+		static constexpr const size_t Circle_Indices = Circle_Segments * 3;
+		static constexpr const size_t Max_Characters = 100;
+	}
+
 	struct Rect
 	{
 		glm::vec2 pos;
@@ -66,7 +56,7 @@ namespace Dogo
 		Vertex vertices[3];
 	};
 	struct Circle {
-		Vertex vertices[CIRCLE_SEGMENTS + 2];
+		Vertex vertices[RendererConstants::Circle_Segments + 2];
 	};
 	struct ThickLine {
 		Vertex vertices[4];
@@ -87,13 +77,6 @@ namespace Dogo
 		glm::vec3 color;
 		glm::mat4 transform;
 	};
-
-	Circle GenerateCircle(glm::vec2 center, float radius);
-	Quad CreateQuad(float x, float y, float width, float height, float pivotX, float pivotY, const UV& uv = UV());
-	Line2D CreateLine2D(const glm::vec2& start, const glm::vec2& end, const glm::vec4& color);
-	Triangle CreateTriangle(float origin, float scale);
-	ThickLine CreateThickLine(const glm::vec2& p0, const glm::vec2& p1, float thickness);
-	UV GetTileUV(int tileX, int tileY, int tileWidth, int tileHeight, int atlasWidth, int atlasHeight);
 	
 	class Renderer2D
 	{
@@ -149,5 +132,31 @@ namespace Dogo
 
 		std::vector<glm::mat4> m_TransformStack;
 		const glm::mat4* m_TransformBack;
+
+
+		static constexpr const size_t Quad_MaxCount = 1000;
+		static constexpr const size_t Quad_MaxVertexCount = Quad_MaxCount * 4;
+		static constexpr const size_t Quad_MaxIndexCount = Quad_MaxCount * 6;
+
+		static constexpr const size_t Triangle_MaxCount = 1000;
+		static constexpr const size_t Triangle_MaxVertexCount = Triangle_MaxCount * 3;
+		static constexpr const size_t Triangle_MaxIndexCount = Triangle_MaxCount * 3;
+
+		static constexpr const size_t Circle_MaxCount = 1000;
+		static constexpr const size_t Circle_MaxVertexCount = Circle_MaxCount * RendererConstants::Circle_Vertices;
+		static constexpr const size_t Circle_MaxIndexCount = Circle_MaxCount * RendererConstants::Circle_Indices;
+
+		static constexpr const size_t ThickLine_MaxCount = 1000;
+		static constexpr const size_t ThickLine_MaxVertexCount = ThickLine_MaxCount * 4;
+		static constexpr const size_t ThickLine_MaxIndexCount = ThickLine_MaxCount * 6;
+
+		static constexpr const size_t Line2D_MaxCount = 1000;
+		static constexpr const size_t Line2D_MaxVertexCount = Line2D_MaxCount * 2;
 	};
+
+	Circle GenerateCircle(glm::vec2 center, float radius);
+	Quad CreateQuad(float x, float y, float width, float height, float pivotX, float pivotY, const UV& uv = UV());
+	Line2D CreateLine2D(const glm::vec2& start, const glm::vec2& end, const glm::vec4& color);
+	Triangle CreateTriangle(float origin, float scale);
+	ThickLine CreateThickLine(const glm::vec2& p0, const glm::vec2& p1, float thickness);
 }

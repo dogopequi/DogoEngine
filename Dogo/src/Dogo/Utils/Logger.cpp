@@ -5,14 +5,6 @@ const char* DG_COLOR_FORMAT[6] =
 {
 	"\033[1;31m", "\033[0;31m", "\033[0;33m", "\033[0;32m", "\033[1;36m", "\033[0;36m"
 };
-bool InitLogger()
-{
-	return true;
-}
-
-void EndLogger()
-{
-}
 
 void LogOutput(DG_LOG_LEVEL level, const char* msg, ...)
 {

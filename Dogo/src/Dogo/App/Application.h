@@ -24,8 +24,8 @@ namespace Dogo
 		Application();
 		virtual ~Application();
 
-		virtual void PushLayer(Layer* layer);
-		virtual void PushOverlay(Layer* layer);
+		virtual void PushLayer(Layer2D* layer);
+		virtual void PushOverlay(Layer2D* layer);
 
 		virtual void Run() final;
 	protected:

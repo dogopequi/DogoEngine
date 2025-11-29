@@ -1,6 +1,6 @@
 #pragma once
-#include "Dogo/Renderer/2D/Renderer2D.h"
-#include "Dogo/Renderer/Core/Texture.h"
+#include "Dogo/Systems/AssetSystem.h"
+#include "UV.h"
 namespace Dogo
 {
 	enum class Pivot {

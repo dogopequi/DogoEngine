@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include "Dogo/Renderer/Core/FrameBuffer.h"
+#include "Dogo/Component/Components.h"
 namespace Dogo
 {
 
@@ -17,26 +18,26 @@ namespace Dogo
         ORTHOGRAPHIC
     };
 
-    class Camera
+    class Camera : public DogoECS::DG_Component
     {
     public:
-        static Camera Perspective(float fov, float aspect, float nearPlane, float farPlane)
+        static Camera Perspective(float fov, float aspect, float nearPlane, float farPlane, const glm::vec3& pos = { 0.0f, 0.0f, 10.0f })
         {
             Camera cam;
             cam.SetType(CameraType::PERSPECTIVE);
-            cam.Init(fov, aspect, nearPlane, farPlane);
+            cam.Init(fov, aspect, nearPlane, farPlane, pos);
             return cam;
         }
 
-        static Camera Orthographic(float width, float height, float nearPlane, float farPlane)
+        static Camera Orthographic(float width, float height, float nearPlane, float farPlane, const glm::vec3& pos = { 0.0f, 0.0f, 10.0f })
         {
             Camera cam;
             cam.SetType(CameraType::ORTHOGRAPHIC);
-            cam.Init(width, height, nearPlane, farPlane);
+            cam.Init(width, height, nearPlane, farPlane, pos);
             return cam;
         }
     private:
-        Camera() = default;
+        Camera() : DogoECS::DG_Component() {};
 
     public:
         glm::mat4 GetViewMatrix() const;
@@ -70,7 +71,7 @@ namespace Dogo
     private:
         void UpdateVectors();
         void UpdateViewMatrix();
-        void Init(float a, float b, float c, float d);
+        void Init(float a, float b, float c, float d, const glm::vec3& pos);
         inline void SetType(CameraType type) { m_Type = type; }
 
     private:

@@ -379,6 +379,20 @@ namespace Dogo
 			}
 		}
 
+		inline void Update()
+		{
+			for (uint32_t key = 0; key < MAX_KEYS; key++)
+			{
+				if (keyStates[key] == KeyState::PRESSED)
+					ProcessKey(key, true);
+			}
+			for (uint32_t button = 0; button < MAX_BUTTONS; button++)
+			{
+				if (buttonStates[button] == ButtonState::PRESSED)
+					ProcessButton(button, true);
+			}
+		}
+
 	}
 	static std::string KeyCodeToKeyName(int32_t keycode)
 	{

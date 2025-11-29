@@ -23,7 +23,7 @@ namespace Dogo
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RBO);
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			DG_ERROR("Framebuffer not complete.");
+			DG_FATAL("Framebuffer not complete.");
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
@@ -49,7 +49,6 @@ namespace Dogo
 
         m_Width = width;
         m_Height = height;
-
         if (m_FBO) {
             glDeleteFramebuffers(1, &m_FBO);
             m_FBO = 0;
@@ -85,7 +84,6 @@ namespace Dogo
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		Unbind();
     }
 

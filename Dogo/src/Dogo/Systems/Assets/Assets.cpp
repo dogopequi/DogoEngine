@@ -15,6 +15,7 @@ namespace Dogo
 		std::filesystem::path fs{ path };
 		if (std::filesystem::exists(fs) && std::filesystem::is_regular_file(fs))
 		{
+			m_Path = path;
 			int width, height, channels;
 			unsigned char* data = stbi_load(fs.string().c_str(), &width, &height, &channels, 0);
 
@@ -22,7 +23,6 @@ namespace Dogo
 			{
 				m_Width = width;
 				m_Height = height;
-				m_Path = path;
 				stbi_image_free(data);
 				return true;
 			}

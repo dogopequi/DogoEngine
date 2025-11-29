@@ -1,75 +1,82 @@
 #include "dgpch.h"
 #include "System.h"
 #include "Dogo/Component/Components.h"
-#include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Dogo/Component/AudioSourceComponent.h"
+#include "Dogo/Component/RigidBodyComponent.h"
+#include "Dogo/Component/SpriteRendererComponent.h"
 #include "Dogo/Physics/DG_Physics.h"
 namespace Dogo
 {
-	void SpriteRenderSystem2D::Update(const std::shared_ptr<Renderer2D>& renderer)
+	void SpriteRenderSystem2D::Update(const std::weak_ptr<Renderer2D>& renderer)
 	{
-		if (renderer)
+		if (!renderer.expired())
 		{
+			auto r = renderer.lock();
 			DogoECS::DG_ComponentManager* manager = ECS::GetComponentManager();
 			for (auto it = manager->AllActiveBegin<ECS::SpriteRendererComponent>();
 				it != manager->AllActiveEnd<ECS::SpriteRendererComponent>(); ++it)
 			{
 				ECS::TransformComponent* pos = ECS::GetComponent<ECS::TransformComponent>(it->GetEntityID());
-				it->Draw(renderer, pos->position.x, pos->position.y);
+				it->Draw(r, pos->position.x, pos->position.y);
 			}
 		}
 		else
 			DG_TRACE("SpriteRenderSystem2D was not provided with a Renderer2D.");
 	}
-	void PhysicsSystem::Update(double step)
+	namespace PhysicsSystem
 	{
-		DogoECS::DG_ComponentManager* componentManager = ECS::GetComponentManager();
-		if (step > 0.25) 
-			step = 0.25;
-		m_Accumulator += step;
-
-		while (m_Accumulator >= m_FixedStep)
+		double m_Accumulator = 0.0;
+		const double m_FixedStep = 1.0 / 60.0;
+		void Update(double step)
 		{
-			DG_Physics::StepPhysics(m_FixedStep);
-			m_Accumulator -= m_FixedStep;
-		}
+			DogoECS::DG_ComponentManager* componentManager = ECS::GetComponentManager();
+			if (step > 0.25)
+				step = 0.25;
+			m_Accumulator += step;
 
-		auto entityPair = componentManager->GetEntitiesWith<ECS::RigidBodyComponent, ECS::TransformComponent>();
-		for (auto it = entityPair.first; it != entityPair.second; ++it)
-		{
-			auto [phys, pos] = *it;
-			if (phys->rigidBody && !phys->kinematic)
+			while (m_Accumulator >= m_FixedStep)
 			{
-				PxTransform t = phys->rigidBody->getGlobalPose();
-				pos->SetPosition(glm::vec3(t.p.x, t.p.y, t.p.z));
+				DG_Physics::StepPhysics(m_FixedStep);
+				m_Accumulator -= m_FixedStep;
 			}
-			else if(phys->rigidBody && phys->kinematic)
+
+			auto entityPair = componentManager->GetEntitiesWith<ECS::RigidBodyComponent, ECS::TransformComponent>();
+			for (auto it = entityPair.first; it != entityPair.second; ++it)
 			{
-				glm::vec3 targetPos = pos->GetPosition();
-				phys->rigidBody->setKinematicTarget(PxTransform(targetPos.x, targetPos.y, targetPos.z));
-			}
-			ECS::VelocityComponent* vel = ECS::GetComponent<ECS::VelocityComponent>(phys->GetEntityID());
-			if (vel)
-			{
-				if (phys->rigidBody)
+				auto [phys, pos] = *it;
+				if (phys->rigidBody && !phys->kinematic)
 				{
-					if (!phys->kinematic)
+					PxTransform t = phys->rigidBody->getGlobalPose();
+					pos->SetPosition(glm::vec3(t.p.x, t.p.y, t.p.z));
+				}
+				else if (phys->rigidBody && phys->kinematic)
+				{
+					glm::vec3 targetPos = pos->GetPosition();
+					phys->rigidBody->setKinematicTarget(PxTransform(targetPos.x, targetPos.y, targetPos.z));
+				}
+				ECS::VelocityComponent* vel = ECS::GetComponent<ECS::VelocityComponent>(phys->GetEntityID());
+				if (vel)
+				{
+					if (phys->rigidBody)
 					{
-						PxVec3 linearVel = phys->rigidBody->getLinearVelocity();
-						vel->SetLinearVelocity(glm::vec3(linearVel.x, linearVel.y, linearVel.z));
-						PxVec3 angularVel = phys->rigidBody->getAngularVelocity();
-						vel->SetAngularVelocity(glm::vec3(angularVel.x, angularVel.y, angularVel.z));
-					}
-					else
-					{
-						phys->rigidBody->setKinematicTarget(PxTransform(pos->position.x, pos->position.y, pos->position.z));
+						if (!phys->kinematic)
+						{
+							PxVec3 linearVel = phys->rigidBody->getLinearVelocity();
+							vel->SetLinearVelocity(glm::vec3(linearVel.x, linearVel.y, linearVel.z));
+							PxVec3 angularVel = phys->rigidBody->getAngularVelocity();
+							vel->SetAngularVelocity(glm::vec3(angularVel.x, angularVel.y, angularVel.z));
+						}
+						else
+						{
+							phys->rigidBody->setKinematicTarget(PxTransform(pos->position.x, pos->position.y, pos->position.z));
+						}
 					}
 				}
 			}
+
+
 		}
-		
-
 	}
-
 	void AudioSystem2D::Update()
 	{
 		DogoECS::DG_ComponentManager* componentManager = ECS::GetComponentManager();

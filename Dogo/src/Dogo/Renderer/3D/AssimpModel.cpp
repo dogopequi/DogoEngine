@@ -37,7 +37,7 @@ namespace Dogo
             m_Textures.resize(textures.size());
             for (int i = 0; i < textures.size(); i++)
             {
-                m_Textures[i] = Texture::Create(textures[i]->GetFilePath());
+                m_Textures[i] = std::shared_ptr<Texture>(Texture::Create(textures[i]->GetFilePath()));
             }
         }
 
@@ -220,7 +220,7 @@ namespace Dogo
                 }
                 if (!skip)
                 {
-                    std::shared_ptr<Texture> texture = Texture::Create((m_Directory + "/" + str.C_Str()));
+                    std::shared_ptr<Texture> texture = std::shared_ptr<Texture>(Texture::Create((m_Directory + "/" + str.C_Str())));
                     textures.push_back(texture);
                     m_TexturesLoaded.push_back(texture);
                 }

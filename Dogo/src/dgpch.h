@@ -25,7 +25,10 @@
 #include <locale>
 #include <deque>
 #include <random>
+#include <format>
+#include <print>
 #include <filesystem>
+#include <typeinfo>
 #ifdef DG_PLATFORM_WINDOWS
 	#include "Windows.h"
 	#include "windowsx.h"

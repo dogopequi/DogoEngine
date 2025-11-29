@@ -4,7 +4,7 @@
 #include "Dogo/Renderer/2D/Renderer2D.h"
 #include "Dogo/Renderer/UI/UI.h"
 #include "Graphics/DogoWindow.h"
-class Pong : public Dogo::Layer
+class Pong : public Dogo::Layer2D
 {
 public:
 	Pong(const std::string& name, std::shared_ptr<Dogo::DogoWindow> window);

@@ -1,7 +1,6 @@
 #pragma once
+#include "Dogo/Utils/Logger.h"
 #include <DogoECS.h>
-#include "Dogo/Renderer/2D/Sprite.h"
-#include "Dogo/Physics/DG_Physics.h"
 #include "Dogo/Audio/AudioEngine.h"
 #include "glm/gtx/euler_angles.hpp"
 namespace Dogo
@@ -127,88 +126,18 @@ namespace Dogo
         };
 
 
-		struct SpriteRendererComponent : public DogoECS::DG_Component
-		{
-			SpriteRendererComponent();
-			Sprite sprite{};
-
-			void Draw(std::weak_ptr<Dogo::Renderer2D> renderer, float actorX, float actorY);
-			//layer
-			//layer id
-		};
-
-        struct ColliderComponent : public DogoECS::DG_Component
-        {
-            ColliderComponent() : DogoECS::DG_Component() {}
-            ~ColliderComponent();
+        //struct ColliderComponent : public DogoECS::DG_Component
+        //{
+        //    ColliderComponent() : DogoECS::DG_Component() {}
+        //    ~ColliderComponent();
 
 
 
-        private:
-            PxShape* shape = nullptr;
-            PxFilterData filterData;
-            bool trigger = false;
-        };
-
-        struct RigidBodyComponent : public DogoECS::DG_Component
-        {
-            RigidBodyComponent() : DogoECS::DG_Component() {}
-            ~RigidBodyComponent();
-            void Init(const glm::vec3& pos, const glm::vec3& shape, bool kinematic);
-            void ApplyKinematic();
-            inline void ApplyGravity() {
-                rigidBody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
-            }
-            inline void DisableGravity() {
-                rigidBody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
-            }
-            friend class PhysicsSystem;
-            friend class MovementSystem;
-            friend class SpriteRenderSystem2D;
-            friend class AudioSystem;
-
-        private:
-            PxRigidDynamic* rigidBody = nullptr;
-            float mass = 1.0f;
-            bool kinematic = false;
-            PxShape* shape = nullptr;
-            PxFilterData filterData;
-            bool hasGravity = true;
-        };
-
-        struct AudioSourceComponent : public DogoECS::DG_Component
-        {
-            ALuint source = 0;
-            ALuint buffer = 0;
-            AudioData audioData;
-            std::string wavpath;
-            float volume = 0.0f;
-            std::string GetFilePath() const { return wavpath; }
-            void SetFilePath(const std::string& filepath) { wavpath = filepath; }
-            float GetVolume() const { return volume; }
-            void SetVolume(float vol) { volume = vol; }
-            void Play();
-            ~AudioSourceComponent();
-        protected:
-            bool LoadCommon();
-            AudioSourceComponent(const std::string& filepath, float vol);
-            AudioSourceComponent();
-        };
-
-        struct AudioSourceComponent2D : public AudioSourceComponent
-        {
-            bool Load();
-            AudioSourceComponent2D(const std::string& filepath, float vol);
-            AudioSourceComponent2D() {}
-            ~AudioSourceComponent2D() {}
-        };
-        struct AudioSourceComponent3D : public AudioSourceComponent
-        {
-            bool Load();
-            AudioSourceComponent3D(const std::string& filepath, float vol);
-            AudioSourceComponent3D() {}
-            ~AudioSourceComponent3D() {}
-        };
+        //private:
+        //    PxShape* shape = nullptr;
+        //    PxFilterData filterData;
+        //    bool trigger = false;
+        //};
 
 	}
 }

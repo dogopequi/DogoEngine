@@ -28,26 +28,6 @@ namespace Dogo
 		return nullptr;
 	}
 
-	UV GetTileUV(int tileX, int tileY, int tileWidth, int tileHeight, int atlasWidth, int atlasHeight)
-	{
-		float tilesPerRow = (float)(atlasWidth / tileWidth);
-		float tilesPerCol = (float)(atlasHeight / tileHeight);
-
-		float uMin = tileX / tilesPerRow;
-		float vMin = tileY / tilesPerCol;
-		float uMax = (tileX + 1) / tilesPerRow;
-		float vMax = (tileY + 1) / tilesPerCol;
-
-		float texelOffsetX = 0.5f / atlasWidth;
-		float texelOffsetY = 0.5f / atlasHeight;
-
-		uMin += texelOffsetX;
-		uMax -= texelOffsetX;
-		vMin += texelOffsetY;
-		vMax -= texelOffsetY;
-
-		return UV(uMin, vMin, uMax, vMax);
-	}
 	Circle GenerateCircle(glm::vec2 center, float radius)
 	{
 		Circle c;
@@ -59,9 +39,9 @@ namespace Dogo
 			0.0f
 		};
 
-		for (int i = 0; i <= CIRCLE_SEGMENTS; ++i)
+		for (int i = 0; i <= RendererConstants::Circle_Segments; ++i)
 		{
-			float t = float(i) / float(CIRCLE_SEGMENTS);
+			float t = float(i) / float(RendererConstants::Circle_Segments);
 			float angle = t * 2.0f * glm::pi<float>();
 			float x = center.x + radius * glm::cos(angle);
 			float y = center.y + radius * glm::sin(angle);

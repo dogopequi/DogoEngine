@@ -5,13 +5,13 @@
 #include "Platform/OpenGL/OpenGLTexture2D.h"
 namespace Dogo
 {
-	std::shared_ptr<Texture> Texture::Create(const std::string& filepath)
+	Texture* Texture::Create(const std::string& filepath)
     {
 		RenderAPI api = GraphicsContext::Get()->GetAPI();
 		switch (api)
 		{
 		case RenderAPI::OpenGL:
-			return std::make_shared<OpenGLTexture2D>(filepath);
+			return new OpenGLTexture2D(filepath);
 		case RenderAPI::VULKAN:
 			DG_FATAL("VULKAN not implemented");
 			return nullptr;

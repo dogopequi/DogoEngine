@@ -3,19 +3,18 @@
 #include "Dogo/Utils/Logger.h"
 #include "Dogo/Renderer/2D/Renderer2D.h"
 #include "Dogo/Actors/Actor.h"
-#include "Dogo/Systems/System.h"
 #include "Dogo/Scene/Scene.h"
 #include "Graphics/DogoWindow.h"
-#include "Dogo/Physics/DG_Physics.h"
 #include "Dogo/Renderer/Core/FrameBuffer.h"
 #include "imgui.h"
 #include "Dogo/Systems/AssetSystem.h"
+#include "Dogo/Component/AudioSourceComponent.h"
 enum class LEVEL
 {
 	SLUG, WORM, PYTHON 
 };
 
-class SnakeGame : public Dogo::Layer
+class SnakeGame : public Dogo::Layer2D
 {
 public:
 	SnakeGame(const std::string& name, std::shared_ptr<Dogo::DogoWindow> window);
@@ -23,23 +22,69 @@ public:
 	void OnDetach() override;
 	void OnUpdate(double delta) override;
 	void OnResize() override;
+	void Submit() override;
 	void Setup();
 	void CreateGrid();
-	void TryMove(const glm::vec3& pos);
-	std::shared_ptr<Dogo::Renderer2D> m_Renderer;
-	std::shared_ptr<Dogo::Snake> actor;
+	bool CheckBounds(const glm::vec2& nextPos);
+	bool CheckDeath(const glm::vec2& pos);
+	void UpdateSnake();
+	glm::vec2 GetRandomPositionInBounds();
 	std::shared_ptr<Dogo::Apple> apple;
-	uint32_t spriteSize = 200;
-	uint32_t square = 30;
-	Dogo::SpriteRenderSystem2D m_SpriteRenderer;
-	Dogo::PhysicsSystem m_Physics;
-	Dogo::AudioSystem2D m_Audio;
-	std::shared_ptr<Dogo::Scene> m_Scene;
+
+	uint32_t spriteSize = 30;
+	int32_t square = 32;
+	static constexpr float gridPixel = 720.0f * 0.8f;
+	float startX = (1280.0f - gridPixel) / 2.0f;
+	float startY = (720.0f - gridPixel) / 2.0f;
+	float endX = startX + gridPixel;
+	float endY = startY + gridPixel;
+	uint32_t cells = gridPixel / square;
+	LEVEL level{ LEVEL::SLUG };
+	float counter{0.0f};
+	bool dead = false;
+	bool running = false;
+	bool won = false;
+	bool hasGrownThisMove = false;
+	uint32_t applesEaten = {0};
+	uint32_t applesToEat = { 5 };
+	glm::vec2 dir = glm::vec2(0.0f, square);
+
+	std::optional<Dogo::TextureAsset> head_down;
+	std::optional<Dogo::TextureAsset> head_up;
+	std::optional<Dogo::TextureAsset> head_left;
+	std::optional<Dogo::TextureAsset> head_right;
+	std::optional<Dogo::TextureAsset> tail_down;
+	std::optional<Dogo::TextureAsset> tail_up;
+	std::optional<Dogo::TextureAsset> tail_left;
+	std::optional<Dogo::TextureAsset> tail_right;
+	std::optional<Dogo::TextureAsset> body_vertical;
+	std::optional<Dogo::TextureAsset> body_topright;
+	std::optional<Dogo::TextureAsset> body_topleft;
+	std::optional<Dogo::TextureAsset> body_bottomright;
+	std::optional<Dogo::TextureAsset> body_bottomleft;
+	std::optional<Dogo::TextureAsset> body_horizontal;
+
+
+
+	double m_MoveTimer = 0.0;
+	double m_MoveInterval = 0.3;
+
+	static std::mt19937 gen;
+
+	std::uniform_int_distribution<> distCell;
+
+	std::deque<std::pair<glm::vec2, Dogo::TextureAsset*>> snake;
+	size_t snakesize = { 7 };
+
 	std::shared_ptr<Dogo::Camera> m_Camera;
 	glm::vec2 start{ 0.0f, 0.0f };
 	glm::vec2 end{ 0.0f, 0.0f };
-	double m_MoveTimer = 0.0;
-	double m_MoveInterval = 0.1;
+
+	DogoECS::Entity* justforgameoveraudio;
+	DogoECS::Entity* justforwinaudio;
+
+	Dogo::ECS::AudioSourceComponent2D* gameoveraudio;
+	Dogo::ECS::AudioSourceComponent2D* winaudio;
 
 	bool resized = true;
 };

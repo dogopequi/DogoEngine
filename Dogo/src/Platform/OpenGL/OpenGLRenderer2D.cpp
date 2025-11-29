@@ -6,7 +6,7 @@ namespace Dogo
 
 	OpenGLRenderer2D::OpenGLRenderer2D(const std::wstring& vertex, const std::wstring& pixel) : Renderer2D()
 	{
-		m_TextureArray = TextureArray::Create(40, 40, m_MaxTextures);
+		m_TextureArray = std::unique_ptr<TextureArray>(TextureArray::Create(40, 40, m_MaxTextures));
 		m_TextureArray->AddWhiteLayer();
 		m_TextureCount++;
 
@@ -119,13 +119,13 @@ namespace Dogo
 			uint32_t offset = 0;
 			for (size_t c = 0; c < Circle_MaxCount; ++c)
 			{
-				for (uint32_t i = 0; i < Circle_Segments; ++i)
+				for (uint32_t i = 0; i < RendererConstants::Circle_Segments; ++i)
 				{
-					indices[(c * Circle_Segments + i) * 3 + 0] = offset + 0;
-					indices[(c * Circle_Segments + i) * 3 + 1] = offset + i + 1;
-					indices[(c * Circle_Segments + i) * 3 + 2] = offset + i + 2;
+					indices[(c * RendererConstants::Circle_Segments + i) * 3 + 0] = offset + 0;
+					indices[(c * RendererConstants::Circle_Segments + i) * 3 + 1] = offset + i + 1;
+					indices[(c * RendererConstants::Circle_Segments + i) * 3 + 2] = offset + i + 2;
 				}
-				offset += (Circle_Segments + 2);
+				offset += (RendererConstants::Circle_Segments + 2);
 			}
 			glCreateBuffers(1, &m_CirclesIndexBuffer);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_CirclesIndexBuffer);
@@ -192,11 +192,13 @@ namespace Dogo
 		glGenBuffers(1, &m_FontVertexBuffer);
 		glBindVertexArray(m_FontVertexArray);
 		glBindBuffer(GL_ARRAY_BUFFER, m_FontVertexBuffer);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4 * MAX_CHARACTERS, NULL, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4 * RendererConstants::Max_Characters, NULL, GL_DYNAMIC_DRAW);
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
+
+		LoadFont("../Dogo/resources/Fonts/arial.ttf", 48);
 
 		glDisable(GL_DEPTH_TEST);
 		glLineWidth(1.0f);
@@ -447,7 +449,7 @@ namespace Dogo
 			layer = m_TextureArray->AddTexture(texture.GetPath().string());
 			filepathToLayer[texture.GetUUID()] = layer;
 		}
-		for (size_t i = 0; i < Circle_Vertices; i++)
+		for (size_t i = 0; i < RendererConstants::Circle_Vertices; i++)
 		{
 			CircleBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
 			CircleBufferPtr->color = color;
@@ -456,7 +458,7 @@ namespace Dogo
 			CircleBufferPtr++;
 		}
 
-		Circle_IndexCount += Circle_Indices;
+		Circle_IndexCount += RendererConstants::Circle_Indices;
 	}
 	void OpenGLRenderer2D::Submit(const Circle& renderable, const glm::vec4& color)
 	{
@@ -467,7 +469,7 @@ namespace Dogo
 			BeginBatch();
 		}
 		uint32_t layer = 0;
-		for (size_t i = 0; i < Circle_Vertices; i++)
+		for (size_t i = 0; i < RendererConstants::Circle_Vertices; i++)
 		{
 			CircleBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
 			CircleBufferPtr->color = color;
@@ -476,7 +478,7 @@ namespace Dogo
 			CircleBufferPtr++;
 		}
 
-		Circle_IndexCount += Circle_Indices;
+		Circle_IndexCount += RendererConstants::Circle_Indices;
 	}
 	void OpenGLRenderer2D::Submit(const ThickLine& renderable, const TextureAsset& texture)
 	{
@@ -615,25 +617,18 @@ namespace Dogo
 			glBindBuffer(GL_ARRAY_BUFFER, m_LinesVertexBuffer);
 			glDrawArrays(GL_LINES, 0, Line2D_VertexCount);
 		}
-
 		m_SpriteShader->Bind();
 		m_SpriteShader->SetUniform1i("textureArray", 0);
 		m_SpriteShader->SetUniformMatrix4f("view", m_View);
 		m_SpriteShader->SetUniformMatrix4f("projection", m_Proj);
-		glActiveTexture(GL_TEXTURE0);
 		m_TextureArray->Bind();
+		glActiveTexture(GL_TEXTURE0);
 
-		if (Quad_IndexCount)
+		if (ThickLine_IndexCount)
 		{
-			glBindVertexArray(m_QuadsVertexArray);
-			glBindBuffer(GL_ARRAY_BUFFER, m_QuadsVertexBuffer);
-			glDrawElements(GL_TRIANGLES, Quad_IndexCount, GL_UNSIGNED_INT, nullptr);
-		}
-		if (Triangle_IndexCount)
-		{
-			glBindVertexArray(m_TrianglesVertexArray);
-			glBindBuffer(GL_ARRAY_BUFFER, m_TrianglesVertexBuffer);
-			glDrawElements(GL_TRIANGLES, Triangle_IndexCount, GL_UNSIGNED_INT, nullptr);
+			glBindVertexArray(m_ThickLineVertexArray);
+			glBindBuffer(GL_ARRAY_BUFFER, m_ThickLineVertexBuffer);
+			glDrawElements(GL_TRIANGLES, ThickLine_IndexCount, GL_UNSIGNED_INT, nullptr);
 		}
 		if (Circle_IndexCount)
 		{
@@ -641,11 +636,17 @@ namespace Dogo
 			glBindBuffer(GL_ARRAY_BUFFER, m_CirclesVertexBuffer);
 			glDrawElements(GL_TRIANGLES, Circle_IndexCount, GL_UNSIGNED_INT, nullptr);
 		}
-		if (ThickLine_IndexCount)
+		if (Triangle_IndexCount)
 		{
-			glBindVertexArray(m_ThickLineVertexArray);
-			glBindBuffer(GL_ARRAY_BUFFER, m_ThickLineVertexBuffer);
-			glDrawElements(GL_TRIANGLES, ThickLine_IndexCount, GL_UNSIGNED_INT, nullptr);
+			glBindVertexArray(m_TrianglesVertexArray);
+			glBindBuffer(GL_ARRAY_BUFFER, m_TrianglesVertexBuffer);
+			glDrawElements(GL_TRIANGLES, Triangle_IndexCount, GL_UNSIGNED_INT, nullptr);
+		}
+		if (Quad_IndexCount)
+		{
+			glBindVertexArray(m_QuadsVertexArray);
+			glBindBuffer(GL_ARRAY_BUFFER, m_QuadsVertexBuffer);
+			glDrawElements(GL_TRIANGLES, Quad_IndexCount, GL_UNSIGNED_INT, nullptr);
 		}
 
 	}
@@ -680,7 +681,7 @@ namespace Dogo
 	}
 	void OpenGLRenderer2D::LoadFont(const std::string& fontPath, uint32_t size)
 	{
-		
+
 		Characters.clear();
 
 		FT_Library ft;
@@ -732,7 +733,6 @@ namespace Dogo
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		// Pack glyphs
 		int xOffset = 0;
 		int yOffset = 0;
 		rowHeight = 0;
@@ -759,16 +759,18 @@ namespace Dogo
 				face->glyph->bitmap.buffer);
 
 			float u0 = (float)xOffset / 1024.0f;
-			float v0 = (float)(yOffset + face->glyph->bitmap.rows) / (float)atlasHeight; // bottom
+			float v0 = (float)yOffset / (float)atlasHeight;              // bottom
 			float u1 = (float)(xOffset + face->glyph->bitmap.width) / 1024.0f;
-			float v1 = (float)yOffset / (float)atlasHeight; // top
+			float v1 = (float)(yOffset + face->glyph->bitmap.rows) / atlasHeight; // top
+
+
 
 			Character character = {
 				glm::vec2(u0, v0),
 				glm::vec2(u1, v1),
 				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
 				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-				static_cast<uint32_t>(face->glyph->advance.x)
+				face->glyph->advance.x
 			};
 
 			Characters.insert(std::pair<char, Character>(c, character));
@@ -790,7 +792,7 @@ namespace Dogo
 		cmd.y = y;
 		cmd.scale = scale;
 		cmd.color = color;
-		cmd.transform = *m_TransformBack; // capture transform stack at submission time
+		cmd.transform = *m_TransformBack;
 		m_TextCommands.push_back(cmd);
 	}
 
@@ -801,15 +803,15 @@ namespace Dogo
 		glDepthFunc(GL_ALWAYS);
 		m_TextShader->Bind();
 		m_TextShader->SetUniformMatrix4f("projection", m_Proj);
+		m_TextShader->SetUniformMatrix4f("view", m_View);
 		m_TextShader->SetUniform1i("text", 0);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_FontAtlasTextureID);
 		glBindVertexArray(m_FontVertexArray);
 
-		// Temp vertex storage for the whole batch
 		std::vector<float> vertices;
-		vertices.reserve(m_TextCommands.size() * 6 * 4 * 16); // max estimate
+		vertices.reserve(m_TextCommands.size() * 6 * 4 * 16);
 
 		for (const auto& cmd : m_TextCommands)
 		{
@@ -823,12 +825,11 @@ namespace Dogo
 			for (char c : cmd.text)
 			{
 				const Character& ch = Characters.at(c);
+				float xpos = cursorX + ch.bearing.x;
+				float ypos = cursorY - (ch.size.y - ch.bearing.y);
 
-				float xpos = cursorX + ch.bearing.x * cmd.scale;
-				float ypos = cursorY + (Characters['H'].bearing.y - ch.bearing.y) * cmd.scale;
-
-				float w = ch.size.x * cmd.scale;
-				float h = ch.size.y * cmd.scale;
+				float w = ch.size.x;
+				float h = ch.size.y;
 
 				float u0 = ch.uvTopLeft.x;
 				float v0 = ch.uvTopLeft.y;
@@ -836,7 +837,7 @@ namespace Dogo
 				float v1 = ch.uvBottomRight.y;
 
 				float quad[6][4] = {
-					{ xpos,     ypos + h, u0, v0 }, // flipped v0/v1
+					{ xpos,     ypos + h, u0, v0 },
 					{ xpos + w, ypos,     u1, v1 },
 					{ xpos,     ypos,     u0, v1 },
 
@@ -851,7 +852,7 @@ namespace Dogo
 				cursorX += (ch.advance >> 6) * cmd.scale;
 			}
 
-			m_TextShader->SetUniform3f("textColor", cmd.color); // color per command
+			m_TextShader->SetUniform3f("textColor", cmd.color);
 			glBindBuffer(GL_ARRAY_BUFFER, m_FontVertexBuffer);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(float), vertices.data());
 			glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size() / 4));

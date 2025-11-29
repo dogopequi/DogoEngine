@@ -10,15 +10,7 @@ namespace Dogo
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-			DG_WARN("Failed to initialize Glad!");
-			return;
-		}
-		DG_INFO("OpenGL Info:");
-		DG_INFO("  Vendor: %s", glGetString(GL_VENDOR));
-		DG_INFO("  Renderer: %s", glGetString(GL_RENDERER));
-		DG_INFO("  Version: %s", glGetString(GL_VERSION));
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 	}
 	OpenGLContext::~OpenGLContext()
 	{
@@ -30,6 +22,23 @@ namespace Dogo
 	}
 	bool OpenGLContext::Init()
 	{
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+			DG_WARN("Failed to initialize Glad!");
+			return false;
+		}
+		DG_INFO("OpenGL Info:");
+		DG_INFO("  Vendor: %s", glGetString(GL_VENDOR));
+		DG_INFO("  Renderer: %s", glGetString(GL_RENDERER));
+		DG_INFO("  Version: %s", glGetString(GL_VERSION));
+
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback([](GLenum source, GLenum type, GLuint id, GLenum severity,
+			GLsizei length, const GLchar* message, const void* userParam)
+			{
+				// Filter noisy messages, or print all
+				DG_FATAL("GL DEBUG: id=0x%x, severity=%d, message=%s\n", id, severity, message);
+			}, nullptr);
 		return true;
 	}
 	void OpenGLContext::Shutdown()

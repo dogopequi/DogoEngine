@@ -10,23 +10,23 @@ namespace Dogo {
 	LayerStack::~LayerStack()
 	{
 		// Delete each layer to avoid memory leaks
-		for (Layer* layer : m_Layers)
+		for (Layer2D* layer : m_Layers)
 			delete layer;
 	}
 
-	void LayerStack::PushLayer(Layer* layer)
+	void LayerStack::PushLayer(Layer2D* layer)
 	{
 		// Simply push the layer to the back of the vector
 		m_Layers.push_back(layer);
 	}
 
-	void LayerStack::PushOverlay(Layer* overlay)
+	void LayerStack::PushOverlay(Layer2D* overlay)
 	{
 		// Overlays are pushed to the end of the vector
 		m_Layers.push_back(overlay);
 	}
 
-	void LayerStack::PopLayer(Layer* layer)
+	void LayerStack::PopLayer(Layer2D* layer)
 	{
 		// Find the layer in the stack and erase it
 		auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
@@ -37,7 +37,7 @@ namespace Dogo {
 		}
 	}
 
-	void LayerStack::PopOverlay(Layer* overlay)
+	void LayerStack::PopOverlay(Layer2D* overlay)
 	{
 		// Find and erase overlay in the stack
 		auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);

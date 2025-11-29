@@ -13,23 +13,20 @@
 #define DG_ASSERT_ENABLE 0
 #endif
 
-	enum DG_LOG_LEVEL
-	{
-		FATAL = 0,
-		ERRORR,
-		WARN,
-		INFO,
-		DEBUG,
-		TRACE
-	};
+enum DG_LOG_LEVEL
+{
+	FATAL = 0,
+	ERRORR,
+	WARN,
+	INFO,
+	DEBUG,
+	TRACE
+};
 
 
-	bool InitLogger();
-	void EndLogger();
+DG_API void LogOutput(DG_LOG_LEVEL level, const char* msg, ...);
 
-	DG_API void LogOutput(DG_LOG_LEVEL level, const char* msg, ...);
-
-	DG_API void assertionFailure(const char* expression, const char* message, const char* file, int32_t line);
+DG_API void assertionFailure(const char* expression, const char* message, const char* file, int32_t line);
 
 #define DG_FATAL(msg, ...) LogOutput(FATAL, msg, ##__VA_ARGS__);
 #define DG_ERROR(msg, ...) LogOutput(ERRORR, msg, ##__VA_ARGS__);
