@@ -32,10 +32,14 @@ The licenses can be found in their respective folder.
 - [DogoECS](https://github.com/dogopequi/DogoECS)
 - [imgui](https://github.com/ocornut/imgui)
 
-## Examples
-Pong made with the 2D Renderer (src: Pong in Examples):
+## Examples (look in Sandbox/Examples)
+Pong
 
 https://github.com/user-attachments/assets/ef83634d-ad5d-42e6-9592-23ba7e08ada8
+
+Snake
+
+https://github.com/user-attachments/assets/4e552d38-28f4-4f98-bb1a-ca029c791197
 
 ## Implementation details
 
