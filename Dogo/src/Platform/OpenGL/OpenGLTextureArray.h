@@ -9,6 +9,7 @@ namespace Dogo
         void Clear() const override;
         void AddWhiteLayer() override;
         OpenGLTextureArray(uint32_t width, uint32_t height, uint32_t maxLayers);
+        OpenGLTextureArray() = delete;
         ~OpenGLTextureArray();
     };
 }

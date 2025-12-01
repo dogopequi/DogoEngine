@@ -21,7 +21,7 @@ public:
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate(double delta) override;
-	void OnResize() override;
+private:
 	void Submit() override;
 	void Setup();
 	void CreateGrid();
@@ -85,6 +85,4 @@ public:
 
 	Dogo::ECS::AudioSourceComponent2D* gameoveraudio;
 	Dogo::ECS::AudioSourceComponent2D* winaudio;
-
-	bool resized = true;
 };

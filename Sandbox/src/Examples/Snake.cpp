@@ -33,7 +33,7 @@ SnakeGame::SnakeGame(const std::string& name, std::shared_ptr<Dogo::DogoWindow> 
 	Dogo::ECS::SpriteRendererComponent* p1 = apple->AddComponent<Dogo::ECS::SpriteRendererComponent>();
 	p1->sprite = Dogo::Sprite("apple", "../Dogo/resources/Textures/apple.png", (float)spriteSize, (float)spriteSize);
 	if (p1->sprite.GetTexture().has_value())
-		m_Renderer->PreLoadTexture(p1->sprite.GetTexture().value());
+		m_Renderer->LoadTexture(p1->sprite.GetTexture().value());
 
 	distCell = std::uniform_int_distribution<>(0, cells - 1);
 
@@ -101,71 +101,71 @@ void SnakeGame::OnDetach()
 }
 void SnakeGame::UpdateSnake()
 {
-		if (snake.empty()) return;
-		if (snake.size() == 1)
-		{
-			glm::vec2 headDir = dir;
-			if (headDir.x > 0) snake[0].second = &head_right.value();
-			else if (headDir.x < 0) snake[0].second = &head_left.value();
-			else if (headDir.y > 0) snake[0].second = &head_up.value();
-			else if (headDir.y < 0) snake[0].second = &head_down.value();
-			return;
-		}
+if (snake.empty()) return;
+if (snake.size() == 1)
+{
+	glm::vec2 headDir = dir;
+	if (headDir.x > 0) snake[0].second = &head_right.value();
+	else if (headDir.x < 0) snake[0].second = &head_left.value();
+	else if (headDir.y > 0) snake[0].second = &head_up.value();
+	else if (headDir.y < 0) snake[0].second = &head_down.value();
+	return;
+}
 
-		{
-			const glm::vec2 head = snake[0].first;
-			const glm::vec2 second = snake[1].first;
-			glm::vec2 headDir = head - second;
+{
+	const glm::vec2 head = snake[0].first;
+	const glm::vec2 second = snake[1].first;
+	glm::vec2 headDir = head - second;
 
-			if (headDir.x > 0) snake[0].second = &head_right.value();
-			else if (headDir.x < 0) snake[0].second = &head_left.value();
-			else if (headDir.y > 0) snake[0].second = &head_up.value();
-			else if (headDir.y < 0) snake[0].second = &head_down.value();
-		}
+	if (headDir.x > 0) snake[0].second = &head_right.value();
+	else if (headDir.x < 0) snake[0].second = &head_left.value();
+	else if (headDir.y > 0) snake[0].second = &head_up.value();
+	else if (headDir.y < 0) snake[0].second = &head_down.value();
+}
 
-		
-		{
-			size_t last = snake.size() - 1;
-			const glm::vec2 tail = snake[last].first;
-			const glm::vec2 beforeTail = snake[last - 1].first;
-			glm::vec2 tailDir = beforeTail - tail;
 
-			if (tailDir.x > 0) snake[last].second = &tail_left.value();
-			else if (tailDir.x < 0) snake[last].second = &tail_right.value();
-			else if (tailDir.y > 0) snake[last].second = &tail_down.value();
-			else if (tailDir.y < 0) snake[last].second = &tail_up.value();
-		}
+{
+	size_t last = snake.size() - 1;
+	const glm::vec2 tail = snake[last].first;
+	const glm::vec2 beforeTail = snake[last - 1].first;
+	glm::vec2 tailDir = beforeTail - tail;
 
-		for (size_t i = 1; i + 1 < snake.size(); ++i)
-		{
-			const glm::vec2 curr = snake[i].first;
-			const glm::vec2 prev = snake[i - 1].first;
-			const glm::vec2 next = snake[i + 1].first;
+	if (tailDir.x > 0) snake[last].second = &tail_left.value();
+	else if (tailDir.x < 0) snake[last].second = &tail_right.value();
+	else if (tailDir.y > 0) snake[last].second = &tail_down.value();
+	else if (tailDir.y < 0) snake[last].second = &tail_up.value();
+}
 
-			glm::vec2 dirPrev = prev - curr;
-			glm::vec2 dirNext = next - curr;
+for (size_t i = 1; i + 1 < snake.size(); ++i)
+{
+	const glm::vec2 curr = snake[i].first;
+	const glm::vec2 prev = snake[i - 1].first;
+	const glm::vec2 next = snake[i + 1].first;
 
-			if (dirPrev.x == 0 && dirNext.x == 0)
-			{
-				snake[i].second = &body_vertical.value();
-				continue;
-			}
-			if (dirPrev.y == 0 && dirNext.y == 0)
-			{
-				snake[i].second = &body_horizontal.value();
-				continue;
-			}
-			if ((dirPrev.x < 0 && dirNext.y < 0) || (dirNext.x < 0 && dirPrev.y < 0))
-				snake[i].second = &body_bottomleft.value();
-			else if ((dirPrev.x < 0 && dirNext.y > 0) || (dirNext.x < 0 && dirPrev.y > 0))
-				snake[i].second = &body_topleft.value();
-			else if ((dirPrev.x > 0 && dirNext.y > 0) || (dirNext.x > 0 && dirPrev.y > 0))
-				snake[i].second = &body_topright.value();
-			else if ((dirPrev.x > 0 && dirNext.y < 0) || (dirNext.x > 0 && dirPrev.y < 0))
-				snake[i].second = &body_bottomright.value();
-			else
-				snake[i].second = &body_horizontal.value();
-		}
+	glm::vec2 dirPrev = prev - curr;
+	glm::vec2 dirNext = next - curr;
+
+	if (dirPrev.x == 0 && dirNext.x == 0)
+	{
+		snake[i].second = &body_vertical.value();
+		continue;
+	}
+	if (dirPrev.y == 0 && dirNext.y == 0)
+	{
+		snake[i].second = &body_horizontal.value();
+		continue;
+	}
+	if ((dirPrev.x < 0 && dirNext.y < 0) || (dirNext.x < 0 && dirPrev.y < 0))
+		snake[i].second = &body_bottomleft.value();
+	else if ((dirPrev.x < 0 && dirNext.y > 0) || (dirNext.x < 0 && dirPrev.y > 0))
+		snake[i].second = &body_topleft.value();
+	else if ((dirPrev.x > 0 && dirNext.y > 0) || (dirNext.x > 0 && dirPrev.y > 0))
+		snake[i].second = &body_topright.value();
+	else if ((dirPrev.x > 0 && dirNext.y < 0) || (dirNext.x > 0 && dirPrev.y < 0))
+		snake[i].second = &body_bottomright.value();
+	else
+		snake[i].second = &body_horizontal.value();
+}
 
 }
 void SnakeGame::OnUpdate(double delta)
@@ -282,10 +282,6 @@ void SnakeGame::OnUpdate(double delta)
 		}
 		UpdateSnake();
 	}
-}
-
-void SnakeGame::OnResize()
-{
 }
 
 void SnakeGame::Submit()

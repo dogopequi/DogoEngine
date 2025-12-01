@@ -21,6 +21,8 @@ namespace Dogo
 	public:
 		TextureAsset();
 		bool LoadTextureFromDisk(std::string_view path);
+		inline uint32_t GetWidth() const { return m_Width; }
+		inline uint32_t GetHeight() const { return m_Height; }
 	private:
 		uint32_t m_Width{ 0 };
 		uint32_t m_Height{ 0 };

@@ -21,12 +21,11 @@ namespace Dogo
 		inline virtual const std::string& GetName() const { return m_Name; }
 		virtual uint32_t GetFrameBufferID() const { return m_FrameBuffer->GetColorAttachmentID(); }
 
-	protected:
-		void virtual Submit() {}
 	private:
 		virtual void Update(double delta) final;
 		virtual void OnResizeNotify() final;
 	protected:
+		virtual void Submit() {}
 		std::string m_Name;
 		std::unique_ptr<Framebuffer> m_FrameBuffer;
 		std::shared_ptr<DogoWindow> m_Window;

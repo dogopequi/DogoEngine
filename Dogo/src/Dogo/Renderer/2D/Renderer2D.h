@@ -17,8 +17,23 @@ namespace Dogo
 		static constexpr const size_t Circle_Vertices = Circle_Segments + 2;
 		static constexpr const size_t Circle_Indices = Circle_Segments * 3;
 		static constexpr const size_t Max_Characters = 100;
+		static constexpr const size_t MaxTextures = 16;
 	}
-
+	struct TextureRef {
+		uint32_t arrayID = 0;
+		uint32_t layer = 0;
+		TextureRef()
+			: arrayID(0), layer(0) {
+		}
+		TextureRef(uint32_t arrayID, uint32_t layer)
+			: arrayID(arrayID), layer(layer) {
+		}
+	};
+	struct Batch {
+		uint32_t startIndex;
+		uint32_t indexCount;
+		uint32_t arrayID;
+	};
 	struct Rect
 	{
 		glm::vec2 pos;
@@ -39,7 +54,7 @@ namespace Dogo
 		glm::vec3 position;
 		glm::vec4 color;
 		glm::vec2 texcoord;
-		float texIndex;
+		glm::vec2 texInfo; // array index, layer index
 	};
 
 	struct LineVertex {
@@ -96,11 +111,9 @@ namespace Dogo
 
 		virtual void SetViewPos(const glm::vec3& pos) = 0;
 
-		virtual void PreLoadTexture(const TextureAsset& texture) = 0;
+		virtual void LoadTexture(const TextureAsset& texture) = 0;
 		virtual void Submit(const Quad& renderable, const glm::vec4& color) = 0;
 		virtual void Submit(const Quad& renderable, const TextureAsset& texture) = 0;
-		virtual void Submit(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color) = 0;
-		virtual void Submit(const glm::vec2& pos, const glm::vec2& size, const TextureAsset& texture) = 0;
 		virtual void Submit(const Triangle& renderable, const TextureAsset& texture) = 0;
 		virtual void Submit(const Circle& renderable, const TextureAsset& texture) = 0;
 		virtual void Submit(const ThickLine& renderable, const TextureAsset& texture) = 0;
@@ -152,6 +165,8 @@ namespace Dogo
 
 		static constexpr const size_t Line2D_MaxCount = 1000;
 		static constexpr const size_t Line2D_MaxVertexCount = Line2D_MaxCount * 2;
+
+		int32_t SamplerArrays[RendererConstants::MaxTextures] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 	};
 
 	Circle GenerateCircle(glm::vec2 center, float radius);

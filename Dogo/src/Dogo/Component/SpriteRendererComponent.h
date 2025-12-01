@@ -10,7 +10,7 @@ namespace Dogo
 		{
 			SpriteRendererComponent() : DogoECS::DG_Component() {}
 			Sprite sprite{};
-
+			uint32_t layer{ 0 };
 			inline void Draw(std::weak_ptr<Dogo::Renderer2D> renderer, float actorX, float actorY)
 			{
 				if (!renderer.expired()) {
@@ -23,8 +23,6 @@ namespace Dogo
 				else
 					DG_ERROR("Renderer pointer in Sprite: %s has expired.", sprite.GetName());
 			}
-			//layer
-			//layer id
 		};
 	}
 }

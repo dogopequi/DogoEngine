@@ -44,9 +44,7 @@ namespace Dogo
 		void SetViewPos(const glm::vec3& pos)override;
 
 		void RenderFrameBuffer(uint32_t framebufferID, uint32_t width, uint32_t height) override;
-		void PreLoadTexture(const TextureAsset& texture) override;
-		void Submit(const glm::vec2& pos, const glm::vec2& size, const TextureAsset& texture) override;
-		void Submit(const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color) override;
+		void LoadTexture(const TextureAsset& texture) override;
 		void Submit(const Quad& renderable, const glm::vec4& color) override;
 		void Submit(const Quad& renderable, const TextureAsset& texture) override;
 		void Submit(const Triangle& renderable, const TextureAsset& texture) override;
@@ -128,10 +126,11 @@ namespace Dogo
 		Shader* m_FBShader;
 		Shader* m_2DLineShader;
 
-		uint32_t m_TextureCount{ 0 };
-		const uint32_t m_MaxTextures{ 16 };
-		std::unique_ptr<TextureArray> m_TextureArray;
-		std::unordered_map<Dogo::UUID, uint32_t> filepathToLayer;
+		
+		std::vector<std::unique_ptr<OpenGLTextureArray>> m_TextureArrays;
+		// UUID of texture, layer
+		std::unordered_map<Dogo::UUID, TextureRef> UUIDToTextureRef;
+		std::vector<Batch> m_ArrayBatches;
 	};
 
 }
