@@ -391,6 +391,7 @@ namespace Dogo
 				if (buttonStates[button] == ButtonState::PRESSED)
 					ProcessButton(button, true);
 			}
+			m_ScrollDelta = 0;
 		}
 
 	}

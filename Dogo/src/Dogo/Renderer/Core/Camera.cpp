@@ -9,8 +9,12 @@ namespace Dogo
         if (m_Type == CameraType::PERSPECTIVE)
             SetPerspective(a, b, c, d);
         else
+        {
+            SetPosition({ a / 2.0f, b / 2.0f, 0.0f });
             SetOrthographic(a, b, c, d);
+        }
         m_RenderTarget = std::unique_ptr<Framebuffer>(Framebuffer::Create(800, 600));
+        UpdateViewMatrix();
     }
 
     void Camera::UpdateVectors()
@@ -24,7 +28,10 @@ namespace Dogo
 
     void Camera::UpdateViewMatrix()
     {
-        m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
+        if (m_Type == CameraType::PERSPECTIVE)
+            m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
+        else
+            m_ViewMatrix = glm::translate(glm::mat4(1.0f), -m_Position);
     }
 
     glm::mat4 Camera::GetViewMatrix() const
@@ -60,6 +67,25 @@ namespace Dogo
         UpdateVectors();
     }
 
+    void Camera::ProcessMouseScroll(double offset)
+    {
+        if (offset > 0.0)
+        {
+            m_Zoom /= m_ZoomSpeed;
+        }
+        else if (offset < 0.0)
+        {
+            m_Zoom *= m_ZoomSpeed;
+        }
+        m_Zoom = glm::clamp(m_Zoom, m_ZoomMin, m_ZoomMax);
+        if (m_Type == CameraType::PERSPECTIVE)
+            SetPerspective(m_FOV, m_Aspect, m_NearPlane, m_FarPlane);
+        else
+        {
+            SetOrthographic(m_Width, m_Height, m_NearPlane, m_FarPlane);
+        }
+    }
+
     void Camera::SetPerspective(float fov, float aspect, float nearPlane, float farPlane)
     {
         m_Type = CameraType::PERSPECTIVE;
@@ -74,16 +100,12 @@ namespace Dogo
     void Camera::SetOrthographic(float width, float height, float nearPlane, float farPlane)
     {
         m_Type = CameraType::ORTHOGRAPHIC;
-        m_OrthoWidth = width;
-        m_OrthoHeight = height;
+        m_Width = width;
+        m_Height = height;
         m_NearPlane = nearPlane;
         m_FarPlane = farPlane;
-        m_ProjectionMatrix = glm::ortho(
-            0.0f,
-            width,
-            0.0f,
-            height,
-            nearPlane,
-            farPlane);
+        float scaledWidth = m_Width * m_Zoom;
+        float scaledHeight = m_Height * m_Zoom;
+        m_ProjectionMatrix = glm::ortho(-scaledWidth * 0.5f, scaledWidth * 0.5f,-scaledHeight * 0.5f, scaledHeight * 0.5f, -1.0f, 1.0f);
     }
 }

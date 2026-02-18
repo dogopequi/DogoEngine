@@ -6,6 +6,7 @@ namespace Dogo
 
 	OpenGLRenderer2D::OpenGLRenderer2D(const std::wstring& vertex, const std::wstring& pixel) : Renderer2D()
 	{
+
 		QuadBuffer = new Vertex[Quad_MaxVertexCount];
 		QuadBufferPtr = QuadBuffer;
 
@@ -37,7 +38,9 @@ namespace Dogo
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texInfo));
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texIndex));
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, tilingFactor));
 
 
 		{
@@ -76,7 +79,9 @@ namespace Dogo
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texInfo));
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texIndex));
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, tilingFactor));
 
 		{
 			uint32_t indices[Triangle_MaxIndexCount];
@@ -109,7 +114,9 @@ namespace Dogo
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texInfo));
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texIndex));
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, tilingFactor));
 		{
 			uint32_t indices[Circle_MaxIndexCount];
 			uint32_t offset = 0;
@@ -143,7 +150,9 @@ namespace Dogo
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texcoord));
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texInfo));
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, texIndex));
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, tilingFactor));
 		{
 			uint32_t indices[ThickLine_MaxIndexCount];
 			uint32_t offset = 0;
@@ -196,6 +205,19 @@ namespace Dogo
 
 		LoadFont("../Dogo/resources/Fonts/arial.ttf", 48);
 
+		glCreateTextures(GL_TEXTURE_2D, 1, &m_WhiteTexture);
+		glBindTextureUnit(0, m_WhiteTexture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		uint32_t color = 0xffffffff;
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
+
+		m_TextureSlots[c_WhiteTextureSlot] = m_WhiteTexture;
+		for (size_t i = 1; i < RendererConstants::MaxTextures; i++)
+			m_TextureSlots[i] = 0;
+
 		glDisable(GL_DEPTH_TEST);
 		glLineWidth(1.0f);
 		glEnable(GL_BLEND);
@@ -207,7 +229,7 @@ namespace Dogo
 		glDeleteVertexArrays(1, &m_QuadsVertexArray);
 		glDeleteBuffers(1, &m_QuadsVertexBuffer);
 		glDeleteBuffers(1, &m_QuadsIndexBuffer);
-
+		glDeleteTextures(1, &m_WhiteTexture);
 		delete[] QuadBuffer;
 	}
 
@@ -248,33 +270,38 @@ namespace Dogo
 		m_ViewPos = pos;
 	}
 
-	void OpenGLRenderer2D::Submit(const Quad& renderable, const TextureAsset& texture)
+	void OpenGLRenderer2D::Submit(const Quad& renderable, uint32_t texture)
 	{
-		auto it = UUIDToTextureRef.find(texture.GetUUID());
-		if (it == UUIDToTextureRef.end())
-		{
-			LoadTexture(texture);
-		}
-		auto tex = UUIDToTextureRef[texture.GetUUID()];
-		if (m_TextureArrays[tex.arrayID]->GetLayerCount() >= RendererConstants::MaxTextures)
-		{
-			DG_ERROR("Max textures reached.\n");
-			return;
-		}
-		if (Quad_IndexCount >= Quad_MaxIndexCount)
+		if (Quad_IndexCount >= Quad_MaxIndexCount || (m_TextureSlotIndex > RendererConstants::MaxTextures - 1))
 		{
 			EndBatch();
 			Flush();
 			BeginBatch();
 		}
 		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
-		glm::vec2 texInfo = glm::vec2(tex.arrayID, tex.layer);
+		
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < m_TextureSlotIndex; i++)
+		{
+			if (m_TextureSlots[i] == texture)
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+		if (textureIndex == 0.0f)
+		{
+			textureIndex = (float)m_TextureSlotIndex;
+			m_TextureSlots[m_TextureSlotIndex] = texture;
+			m_TextureSlotIndex++;
+		}
 		for (size_t i = 0; i < 4; i++)
 		{
-			QuadBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+			QuadBufferPtr->position = *m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f);
 			QuadBufferPtr->color = color;
 			QuadBufferPtr->texcoord = { renderable.vertices[i].texcoord.x, renderable.vertices[i].texcoord.y };
-			QuadBufferPtr->texInfo = texInfo;
+			QuadBufferPtr->texIndex = textureIndex;
+			QuadBufferPtr->tilingFactor = renderable.vertices[i].tilingFactor;
 			QuadBufferPtr++;
 		}
 
@@ -291,42 +318,47 @@ namespace Dogo
 		constexpr glm::vec2 texInfo = glm::vec2(0.0f, 0.0f);
 		for (size_t i = 0; i < 4; i++)
 		{
-			QuadBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+			QuadBufferPtr->position = *m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f);
 			QuadBufferPtr->color = color;
 			QuadBufferPtr->texcoord = { renderable.vertices[i].texcoord.x, renderable.vertices[i].texcoord.y };
-			QuadBufferPtr->texInfo = texInfo;
+			QuadBufferPtr->texIndex = 0.0f;
+			QuadBufferPtr->tilingFactor = renderable.vertices[i].tilingFactor;
 			QuadBufferPtr++;
 		}
 		Quad_IndexCount += 6;
 	}
 
-	void OpenGLRenderer2D::Submit(const Triangle& renderable, const TextureAsset& texture)
+	void OpenGLRenderer2D::Submit(const Triangle& renderable, uint32_t texture)
 	{
-		auto it = UUIDToTextureRef.find(texture.GetUUID());
-		if (it == UUIDToTextureRef.end())
-		{
-			LoadTexture(texture);
-		}
-		auto tex = UUIDToTextureRef[texture.GetUUID()];
-		if (m_TextureArrays[tex.arrayID]->GetLayerCount() >= RendererConstants::MaxTextures)
-		{
-			DG_ERROR("Max textures reached.\n");
-			return;
-		}
-		if (Triangle_IndexCount >= Triangle_MaxIndexCount)
+		if (Triangle_IndexCount >= Triangle_MaxIndexCount || (m_TextureSlotIndex > RendererConstants::MaxTextures - 1))
 		{
 			EndBatch();
 			Flush();
 			BeginBatch();
 		}
 		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
-		glm::vec2 texInfo = glm::vec2(tex.arrayID, tex.layer);
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < m_TextureSlotIndex; i++)
+		{
+			if (m_TextureSlots[i] == texture)
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+		if (textureIndex == 0.0f)
+		{
+			textureIndex = (float)m_TextureSlotIndex;
+			m_TextureSlots[m_TextureSlotIndex] = texture;
+			m_TextureSlotIndex++;
+		}
 		for (size_t i = 0; i < 3; i++)
 		{
-			TriangleBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+			TriangleBufferPtr->position = *m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f);
 			TriangleBufferPtr->color = color;
 			TriangleBufferPtr->texcoord = renderable.vertices[i].texcoord;
-			TriangleBufferPtr->texInfo = texInfo;
+			TriangleBufferPtr->texIndex = textureIndex;
+			TriangleBufferPtr->tilingFactor = renderable.vertices[i].tilingFactor;
 			TriangleBufferPtr++;
 		}
 
@@ -343,42 +375,47 @@ namespace Dogo
 		constexpr glm::vec2 texInfo = glm::vec2(0.0f, 0.0f);
 		for (size_t i = 0; i < 3; i++)
 		{
-			TriangleBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+			TriangleBufferPtr->position = *m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f);
 			TriangleBufferPtr->color = color;
 			TriangleBufferPtr->texcoord = renderable.vertices[i].texcoord;
-			TriangleBufferPtr->texInfo = texInfo;
+			TriangleBufferPtr->texIndex = 0.0f;
+			TriangleBufferPtr->tilingFactor = renderable.vertices[i].tilingFactor;
 			TriangleBufferPtr++;
 		}
 
 		Triangle_IndexCount += 3;
 	}
-	void OpenGLRenderer2D::Submit(const Circle& renderable, const TextureAsset& texture)
+	void OpenGLRenderer2D::Submit(const Circle& renderable, uint32_t texture)
 	{
-		auto it = UUIDToTextureRef.find(texture.GetUUID());
-		if (it == UUIDToTextureRef.end())
-		{
-			LoadTexture(texture);
-		}
-		auto tex = UUIDToTextureRef[texture.GetUUID()];
-		if (m_TextureArrays[tex.arrayID]->GetLayerCount() >= RendererConstants::MaxTextures)
-		{
-			DG_ERROR("Max textures reached.\n");
-			return;
-		}
-		if (Circle_IndexCount >= Circle_MaxIndexCount)
+		if (Circle_IndexCount >= Circle_MaxIndexCount || (m_TextureSlotIndex > RendererConstants::MaxTextures - 1))
 		{
 			EndBatch();
 			Flush();
 			BeginBatch();
 		}
 		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
-		glm::vec2 texInfo = glm::vec2(tex.arrayID, tex.layer);
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < m_TextureSlotIndex; i++)
+		{
+			if (m_TextureSlots[i] == texture)
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+		if (textureIndex == 0.0f)
+		{
+			textureIndex = (float)m_TextureSlotIndex;
+			m_TextureSlots[m_TextureSlotIndex] = texture;
+			m_TextureSlotIndex++;
+		}
 		for (size_t i = 0; i < RendererConstants::Circle_Vertices; i++)
 		{
-			CircleBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+			CircleBufferPtr->position = *m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f);
 			CircleBufferPtr->color = color;
 			CircleBufferPtr->texcoord = renderable.vertices[i].texcoord;
-			CircleBufferPtr->texInfo = texInfo;
+			CircleBufferPtr->texIndex = textureIndex;
+			CircleBufferPtr->tilingFactor = renderable.vertices[i].tilingFactor;
 			CircleBufferPtr++;
 		}
 
@@ -395,42 +432,47 @@ namespace Dogo
 		constexpr glm::vec2 texInfo = glm::vec2(0.0f, 0.0f);
 		for (size_t i = 0; i < RendererConstants::Circle_Vertices; i++)
 		{
-			CircleBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+			CircleBufferPtr->position = *m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f);
 			CircleBufferPtr->color = color;
 			CircleBufferPtr->texcoord = renderable.vertices[i].texcoord;
-			CircleBufferPtr->texInfo = texInfo;
+			CircleBufferPtr->texIndex = 0.0f;
+			CircleBufferPtr->tilingFactor = renderable.vertices[i].tilingFactor;
 			CircleBufferPtr++;
 		}
 
 		Circle_IndexCount += RendererConstants::Circle_Indices;
 	}
-	void OpenGLRenderer2D::Submit(const ThickLine& renderable, const TextureAsset& texture)
+	void OpenGLRenderer2D::Submit(const ThickLine& renderable, uint32_t texture)
 	{
-		auto it = UUIDToTextureRef.find(texture.GetUUID());
-		if (it == UUIDToTextureRef.end())
-		{
-			LoadTexture(texture);
-		}
-		auto tex = UUIDToTextureRef[texture.GetUUID()];
-		if (m_TextureArrays[tex.arrayID]->GetLayerCount() >= RendererConstants::MaxTextures)
-		{
-			DG_ERROR("Max textures reached.\n");
-			return;
-		}
-		if (ThickLine_IndexCount >= ThickLine_MaxIndexCount)
+		if (ThickLine_IndexCount >= ThickLine_MaxIndexCount || (m_TextureSlotIndex > RendererConstants::MaxTextures - 1))
 		{
 			EndBatch();
 			Flush();
 			BeginBatch();
 		}
 		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
-		glm::vec2 texInfo = glm::vec2(tex.arrayID, tex.layer);
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < m_TextureSlotIndex; i++)
+		{
+			if (m_TextureSlots[i] == texture)
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+		if (textureIndex == 0.0f)
+		{
+			textureIndex = (float)m_TextureSlotIndex;
+			m_TextureSlots[m_TextureSlotIndex] = texture;
+			m_TextureSlotIndex++;
+		}
 		for (size_t i = 0; i < 4; i++)
 		{
-			ThickLineBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+			ThickLineBufferPtr->position = *m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f);
 			ThickLineBufferPtr->color = color;
 			ThickLineBufferPtr->texcoord = renderable.vertices[i].texcoord;
-			ThickLineBufferPtr->texInfo = texInfo;
+			ThickLineBufferPtr->texIndex = textureIndex;
+			ThickLineBufferPtr->tilingFactor = renderable.vertices[i].tilingFactor;
 			ThickLineBufferPtr++;
 		}
 
@@ -447,10 +489,11 @@ namespace Dogo
 		constexpr glm::vec2 texInfo = glm::vec2(0.0f, 0.0f);
 		for (size_t i = 0; i < 4; i++)
 		{
-			ThickLineBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+			ThickLineBufferPtr->position = *m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f);
 			ThickLineBufferPtr->color = color;
 			ThickLineBufferPtr->texcoord = renderable.vertices[i].texcoord;
-			ThickLineBufferPtr->texInfo = texInfo;
+			ThickLineBufferPtr->texIndex = 0.0f;
+			ThickLineBufferPtr->tilingFactor = renderable.vertices[i].tilingFactor;
 			ThickLineBufferPtr++;
 		}
 
@@ -466,7 +509,7 @@ namespace Dogo
 		}
 		for (int i = 0; i < 2; i++)
 		{
-			Line2DBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f));
+			Line2DBufferPtr->position = *m_TransformBack * glm::vec4(renderable.vertices[i].position, 1.0f);
 			Line2DBufferPtr->color = renderable.vertices[i].color;
 			Line2DBufferPtr++;
 		}
@@ -481,28 +524,28 @@ namespace Dogo
 		QuadBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(QuadBufferPtr->position, 1.0f));
 		QuadBufferPtr->color = glm::vec4(1.0f,1.0f, 1.0f, 1.0f);
 		QuadBufferPtr->texcoord = { 0.0f, 0.0f };
-		QuadBufferPtr->texInfo = { 0.0f, 0.0f };
+		QuadBufferPtr->texIndex = 0.0f;
 		QuadBufferPtr++;
 
 		QuadBufferPtr->position = { width, 0.0f , 0.0f };
 		QuadBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(QuadBufferPtr->position, 1.0f));
 		QuadBufferPtr->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		QuadBufferPtr->texcoord = { 1.0f, 0.0f };
-		QuadBufferPtr->texInfo = { 0.0f, 0.0f };
+		QuadBufferPtr->texIndex = 0.0f;
 		QuadBufferPtr++;
 
 		QuadBufferPtr->position = { width, height , 0.0f };
 		QuadBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(QuadBufferPtr->position, 1.0f));
 		QuadBufferPtr->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		QuadBufferPtr->texcoord = { 1.0f, 1.0f };
-		QuadBufferPtr->texInfo = { 0.0f, 0.0f };
+		QuadBufferPtr->texIndex = 0.0f;
 		QuadBufferPtr++;
 
 		QuadBufferPtr->position = { 0.0f, height, 0.0f };
 		QuadBufferPtr->position = glm::vec3(*m_TransformBack * glm::vec4(QuadBufferPtr->position, 1.0f));
 		QuadBufferPtr->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		QuadBufferPtr->texcoord = { 0.0f, 1.0f };
-		QuadBufferPtr->texInfo = { 0.0f, 0.0f };
+		QuadBufferPtr->texIndex = 0.0f;
 		QuadBufferPtr++;
 		Quad_IndexCount += 6;
 		EndBatch();
@@ -515,32 +558,6 @@ namespace Dogo
 		glDrawElements(GL_TRIANGLES, Quad_IndexCount, GL_UNSIGNED_INT, nullptr);
 	}
 
-	void OpenGLRenderer2D::LoadTexture(const TextureAsset& texture)
-	{
-		UUID id = texture.GetUUID();
-
-		if (UUIDToTextureRef.find(id) != UUIDToTextureRef.end())
-			return;
-
-		for (size_t i = 0; i < m_TextureArrays.size(); i++)
-		{
-			if (texture.GetWidth() == m_TextureArrays[i]->GetWidth() &&
-				texture.GetHeight() == m_TextureArrays[i]->GetHeight())
-			{
-				uint32_t layer = m_TextureArrays[i]->AddTexture(texture.GetPath().string());
-				UUIDToTextureRef[id] = { uint32_t(i), layer };
-				return;
-			}
-		}
-
-		m_TextureArrays.emplace_back(
-			new OpenGLTextureArray(texture.GetWidth(), texture.GetHeight(), 
-			RendererConstants::MaxTextures)
-		);
-		m_TextureArrays.back()->AddWhiteLayer();
-		uint32_t layer = m_TextureArrays.back()->AddTexture(texture.GetPath().string());
-		UUIDToTextureRef[id] = { uint32_t(m_TextureArrays.size() - 1), layer };
-	}
 
 	void OpenGLRenderer2D::Flush()
 	{
@@ -554,11 +571,11 @@ namespace Dogo
 			glDrawArrays(GL_LINES, 0, Line2D_VertexCount);
 		}
 		m_SpriteShader->Bind();
-		m_SpriteShader->SetUniform1iv("textureArrays", &SamplerArrays[0], RendererConstants::MaxTextures);
+		m_SpriteShader->SetUniform1iv("u_TextureArray", &Samplers[0], RendererConstants::MaxTextures);
 		m_SpriteShader->SetUniformMatrix4f("view", m_View);
 		m_SpriteShader->SetUniformMatrix4f("projection", m_Proj);
-		for (int i = 0; i < m_TextureArrays.size(); ++i)
-			glBindTextureUnit(i, m_TextureArrays[i]->GetID());
+		for (int i = 0; i < m_TextureSlots.size(); ++i)
+			glBindTextureUnit(i, m_TextureSlots[i]);
 
 		if (ThickLine_IndexCount)
 		{
@@ -817,6 +834,8 @@ namespace Dogo
 
 		ThickLineBufferPtr = ThickLineBuffer;
 		ThickLine_IndexCount = 0;
+
+		m_TextureSlotIndex = 1;
 	}
 
 	void OpenGLRenderer2D::EndBatch()

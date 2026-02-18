@@ -8,6 +8,7 @@ namespace Dogo
     public:
         GameObject() = delete;
         GameObject(const glm::vec3& pos);
+        virtual ~GameObject();
 
         virtual inline DogoECS::Entity* GetEntity() const { return m_Entity; }
         virtual inline void Tick(double delta)  {}

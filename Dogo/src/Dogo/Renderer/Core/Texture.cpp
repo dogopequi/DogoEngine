@@ -5,7 +5,7 @@
 #include "Platform/OpenGL/OpenGLTexture2D.h"
 namespace Dogo
 {
-	Texture* Texture::Create(const std::string& filepath)
+	Texture* Texture::Create(std::string_view filepath)
     {
 		RenderAPI api = GraphicsContext::Get()->GetAPI();
 		switch (api)

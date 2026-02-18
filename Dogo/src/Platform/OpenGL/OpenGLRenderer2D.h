@@ -8,7 +8,7 @@
 #include "Dogo/Renderer/Core/Shader.h"
 #include "Dogo/Renderer/Core/Texture.h"
 #include "ft2build.h"
-#include "Platform/OpenGL/OpenGLTextureArray.h"
+#include "Platform/OpenGL/OpenGLTexture2D.h"
 #include "Dogo/Renderer/Core/Shader.h"
 #include "Dogo/Systems/AssetSystem.h"
 #include "Dogo/Utils/UUID.h"
@@ -44,12 +44,11 @@ namespace Dogo
 		void SetViewPos(const glm::vec3& pos)override;
 
 		void RenderFrameBuffer(uint32_t framebufferID, uint32_t width, uint32_t height) override;
-		void LoadTexture(const TextureAsset& texture) override;
 		void Submit(const Quad& renderable, const glm::vec4& color) override;
-		void Submit(const Quad& renderable, const TextureAsset& texture) override;
-		void Submit(const Triangle& renderable, const TextureAsset& texture) override;
-		void Submit(const Circle& renderable, const TextureAsset& texture) override;
-		void Submit(const ThickLine& renderable, const TextureAsset& texture) override;
+		void Submit(const Quad& renderable, uint32_t texture) override;
+		void Submit(const Triangle& renderable, uint32_t texture) override;
+		void Submit(const Circle& renderable, uint32_t texture) override;
+		void Submit(const ThickLine& renderable, uint32_t texture) override;
 		void Submit(const Triangle& renderable, const glm::vec4& color) override;
 		void Submit(const Circle& renderable, const glm::vec4& color) override;
 		void Submit(const ThickLine& renderable, const glm::vec4& color) override;
@@ -126,11 +125,10 @@ namespace Dogo
 		Shader* m_FBShader;
 		Shader* m_2DLineShader;
 
-		
-		std::vector<std::unique_ptr<OpenGLTextureArray>> m_TextureArrays;
-		// UUID of texture, layer
-		std::unordered_map<Dogo::UUID, TextureRef> UUIDToTextureRef;
-		std::vector<Batch> m_ArrayBatches;
+		GLuint m_WhiteTexture = 0;
+		const uint32_t c_WhiteTextureSlot = 0;
+		uint32_t m_TextureSlotIndex = 1;
+		std::array<uint32_t, RendererConstants::MaxTextures> m_TextureSlots;
 	};
 
 }

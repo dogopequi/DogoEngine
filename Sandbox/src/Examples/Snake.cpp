@@ -18,7 +18,7 @@ SnakeGame::SnakeGame(const std::string& name, std::shared_ptr<Dogo::DogoWindow> 
 	startY = std::round(startY / square) * square;
 	endX = std::round((startX + gridPixel) / square) * square;
 	endY = std::round((startY + gridPixel) / square) * square;
-	m_Camera = std::make_shared<Dogo::Camera>(Dogo::Camera::Orthographic(m_Window->GetWidth(), m_Window->GetHeight(), 0.1, 100.0f));
+	m_Camera = std::make_shared<Dogo::Camera>(Dogo::Camera::Orthographic(m_Window->GetWidth(), m_Window->GetHeight(), -1.0f, 1.0f));
 	m_Camera->SetRenderTargetSize(m_Window->GetWidth(), m_Window->GetHeight());
 	m_Renderer->SetViewMatrix(m_Camera->GetViewMatrix());
 	m_Renderer->SetProjectionMatrix(m_Camera->GetProjectionMatrix());
@@ -31,9 +31,7 @@ SnakeGame::SnakeGame(const std::string& name, std::shared_ptr<Dogo::DogoWindow> 
 	Dogo::ECS::AudioSourceComponent2D* apppleaudio = apple->AddComponent<Dogo::ECS::AudioSourceComponent2D>("../Dogo/resources/Audio/eat.wav", 10);
 	apppleaudio->Load();
 	Dogo::ECS::SpriteRendererComponent* p1 = apple->AddComponent<Dogo::ECS::SpriteRendererComponent>();
-	p1->sprite = Dogo::Sprite("apple", "../Dogo/resources/Textures/apple.png", (float)spriteSize, (float)spriteSize);
-	if (p1->sprite.GetTexture().has_value())
-		m_Renderer->LoadTexture(p1->sprite.GetTexture().value());
+	p1->sprite = Dogo::Sprite("apple", (float)spriteSize, (float)spriteSize, "../Dogo/resources/Textures/apple.png");
 
 	distCell = std::uniform_int_distribution<>(0, cells - 1);
 
@@ -53,33 +51,33 @@ SnakeGame::SnakeGame(const std::string& name, std::shared_ptr<Dogo::DogoWindow> 
 		applesToEat = 15;
 	}
 
-	head_down = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/head_down.png");
-	head_up = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/head_up.png");
-	head_left = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/head_left.png");
-	head_right = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/head_right.png");
-	tail_down = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/tail_down.png");
-	tail_up = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/tail_up.png");
-	tail_left = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/tail_left.png");
-	tail_right = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/tail_right.png");
-	body_vertical = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/body_vertical.png");
-	body_topright = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/body_topright.png");
-	body_topleft = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/body_topleft.png");
-	body_bottomright = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/body_bottomright.png");
-	body_bottomleft = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/body_bottomleft.png");
-	body_horizontal = Dogo::AssetSystem::LoadTexture("../Dogo/resources/Textures/body_horizontal.png");
+	head_down = Dogo::Texture::Create("../Dogo/resources/Textures/head_down.png");
+	head_up = Dogo::Texture::Create("../Dogo/resources/Textures/head_up.png");
+	head_left = Dogo::Texture::Create("../Dogo/resources/Textures/head_left.png");
+	head_right = Dogo::Texture::Create("../Dogo/resources/Textures/head_right.png");
+	tail_down = Dogo::Texture::Create("../Dogo/resources/Textures/tail_down.png");
+	tail_up = Dogo::Texture::Create("../Dogo/resources/Textures/tail_up.png");
+	tail_left = Dogo::Texture::Create("../Dogo/resources/Textures/tail_left.png");
+	tail_right = Dogo::Texture::Create("../Dogo/resources/Textures/tail_right.png");
+	body_vertical = Dogo::Texture::Create("../Dogo/resources/Textures/body_vertical.png");
+	body_topright = Dogo::Texture::Create("../Dogo/resources/Textures/body_topright.png");
+	body_topleft = Dogo::Texture::Create("../Dogo/resources/Textures/body_topleft.png");
+	body_bottomright = Dogo::Texture::Create("../Dogo/resources/Textures/body_bottomright.png");
+	body_bottomleft = Dogo::Texture::Create("../Dogo/resources/Textures/body_bottomleft.png");
+	body_horizontal = Dogo::Texture::Create("../Dogo/resources/Textures/body_horizontal.png");
 
 
 	glm::vec2 posapple = GetRandomPositionInBounds();
 	glm::vec2 possnake = {startX + ((endX - startX) / 2), startY + ((endY - startY) / 2)};
 	apple->GetComponent<Dogo::ECS::TransformComponent>()->SetPosition({ posapple.x, posapple.y, 0.0f });
 
-	snake.emplace_back(possnake, &head_up.value());
-	snake.emplace_back(glm::vec2(possnake.x, possnake.y - square), &body_vertical.value());
-	snake.emplace_back(glm::vec2(possnake.x, possnake.y - (square * 2)), &body_vertical.value());
-	snake.emplace_back(glm::vec2(possnake.x, possnake.y - (square * 3)), &body_vertical.value());
-	snake.emplace_back(glm::vec2(possnake.x, possnake.y - (square * 4)), &body_vertical.value());
-	snake.emplace_back(glm::vec2(possnake.x, possnake.y - (square * 5)), &body_vertical.value());
-	snake.emplace_back(glm::vec2(possnake.x, possnake.y - (square * 6)), &tail_down.value());
+	snake.emplace_back(possnake, head_up);
+	snake.emplace_back(glm::vec2(possnake.x, possnake.y - square), body_vertical);
+	snake.emplace_back(glm::vec2(possnake.x, possnake.y - (square * 2)), body_vertical);
+	snake.emplace_back(glm::vec2(possnake.x, possnake.y - (square * 3)), body_vertical);
+	snake.emplace_back(glm::vec2(possnake.x, possnake.y - (square * 4)), body_vertical);
+	snake.emplace_back(glm::vec2(possnake.x, possnake.y - (square * 5)), body_vertical);
+	snake.emplace_back(glm::vec2(possnake.x, possnake.y - (square * 6)), tail_down);
 	m_Scene->AddGameObject(apple);
 	m_Scene->Init();
 
@@ -98,6 +96,20 @@ void SnakeGame::OnAttach()
 
 void SnakeGame::OnDetach()
 {
+	delete head_down;
+	delete head_up;
+	delete head_left;
+	delete head_right;
+	delete tail_down;
+	delete tail_up;
+	delete tail_left;
+	delete tail_right;
+	delete body_vertical;
+	delete body_topright;
+	delete body_topleft;
+	delete body_bottomright;
+	delete body_bottomleft;
+	delete body_horizontal;
 }
 void SnakeGame::UpdateSnake()
 {
@@ -105,10 +117,10 @@ if (snake.empty()) return;
 if (snake.size() == 1)
 {
 	glm::vec2 headDir = dir;
-	if (headDir.x > 0) snake[0].second = &head_right.value();
-	else if (headDir.x < 0) snake[0].second = &head_left.value();
-	else if (headDir.y > 0) snake[0].second = &head_up.value();
-	else if (headDir.y < 0) snake[0].second = &head_down.value();
+	if (headDir.x > 0) snake[0].second = head_right;
+	else if (headDir.x < 0) snake[0].second = head_left;
+	else if (headDir.y > 0) snake[0].second = head_up;
+	else if (headDir.y < 0) snake[0].second = head_down;
 	return;
 }
 
@@ -117,10 +129,10 @@ if (snake.size() == 1)
 	const glm::vec2 second = snake[1].first;
 	glm::vec2 headDir = head - second;
 
-	if (headDir.x > 0) snake[0].second = &head_right.value();
-	else if (headDir.x < 0) snake[0].second = &head_left.value();
-	else if (headDir.y > 0) snake[0].second = &head_up.value();
-	else if (headDir.y < 0) snake[0].second = &head_down.value();
+	if (headDir.x > 0) snake[0].second = head_right;
+	else if (headDir.x < 0) snake[0].second = head_left;
+	else if (headDir.y > 0) snake[0].second = head_up;
+	else if (headDir.y < 0) snake[0].second = head_down;
 }
 
 
@@ -130,10 +142,10 @@ if (snake.size() == 1)
 	const glm::vec2 beforeTail = snake[last - 1].first;
 	glm::vec2 tailDir = beforeTail - tail;
 
-	if (tailDir.x > 0) snake[last].second = &tail_left.value();
-	else if (tailDir.x < 0) snake[last].second = &tail_right.value();
-	else if (tailDir.y > 0) snake[last].second = &tail_down.value();
-	else if (tailDir.y < 0) snake[last].second = &tail_up.value();
+	if (tailDir.x > 0) snake[last].second = tail_left;
+	else if (tailDir.x < 0) snake[last].second = tail_right;
+	else if (tailDir.y > 0) snake[last].second = tail_down;
+	else if (tailDir.y < 0) snake[last].second = tail_up;
 }
 
 for (size_t i = 1; i + 1 < snake.size(); ++i)
@@ -147,29 +159,31 @@ for (size_t i = 1; i + 1 < snake.size(); ++i)
 
 	if (dirPrev.x == 0 && dirNext.x == 0)
 	{
-		snake[i].second = &body_vertical.value();
+		snake[i].second = body_vertical;
 		continue;
 	}
 	if (dirPrev.y == 0 && dirNext.y == 0)
 	{
-		snake[i].second = &body_horizontal.value();
+		snake[i].second = body_horizontal;
 		continue;
 	}
 	if ((dirPrev.x < 0 && dirNext.y < 0) || (dirNext.x < 0 && dirPrev.y < 0))
-		snake[i].second = &body_bottomleft.value();
+		snake[i].second = body_bottomleft;
 	else if ((dirPrev.x < 0 && dirNext.y > 0) || (dirNext.x < 0 && dirPrev.y > 0))
-		snake[i].second = &body_topleft.value();
+		snake[i].second = body_topleft;
 	else if ((dirPrev.x > 0 && dirNext.y > 0) || (dirNext.x > 0 && dirPrev.y > 0))
-		snake[i].second = &body_topright.value();
+		snake[i].second = body_topright;
 	else if ((dirPrev.x > 0 && dirNext.y < 0) || (dirNext.x > 0 && dirPrev.y < 0))
-		snake[i].second = &body_bottomright.value();
+		snake[i].second = body_bottomright;
 	else
-		snake[i].second = &body_horizontal.value();
+		snake[i].second = body_horizontal;
 }
 
 }
 void SnakeGame::OnUpdate(double delta)
 {
+	int32_t scroll = Dogo::Input::GetScrollDelta();
+	m_Camera->ProcessMouseScroll(scroll);
 	if (won)
 	{
 		m_Renderer->SubmitText("You won", m_Window->GetWidth() / 2 - m_Window->GetWidth() / 3, m_Window->GetHeight() - m_Window->GetHeight() / 10, 1.0f);
@@ -210,7 +224,7 @@ void SnakeGame::OnUpdate(double delta)
 	{
 		if (CheckDeath(pos))
 			return;
-		snake.emplace_front(pos, &head_down.value());
+		snake.emplace_front(pos, head_down);
 
 		auto acomp = apple->GetComponent<Dogo::ECS::TransformComponent>();
 		glm::vec2 applepos = acomp->GetPosition();
@@ -273,10 +287,10 @@ void SnakeGame::OnUpdate(double delta)
 				glm::vec2 growPos = tail + dir;
 				if (CheckBounds(growPos))
 				{
-					if (dir.x > 0) snake.emplace_back(growPos, &tail_right.value());
-					else if (dir.x < 0) snake.emplace_back(growPos, &tail_left.value());
-					else if (dir.y > 0) snake.emplace_back(growPos, &tail_up.value());
-					else if (dir.y < 0) snake.emplace_back(growPos, &tail_down.value());
+					if (dir.x > 0) snake.emplace_back(growPos, tail_right);
+					else if (dir.x < 0) snake.emplace_back(growPos, tail_left);
+					else if (dir.y > 0) snake.emplace_back(growPos, tail_up);
+					else if (dir.y < 0) snake.emplace_back(growPos, tail_down);
 				}
 			}
 		}
@@ -286,8 +300,6 @@ void SnakeGame::OnUpdate(double delta)
 
 void SnakeGame::Submit()
 {
-	m_Renderer->SetViewMatrix(m_Camera->GetViewMatrix());
-	m_Renderer->SetProjectionMatrix(m_Camera->GetProjectionMatrix());
 	m_Renderer->Begin(m_Camera);
 	CreateGrid();
 
@@ -296,7 +308,7 @@ void SnakeGame::Submit()
 	{
 		g += 0.025f;
 		glm::clamp(g, 0.0f, 1.0f);
-		m_Renderer->Submit(Dogo::CreateQuad(p.first.x, p.first.y, square, square, 0, 0), *(p.second));
+		m_Renderer->Submit(Dogo::CreateQuad(p.first.x, p.first.y, square, square, 0, 0), p.second->GetRendererID());
 	}
 }
 

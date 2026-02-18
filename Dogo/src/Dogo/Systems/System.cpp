@@ -13,11 +13,19 @@ namespace Dogo
 		{
 			auto r = renderer.lock();
 			DogoECS::DG_ComponentManager* manager = ECS::GetComponentManager();
-			for (auto it = manager->AllActiveBegin<ECS::SpriteRendererComponent>();
-				it != manager->AllActiveEnd<ECS::SpriteRendererComponent>(); ++it)
+			auto begin = manager->AllActiveBegin<ECS::SpriteRendererComponent>();
+			auto end = manager->AllActiveEnd<ECS::SpriteRendererComponent>();
+			auto s = begin;
+			for (size_t i = 0; i < MaxLayers; i++)
 			{
-				ECS::TransformComponent* pos = ECS::GetComponent<ECS::TransformComponent>(it->GetEntityID());
-				it->Draw(r, pos->position.x, pos->position.y);
+				for (s = begin; s != end; ++s)
+				{
+					if (s->layer == i)
+					{
+						ECS::TransformComponent* pos = ECS::GetComponent<ECS::TransformComponent>(s->GetEntityID());
+						s->Draw(r, pos->position.x, pos->position.y);
+					}
+				}
 			}
 		}
 		else
@@ -40,7 +48,7 @@ namespace Dogo
 				m_Accumulator -= m_FixedStep;
 			}
 
-			auto entityPair = componentManager->GetEntitiesWith<ECS::RigidBodyComponent, ECS::TransformComponent>();
+			auto entityPair = componentManager->GetComponentGroup<ECS::RigidBodyComponent, ECS::TransformComponent>();
 			for (auto it = entityPair.first; it != entityPair.second; ++it)
 			{
 				auto [phys, pos] = *it;
@@ -80,7 +88,7 @@ namespace Dogo
 	void AudioSystem2D::Update()
 	{
 		DogoECS::DG_ComponentManager* componentManager = ECS::GetComponentManager();
-		auto entityPair = componentManager->GetEntitiesWith<ECS::AudioSourceComponent2D, ECS::TransformComponent>();
+		auto entityPair = componentManager->GetComponentGroup<ECS::AudioSourceComponent2D, ECS::TransformComponent>();
 		for (auto it = entityPair.first; it != entityPair.second; ++it)
 		{
 			auto [audio, pos] = *it;
@@ -91,7 +99,7 @@ namespace Dogo
 	void AudioSystem3D::Update()
 	{
 		DogoECS::DG_ComponentManager* componentManager = ECS::GetComponentManager();
-		auto entityPair = componentManager->GetEntitiesWith<ECS::AudioSourceComponent3D, ECS::TransformComponent>();
+		auto entityPair = componentManager->GetComponentGroup<ECS::AudioSourceComponent3D, ECS::TransformComponent>();
 		for (auto it = entityPair.first; it != entityPair.second; ++it)
 		{
 			auto [audio, pos] = *it;

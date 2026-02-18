@@ -49,20 +49,20 @@ private:
 	uint32_t applesToEat = { 5 };
 	glm::vec2 dir = glm::vec2(0.0f, square);
 
-	std::optional<Dogo::TextureAsset> head_down;
-	std::optional<Dogo::TextureAsset> head_up;
-	std::optional<Dogo::TextureAsset> head_left;
-	std::optional<Dogo::TextureAsset> head_right;
-	std::optional<Dogo::TextureAsset> tail_down;
-	std::optional<Dogo::TextureAsset> tail_up;
-	std::optional<Dogo::TextureAsset> tail_left;
-	std::optional<Dogo::TextureAsset> tail_right;
-	std::optional<Dogo::TextureAsset> body_vertical;
-	std::optional<Dogo::TextureAsset> body_topright;
-	std::optional<Dogo::TextureAsset> body_topleft;
-	std::optional<Dogo::TextureAsset> body_bottomright;
-	std::optional<Dogo::TextureAsset> body_bottomleft;
-	std::optional<Dogo::TextureAsset> body_horizontal;
+	Dogo::Texture* head_down;
+	Dogo::Texture* head_up;
+	Dogo::Texture* head_left;
+	Dogo::Texture* head_right;
+	Dogo::Texture* tail_down;
+	Dogo::Texture* tail_up;
+	Dogo::Texture* tail_left;
+	Dogo::Texture* tail_right;
+	Dogo::Texture* body_vertical;
+	Dogo::Texture* body_topright;
+	Dogo::Texture* body_topleft;
+	Dogo::Texture* body_bottomright;
+	Dogo::Texture* body_bottomleft;
+	Dogo::Texture* body_horizontal;
 
 
 
@@ -73,7 +73,7 @@ private:
 
 	std::uniform_int_distribution<> distCell;
 
-	std::deque<std::pair<glm::vec2, Dogo::TextureAsset*>> snake;
+	std::deque<std::pair<glm::vec2, Dogo::Texture*>> snake;
 	size_t snakesize = { 7 };
 
 	std::shared_ptr<Dogo::Camera> m_Camera;

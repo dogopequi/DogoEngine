@@ -8,10 +8,6 @@
 #endif
 namespace Dogo
 {
-	enum class TextureDimension
-	{
-		T_1D, T_2D, T_3D
-	};
 	enum class FilterMode
 	{
 		NEAREST, BILINEAR, TRILINEAR
@@ -30,9 +26,8 @@ namespace Dogo
 		virtual ~Texture() = default;
 		virtual void Bind(uint32_t slot) const = 0;
 
-		virtual void UpdateTexture(const std::string& filepath) = 0;
+		virtual void UpdateTexture(std::string_view filepath) = 0;
 		virtual uint32_t GetRendererID() const = 0;
-		virtual std::string GetFilePath() const = 0;
 
 
 		static GLenum WrapToOpenGL(Wrapping wrap)
@@ -66,8 +61,6 @@ namespace Dogo
 			}
 		}
 
-		static Texture* Create(const std::string& filepath);
-	protected:
-		virtual void Init(const std::string& filepath) = 0;
+		static Texture* Create(std::string_view filepath);
 	};
 }

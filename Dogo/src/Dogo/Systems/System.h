@@ -5,6 +5,7 @@ namespace Dogo
 
 	namespace SpriteRenderSystem2D
 	{
+		constexpr const size_t MaxLayers = 16;
 		void Update(const std::weak_ptr<Renderer2D>& renderer);
 	}
 

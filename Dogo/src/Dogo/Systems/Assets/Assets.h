@@ -20,11 +20,14 @@ namespace Dogo
 	{
 	public:
 		TextureAsset();
+		~TextureAsset();
 		bool LoadTextureFromDisk(std::string_view path);
 		inline uint32_t GetWidth() const { return m_Width; }
 		inline uint32_t GetHeight() const { return m_Height; }
+		inline bool IsValid() const { return m_IsValid; }
 	private:
 		uint32_t m_Width{ 0 };
 		uint32_t m_Height{ 0 };
+		bool m_IsValid = false;
 	};
 }

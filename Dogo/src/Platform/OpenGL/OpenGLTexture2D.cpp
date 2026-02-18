@@ -6,8 +6,7 @@
 
 namespace Dogo
 {
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& filepath)
-		: m_FilePath(filepath)
+	OpenGLTexture2D::OpenGLTexture2D(std::string_view filepath)
 	{
 		Init(filepath);
 	}
@@ -19,15 +18,15 @@ namespace Dogo
 	{
 		glBindTextureUnit(slot, m_RendererID);
 	}
-	void OpenGLTexture2D::UpdateTexture(const std::string& filepath)
+	void OpenGLTexture2D::UpdateTexture(std::string_view filepath)
 	{
 		Init(filepath);
 	}
-	void OpenGLTexture2D::Init(const std::string& filepath)
+	void OpenGLTexture2D::Init(std::string_view filepath)
 	{
 		stbi_set_flip_vertically_on_load(1);
 		int width, height, channels;
-		unsigned char* data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
+		unsigned char* data = stbi_load(filepath.data(), &width, &height, &channels, 0);
 		if (data)
 		{
 			GLenum internalFormat = 0, dataFormat = 0;

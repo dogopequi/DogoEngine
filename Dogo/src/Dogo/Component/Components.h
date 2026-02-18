@@ -28,15 +28,22 @@ namespace Dogo
         }
 
         template<typename T>
+        inline T* GetComponent(uint64_t id)
+        {
+            return GetComponentManager()->GetComponent<T>(id);
+        }
+        template<typename T>
         inline T* GetComponent(DogoECS::Entity* entity)
         {
             return GetComponentManager()->GetComponent<T>(entity->GetID());
         }
-
-        template<typename T>
-        inline T* GetComponent(uint32_t id)
+        inline boolean RemoveComponents(uint64_t id)
         {
-            return GetComponentManager()->GetComponent<T>(id);
+            return GetComponentManager()->RemoveComponents(id);
+        }
+        inline boolean RemoveComponents(DogoECS::Entity* entity)
+        {
+            return GetComponentManager()->RemoveComponents(entity);
         }
 
         template<typename T>

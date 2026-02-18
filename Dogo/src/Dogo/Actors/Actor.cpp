@@ -8,6 +8,10 @@ namespace Dogo
 		m_Entity = ECS::CreateEntity();
 		auto Pos = AddComponent<ECS::TransformComponent>(pos);
 	}
+	GameObject::~GameObject()
+	{
+		Dogo::ECS::RemoveComponents(m_Entity);
+	}
 	Actor2D::Actor2D(const glm::vec3& pos) : GameObject(pos)
 	{
 	}

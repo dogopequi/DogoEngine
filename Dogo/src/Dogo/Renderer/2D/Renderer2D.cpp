@@ -28,16 +28,15 @@ namespace Dogo
 		return nullptr;
 	}
 
-	Circle GenerateCircle(glm::vec2 center, float radius)
+	Circle GenerateCircle(glm::vec2 center, float radius, float tiling)
 	{
 		Circle c;
 		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
-		constexpr glm::vec2 texinfo = glm::vec2(0.0f, 0.0f);
 		c.vertices[0] = {
 			glm::vec3(center, 0.0f),
 			color,
 			glm::vec2(0.5f, 0.5f),
-			texinfo
+			0.0f, tiling
 		};
 
 		for (int i = 0; i <= RendererConstants::Circle_Segments; ++i)
@@ -54,16 +53,15 @@ namespace Dogo
 				glm::vec3(x, y, 0.0f),
 				color,
 				glm::vec2(u, v),
-				texinfo
+				0.0f, tiling
 			};
 		}
 		return c;
 	
 	}
-	Quad CreateQuad(float x, float y, float width, float height, float pivotX, float pivotY, const UV& uv)
+	Quad CreateQuad(float x, float y, float width, float height, float pivotX, float pivotY, const UV& uv, float tiling)
 	{
 		Quad quad;
-		constexpr glm::vec2 texinfo = glm::vec2(0.0f, 0.0f);
 		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
 		constexpr glm::vec2 texCoords[4] = { {0.0f, 0.0f}, {1.0f, 0.0f} , {1.0f, 1.0f} , {0.0f, 1.0f} };
 		float left = x - pivotX;
@@ -78,9 +76,10 @@ namespace Dogo
 
 		for (int i = 0; i < 4; ++i)
 		{
-			quad.vertices[i].texInfo = texinfo;
 			quad.vertices[i].color = color;
 			quad.vertices[i].texcoord = texCoords[i];
+			quad.vertices[i].texIndex = 0.0f;
+			quad.vertices[i].tilingFactor = tiling;
 		}
 
 		return quad;
@@ -101,10 +100,9 @@ namespace Dogo
 		return line;
 	}
 
-	Triangle CreateTriangle(float origin, float scale)
+	Triangle CreateTriangle(float origin, float scale, float tiling)
 	{
 		Triangle triangle;
-		constexpr glm::vec2 texinfo = glm::vec2(0.0f, 0.0f);
 		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
 		float height = scale * glm::sqrt(3.0f) / 2.0f;
 
@@ -116,17 +114,16 @@ namespace Dogo
 		glm::vec2 uv1 = { 1.0f, 1.0f };
 		glm::vec2 uv2 = { 0.5f, 0.0f };
 
-		triangle.vertices[0] = { p0, color, uv0, texinfo };
-		triangle.vertices[1] = { p1, color, uv1, texinfo };
-		triangle.vertices[2] = { p2, color, uv2, texinfo };
+		triangle.vertices[0] = { p0, color, uv0, 0.0f, tiling };
+		triangle.vertices[1] = { p1, color, uv1, 0.0f, tiling };
+		triangle.vertices[2] = { p2, color, uv2, 0.0f, tiling };
 		return triangle;
 	}
 
 
-	ThickLine CreateThickLine(const glm::vec2& p0, const glm::vec2& p1, float thickness)
+	ThickLine CreateThickLine(const glm::vec2& p0, const glm::vec2& p1, float thickness, float tiling)
 	{
 		ThickLine quad;
-		constexpr glm::vec2 texinfo = glm::vec2(0.0f, 0.0f);
 		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
 		glm::vec2 dir = glm::normalize(p1 - p0);
 		glm::vec2 normal = glm::vec2(-dir.y, dir.x);
@@ -140,7 +137,8 @@ namespace Dogo
 		for (int i = 0; i < 4; i++) {
 			quad.vertices[i].color = color;
 			quad.vertices[i].texcoord = glm::vec2(0.0f, 1.0f);
-			quad.vertices[i].texInfo = texinfo;
+			quad.vertices[i].texIndex = 0.0f;
+			quad.vertices[i].tilingFactor = tiling;
 		}
 
 		return quad;

@@ -19,20 +19,9 @@ namespace Dogo
 		static constexpr const size_t Max_Characters = 100;
 		static constexpr const size_t MaxTextures = 16;
 	}
-	struct TextureRef {
-		uint32_t arrayID = 0;
-		uint32_t layer = 0;
-		TextureRef()
-			: arrayID(0), layer(0) {
-		}
-		TextureRef(uint32_t arrayID, uint32_t layer)
-			: arrayID(arrayID), layer(layer) {
-		}
-	};
 	struct Batch {
 		uint32_t startIndex;
 		uint32_t indexCount;
-		uint32_t arrayID;
 	};
 	struct Rect
 	{
@@ -54,7 +43,8 @@ namespace Dogo
 		glm::vec3 position;
 		glm::vec4 color;
 		glm::vec2 texcoord;
-		glm::vec2 texInfo; // array index, layer index
+		float texIndex;
+		float tilingFactor;
 	};
 
 	struct LineVertex {
@@ -111,12 +101,11 @@ namespace Dogo
 
 		virtual void SetViewPos(const glm::vec3& pos) = 0;
 
-		virtual void LoadTexture(const TextureAsset& texture) = 0;
 		virtual void Submit(const Quad& renderable, const glm::vec4& color) = 0;
-		virtual void Submit(const Quad& renderable, const TextureAsset& texture) = 0;
-		virtual void Submit(const Triangle& renderable, const TextureAsset& texture) = 0;
-		virtual void Submit(const Circle& renderable, const TextureAsset& texture) = 0;
-		virtual void Submit(const ThickLine& renderable, const TextureAsset& texture) = 0;
+		virtual void Submit(const Quad& renderable, uint32_t texture) = 0;
+		virtual void Submit(const Triangle& renderable, uint32_t texture) = 0;
+		virtual void Submit(const Circle& renderable, uint32_t texture) = 0;
+		virtual void Submit(const ThickLine& renderable, uint32_t texture) = 0;
 		virtual void Submit(const Triangle& renderable, const glm::vec4& color) = 0;
 		virtual void Submit(const Circle& renderable, const glm::vec4& color) = 0;
 		virtual void Submit(const ThickLine& renderable, const glm::vec4& color) = 0;
@@ -166,12 +155,12 @@ namespace Dogo
 		static constexpr const size_t Line2D_MaxCount = 1000;
 		static constexpr const size_t Line2D_MaxVertexCount = Line2D_MaxCount * 2;
 
-		int32_t SamplerArrays[RendererConstants::MaxTextures] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
+		int32_t Samplers[RendererConstants::MaxTextures] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 };
 	};
 
-	Circle GenerateCircle(glm::vec2 center, float radius);
-	Quad CreateQuad(float x, float y, float width, float height, float pivotX, float pivotY, const UV& uv = UV());
+	Circle GenerateCircle(glm::vec2 center, float radius, float tiling = 1.0f);
+	Quad CreateQuad(float x, float y, float width, float height, float pivotX, float pivotY, const UV& uv = UV(), float tiling = 1.0f);
 	Line2D CreateLine2D(const glm::vec2& start, const glm::vec2& end, const glm::vec4& color);
-	Triangle CreateTriangle(float origin, float scale);
-	ThickLine CreateThickLine(const glm::vec2& p0, const glm::vec2& p1, float thickness);
+	Triangle CreateTriangle(float origin, float scale, float tiling = 1.0f);
+	ThickLine CreateThickLine(const glm::vec2& p0, const glm::vec2& p1, float thickness, float tiling = 1.0f);
 }

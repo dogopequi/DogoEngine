@@ -53,7 +53,7 @@ namespace Dogo
         inline glm::vec3 GetRight() const { return m_Right; }
         inline glm::vec3 GetUp() const { return m_Up; }
         inline float GetZoom() const { return m_Zoom; }
-
+        void ProcessMouseScroll(double offset);
         inline void BindTarget() const { m_RenderTarget->Bind(); }
         inline void UnbindTarget() const { m_RenderTarget->Unbind(); }
         inline void SetRenderTargetSize(uint32_t width, uint32_t height) { m_RenderTarget->Resize(width, height); }
@@ -92,11 +92,14 @@ namespace Dogo
         float m_Aspect{ 16.0f / 9.0f };
         float m_NearPlane{ 0.1f };
         float m_FarPlane{ 1000.0f };
-        float m_OrthoWidth{ 10.0f };
-        float m_OrthoHeight{ 10.0f };
+        float m_Width{ 10.0f };
+        float m_Height{ 10.0f };
         float m_MoveSpeed{ 5.0f };
         float m_MouseSensitivity{ 0.1f };
         float m_Zoom{ 1.0f };
+        const float m_ZoomSpeed{ 1.05f };
+        const float m_ZoomMax{ 10.0f };
+        const float m_ZoomMin{ 0.1f };
 
         std::unique_ptr<Framebuffer> m_RenderTarget;
     };

@@ -15,21 +15,19 @@ namespace Dogo
 	class OpenGLTexture2D: public Texture
 	{
 		public:
-			OpenGLTexture2D(const std::string& filepath);
+			OpenGLTexture2D(std::string_view filepath);
 			~OpenGLTexture2D();
 
 			void Bind(uint32_t slot) const override;
 
-			void UpdateTexture(const std::string& filepath) override;
+			void UpdateTexture(std::string_view filepath) override;
 
 			inline uint32_t GetRendererID() const override { return m_RendererID; }
-			inline std::string GetFilePath() const override { return m_FilePath; }
 
 		protected:
-			void Init(const std::string& filepath) override;
+			void Init(std::string_view filepath);
 		private:
 			uint32_t m_RendererID{};
-			std::string m_FilePath;
 	};
 }
 

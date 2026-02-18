@@ -32,7 +32,7 @@ namespace Dogo
 		m_Window = std::make_shared<Dogo::DogoWindow>(1280, 720, "Dogo Window");
 		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Application::OnEvent));
 		m_Renderer = std::shared_ptr<Renderer2D>(Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl"));
-		m_Camera = std::make_unique<Dogo::Camera>(Dogo::Camera::Orthographic(m_Window->GetWidth(), m_Window->GetHeight(), 0.1, 100.0f));
+		m_Camera = std::make_unique<Dogo::Camera>(Dogo::Camera::Orthographic(m_Window->GetWidth(), m_Window->GetHeight(), -1.0f, 1.0f));
 		m_Renderer->SetViewMatrix(m_Camera->GetViewMatrix());
 		m_Renderer->SetProjectionMatrix(m_Camera->GetProjectionMatrix());
 		m_Renderer->SetModelMatrix(glm::mat4(1.0f));
@@ -97,7 +97,6 @@ namespace Dogo
 		for (Dogo::Layer2D* layer : m_LayerStack)
 		{
 			layer->Update(dt);
-
 			m_Window->Viewport(0, 0, m_Window->GetWidth(), m_Window->GetHeight());
 			m_Renderer->SetViewMatrix(m_Camera->GetViewMatrix());
 			m_Renderer->SetProjectionMatrix(m_Camera->GetProjectionMatrix());

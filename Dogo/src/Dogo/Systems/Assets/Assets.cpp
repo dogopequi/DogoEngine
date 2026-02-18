@@ -10,6 +10,9 @@ namespace Dogo
 	TextureAsset::TextureAsset() : Asset()
 	{
 	}
+	TextureAsset::~TextureAsset()
+	{
+	}
 	bool TextureAsset::LoadTextureFromDisk(std::string_view path)
 	{
 		std::filesystem::path fs{ path };
@@ -23,11 +26,13 @@ namespace Dogo
 			{
 				m_Width = width;
 				m_Height = height;
+				m_IsValid = true;
 				stbi_image_free(data);
 				return true;
 			}
 			else
 			{
+				m_IsValid = false;
 				stbi_image_free(data);
 				return false;
 			}

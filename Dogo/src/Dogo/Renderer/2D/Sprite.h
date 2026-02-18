@@ -1,5 +1,5 @@
 #pragma once
-#include "Dogo/Systems/AssetSystem.h"
+#include "Dogo/Renderer/Core/Texture.h"
 #include "UV.h"
 namespace Dogo
 {
@@ -17,14 +17,15 @@ namespace Dogo
 		Sprite(const Sprite&) = default;
 		Sprite& operator=(const Sprite&) = default;
 
-		Sprite(const std::string& name, std::string_view filepath, float width, float height, Pivot pivot = Pivot::BottomLeft, const glm::vec4& color = glm::vec4(1.0f), const UV& uv = UV());
+		Sprite(const std::string& name, float width, float height, std::string_view filepath = "", Pivot pivot = Pivot::BottomLeft, const glm::vec4& color = glm::vec4(1.0f), const UV& uv = UV());
 		~Sprite() = default;
 
 		void ChangeTexture(std::string_view filepath);
 		void ChangePivotPoint(float x, float y);
 		void SetDimensions(float width, float height);
 
-		inline std::optional<TextureAsset> GetTexture() const { return m_Texture; }
+		inline uint32_t GetTextureID() const { if (m_Texture.has_value()) { return m_Texture.value()->GetRendererID(); } else { return 0; } }
+		inline bool IsUsingTexture() const { return m_Texture.has_value(); }
 		inline std::string_view GetName() const{ return m_Name; }
 		inline void SetName(const std::string& name) { m_Name = name; }
 		inline float GetWidth() const { return m_Width; }
@@ -38,7 +39,7 @@ namespace Dogo
 
 		std::string m_Name;
 		glm::vec4 m_Color;
-		std::optional<TextureAsset> m_Texture;
+		std::optional<std::unique_ptr<Texture>> m_Texture;
 		Pivot m_Pivot;
 		float m_Width, m_Height;
 		float m_PivotX, m_PivotY;

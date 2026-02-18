@@ -19,7 +19,7 @@ namespace Dogo
 				continue;
 			auto camera = cam.lock();
 			camera->SetRenderTargetSize(m_Window->GetWidth(), m_Window->GetHeight());
-			camera->SetOrthographic(m_Window->GetWidth(), m_Window->GetHeight(), 0.1, 100.0f);
+			camera->SetOrthographic(m_Window->GetWidth(), m_Window->GetHeight(), -1.0f, 1.0f);
 		}
 		m_FrameBuffer->Resize(m_Window->GetWidth(), m_Window->GetHeight());
 		OnResize();
@@ -33,8 +33,6 @@ namespace Dogo
 			if (cam.expired())
 				continue;
 			auto camera = cam.lock();
-			m_Renderer->SetViewMatrix(camera->GetViewMatrix());
-			m_Renderer->SetProjectionMatrix(camera->GetProjectionMatrix());
 			camera->BindTarget();
 			m_Window->ClearBuffers();
 			m_Renderer->Begin(camera);
@@ -64,9 +62,9 @@ namespace Dogo
 		auto mainCam = m_Scene->GetMainCamera().lock();
 		if (mainCam)
 		{
-			m_Renderer->SetViewMatrix(mainCam->GetViewMatrix());
-			m_Renderer->SetProjectionMatrix(mainCam->GetProjectionMatrix());
+			m_Renderer->Begin(mainCam);
 			m_FrameBuffer->Bind();
+			m_Window->ClearBuffers();
 			uint32_t texID = mainCam->GetRenderTargetID();
 			m_Renderer->RenderFrameBuffer(texID, m_Window->GetWidth(), m_Window->GetHeight());
 			m_Renderer->RenderText();
