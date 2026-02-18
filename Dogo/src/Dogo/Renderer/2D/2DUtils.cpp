@@ -1,32 +1,9 @@
 #include "dgpch.h"
-#include "Renderer2D.h"
-#include "Platform/OpenGL/OpenGLRenderer2D.h"
-#include "Graphics/GraphicsContext.h"
+#include "2DUtils.h"
+#include "Platform/OpenGL/GraphicsContext.h"
 #include "Dogo/Utils/Logger.h"
 namespace Dogo
 {
-	Renderer2D* Renderer2D::Create(const std::wstring& vertex, const std::wstring& pixel)
-	{
-		RenderAPI api = GraphicsContext::GetAPI();
-		{
-			switch (api)
-			{
-			case Dogo::RenderAPI::API_NONE:
-				DG_FATAL("No API specified");
-				break;
-			case Dogo::RenderAPI::OpenGL:
-				return new OpenGLRenderer2D(vertex, pixel);
-				break;
-			case Dogo::RenderAPI::VULKAN:
-				DG_FATAL("Not Implemented");
-				break;
-			default:
-				DG_FATAL("No API specified");
-				break;
-			}
-		}
-		return nullptr;
-	}
 
 	Circle GenerateCircle(glm::vec2 center, float radius, float tiling)
 	{
@@ -142,29 +119,6 @@ namespace Dogo
 		}
 
 		return quad;
-	}
-
-	void Renderer2D::Push(const glm::mat4& mat, boolean override)
-	{
-		if(override)
-			m_TransformStack.push_back(mat);
-		else
-			m_TransformStack.push_back(mat * m_TransformStack.back());
-		m_TransformBack = &m_TransformStack.back();
-	}
-
-	void Renderer2D::Pop()
-	{
-		if (m_TransformStack.size() > 1)
-		{
-			m_TransformStack.pop_back();
-		}
-		m_TransformBack = &m_TransformStack.back();
-	}
-
-	glm::mat4 Renderer2D::GetTransformBack()
-	{
-		return *m_TransformBack;
 	}
 
 }

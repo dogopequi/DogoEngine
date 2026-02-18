@@ -1,9 +1,9 @@
 #include "dgpch.h"
-#include "OpenGLFrameBuffer.h"
+#include "Framebuffer.h"
 #include "Dogo/Utils/Logger.h"
 namespace Dogo
 {
-	OpenGLFrameBuffer::OpenGLFrameBuffer(uint32_t width, uint32_t height)
+	Framebuffer::Framebuffer(uint32_t width, uint32_t height)
 		: m_Width(width), m_Height(height)
 	{
 		glGenFramebuffers(1, &m_FBO);
@@ -27,22 +27,22 @@ namespace Dogo
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-	OpenGLFrameBuffer::~OpenGLFrameBuffer()
+	Framebuffer::~Framebuffer()
 	{
 		glDeleteFramebuffers(1, &m_FBO);
 		glDeleteTextures(1, &m_TCB);
 		glDeleteRenderbuffers(1, &m_RBO);
 	}
-	void OpenGLFrameBuffer::Bind()
+	void Framebuffer::Bind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 		glViewport(0, 0, m_Width, m_Height);
 	}
-	void OpenGLFrameBuffer::Unbind()
+	void Framebuffer::Unbind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
-    void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
+    void Framebuffer::Resize(uint32_t width, uint32_t height)
     {
         if (m_Width == width && m_Height == height)
             return;
@@ -88,7 +88,7 @@ namespace Dogo
     }
 
 
-	uint32_t OpenGLFrameBuffer::GetColorAttachmentID() const
+	uint32_t Framebuffer::GetColorAttachmentID() const
 	{
 		return m_TCB;
 	}

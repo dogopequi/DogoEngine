@@ -1,12 +1,14 @@
 #include "dgpch.h"
-#include "OpenGLRenderer2D.h"
+#include "Renderer2D.h"
+#include "Dogo/Renderer/2D/2DUtils.h"
 #include <glm/gtx/string_cast.hpp>
 namespace Dogo
 {
 
-	OpenGLRenderer2D::OpenGLRenderer2D(const std::wstring& vertex, const std::wstring& pixel) : Renderer2D()
+	Renderer2D::Renderer2D(const std::filesystem::path& vertex, const std::filesystem::path& pixel)
 	{
-
+		m_TransformStack.push_back(glm::mat4(1.0f));
+		m_TransformBack = &m_TransformStack.back();
 		QuadBuffer = new Vertex[Quad_MaxVertexCount];
 		QuadBufferPtr = QuadBuffer;
 
@@ -185,13 +187,14 @@ namespace Dogo
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, color));
 		
-		m_2DLineShader = Shader::Create(L"../Dogo/resources/Shaders/Line2Dvertex.glsl",
-			L"../Dogo/resources/Shaders/Line2Dpixel.glsl");
-		m_SpriteShader = Shader::Create(vertex, pixel);
-		m_FBShader = Shader::Create(L"../Dogo/resources/Shaders/FBvertex.glsl",
-			L"../Dogo/resources/Shaders/FBpixel.glsl");
-		m_TextShader = Shader::Create(L"../Dogo/resources/Shaders/freetypevertex.glsl",
-			L"../Dogo/resources/Shaders/freetypepixel.glsl");
+
+		m_2DLineShader = new GraphicsPipeline(std::filesystem::path("../Dogo/resources/Shaders/Line2Dvertex.glsl"),
+			std::filesystem::path("../Dogo/resources/Shaders/Line2Dpixel.glsl"));
+		m_SpriteShader = new GraphicsPipeline(vertex, pixel);
+		m_FBShader = new GraphicsPipeline(std::filesystem::path("../Dogo/resources/Shaders/FBvertex.glsl"),
+			std::filesystem::path("../Dogo/resources/Shaders/FBpixel.glsl"));
+		m_TextShader = new GraphicsPipeline(std::filesystem::path("../Dogo/resources/Shaders/freetypevertex.glsl"),
+			std::filesystem::path("../Dogo/resources/Shaders/freetypepixel.glsl"));
 
 		glGenVertexArrays(1, &m_FontVertexArray);
 		glGenBuffers(1, &m_FontVertexBuffer);
@@ -224,7 +227,7 @@ namespace Dogo
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	OpenGLRenderer2D::~OpenGLRenderer2D()
+	Renderer2D::~Renderer2D()
 	{
 		glDeleteVertexArrays(1, &m_QuadsVertexArray);
 		glDeleteBuffers(1, &m_QuadsVertexBuffer);
@@ -233,44 +236,44 @@ namespace Dogo
 		delete[] QuadBuffer;
 	}
 
-	void OpenGLRenderer2D::SetViewMatrix(const glm::mat4& view)
+	void Renderer2D::SetViewMatrix(const glm::mat4& view)
 	{
 		m_View = view;
 	}
-	void OpenGLRenderer2D::SetProjectionMatrix(const glm::mat4& proj)
+	void Renderer2D::SetProjectionMatrix(const glm::mat4& proj)
 	{
 		m_Proj = proj;
 	}
-	void OpenGLRenderer2D::SetModelMatrix(const glm::mat4& model)
+	void Renderer2D::SetModelMatrix(const glm::mat4& model)
 	{
 		m_Model = model;
 	}
-	void OpenGLRenderer2D::SetTransformMatrix(const glm::mat4& model)
+	void Renderer2D::SetTransformMatrix(const glm::mat4& model)
 	{
 		m_Transform = model;
 	}
-	glm::mat4 OpenGLRenderer2D::GetViewMatrix()
+	glm::mat4 Renderer2D::GetViewMatrix()
 	{
 		return m_View;
 	}
-	glm::mat4 OpenGLRenderer2D::GetProjectionMatrix()
+	glm::mat4 Renderer2D::GetProjectionMatrix()
 	{
 		return m_Proj;
 	}
-	glm::mat4 OpenGLRenderer2D::GetModelMatrix()
+	glm::mat4 Renderer2D::GetModelMatrix()
 	{
 		return m_Model;
 	}
-	glm::mat4 OpenGLRenderer2D::GetTransformMatrix()
+	glm::mat4 Renderer2D::GetTransformMatrix()
 	{
 		return m_Transform;
 	}
-	void OpenGLRenderer2D::SetViewPos(const glm::vec3& pos)
+	void Renderer2D::SetViewPos(const glm::vec3& pos)
 	{
 		m_ViewPos = pos;
 	}
 
-	void OpenGLRenderer2D::Submit(const Quad& renderable, uint32_t texture)
+	void Renderer2D::Submit(const Quad& renderable, uint32_t texture)
 	{
 		if (Quad_IndexCount >= Quad_MaxIndexCount || (m_TextureSlotIndex > RendererConstants::MaxTextures - 1))
 		{
@@ -307,7 +310,7 @@ namespace Dogo
 
 		Quad_IndexCount += 6;
 	}
-	void OpenGLRenderer2D::Submit(const Quad& renderable, const glm::vec4& color)
+	void Renderer2D::Submit(const Quad& renderable, const glm::vec4& color)
 	{
 		if (Quad_IndexCount >= Quad_MaxIndexCount)
 		{
@@ -328,7 +331,7 @@ namespace Dogo
 		Quad_IndexCount += 6;
 	}
 
-	void OpenGLRenderer2D::Submit(const Triangle& renderable, uint32_t texture)
+	void Renderer2D::Submit(const Triangle& renderable, uint32_t texture)
 	{
 		if (Triangle_IndexCount >= Triangle_MaxIndexCount || (m_TextureSlotIndex > RendererConstants::MaxTextures - 1))
 		{
@@ -364,7 +367,7 @@ namespace Dogo
 
 		Triangle_IndexCount += 3;
 	}
-	void OpenGLRenderer2D::Submit(const Triangle& renderable, const glm::vec4& color)
+	void Renderer2D::Submit(const Triangle& renderable, const glm::vec4& color)
 	{
 		if (Triangle_IndexCount >= Triangle_MaxIndexCount)
 		{
@@ -385,7 +388,7 @@ namespace Dogo
 
 		Triangle_IndexCount += 3;
 	}
-	void OpenGLRenderer2D::Submit(const Circle& renderable, uint32_t texture)
+	void Renderer2D::Submit(const Circle& renderable, uint32_t texture)
 	{
 		if (Circle_IndexCount >= Circle_MaxIndexCount || (m_TextureSlotIndex > RendererConstants::MaxTextures - 1))
 		{
@@ -421,7 +424,7 @@ namespace Dogo
 
 		Circle_IndexCount += RendererConstants::Circle_Indices;
 	}
-	void OpenGLRenderer2D::Submit(const Circle& renderable, const glm::vec4& color)
+	void Renderer2D::Submit(const Circle& renderable, const glm::vec4& color)
 	{
 		if (Circle_IndexCount >= Circle_MaxIndexCount)
 		{
@@ -442,7 +445,7 @@ namespace Dogo
 
 		Circle_IndexCount += RendererConstants::Circle_Indices;
 	}
-	void OpenGLRenderer2D::Submit(const ThickLine& renderable, uint32_t texture)
+	void Renderer2D::Submit(const ThickLine& renderable, uint32_t texture)
 	{
 		if (ThickLine_IndexCount >= ThickLine_MaxIndexCount || (m_TextureSlotIndex > RendererConstants::MaxTextures - 1))
 		{
@@ -478,7 +481,7 @@ namespace Dogo
 
 		ThickLine_IndexCount += 6;
 	}
-	void OpenGLRenderer2D::Submit(const ThickLine& renderable, const glm::vec4& color)
+	void Renderer2D::Submit(const ThickLine& renderable, const glm::vec4& color)
 	{
 		if (ThickLine_IndexCount >= ThickLine_MaxIndexCount)
 		{
@@ -499,7 +502,7 @@ namespace Dogo
 
 		ThickLine_IndexCount += 6;
 	}
-	void OpenGLRenderer2D::Submit(const Line2D& renderable)
+	void Renderer2D::Submit(const Line2D& renderable)
 	{
 		if (Line2D_VertexCount >= Line2D_MaxVertexCount)
 		{
@@ -516,7 +519,7 @@ namespace Dogo
 		Line2D_VertexCount +=2;
 	}
 
-	void OpenGLRenderer2D::RenderFrameBuffer(uint32_t framebufferID, uint32_t width, uint32_t height)
+	void Renderer2D::RenderFrameBuffer(uint32_t framebufferID, uint32_t width, uint32_t height)
 	{
 
 		BeginBatch();
@@ -551,29 +554,29 @@ namespace Dogo
 		EndBatch();
 		m_FBShader->Bind();
 		glBindTextureUnit(0, framebufferID);
-		m_FBShader->SetUniform1i("texture2D", 0);
-		m_FBShader->SetUniformMatrix4f("view", m_View);
-		m_FBShader->SetUniformMatrix4f("projection", m_Proj);
+		Shader::SetUniform1i(m_FBShader->GetID(), "texture2D", 0);
+		Shader::SetUniformMatrix4f(m_FBShader->GetID(), "view", m_View);
+		Shader::SetUniformMatrix4f(m_FBShader->GetID(), "projection", m_Proj);
 		glBindVertexArray(m_QuadsVertexArray);
 		glDrawElements(GL_TRIANGLES, Quad_IndexCount, GL_UNSIGNED_INT, nullptr);
 	}
 
 
-	void OpenGLRenderer2D::Flush()
+	void Renderer2D::Flush()
 	{
 		if (Line2D_VertexCount)
 		{
 			m_2DLineShader->Bind();
-			m_2DLineShader->SetUniformMatrix4f("view", m_View);
-			m_2DLineShader->SetUniformMatrix4f("projection", m_Proj);
+			Shader::SetUniformMatrix4f(m_2DLineShader->GetID(), "view", m_View);
+			Shader::SetUniformMatrix4f(m_2DLineShader->GetID(), "projection", m_Proj);
 			glBindVertexArray(m_LinesVertexArray);
 			glBindBuffer(GL_ARRAY_BUFFER, m_LinesVertexBuffer);
 			glDrawArrays(GL_LINES, 0, Line2D_VertexCount);
 		}
 		m_SpriteShader->Bind();
-		m_SpriteShader->SetUniform1iv("u_TextureArray", &Samplers[0], RendererConstants::MaxTextures);
-		m_SpriteShader->SetUniformMatrix4f("view", m_View);
-		m_SpriteShader->SetUniformMatrix4f("projection", m_Proj);
+		Shader::SetUniform1iv(m_SpriteShader->GetID(), "u_TextureArray", &Samplers[0], RendererConstants::MaxTextures);
+		Shader::SetUniformMatrix4f(m_SpriteShader->GetID(), "view", m_View);
+		Shader::SetUniformMatrix4f(m_SpriteShader->GetID(), "projection", m_Proj);
 		for (int i = 0; i < m_TextureSlots.size(); ++i)
 			glBindTextureUnit(i, m_TextureSlots[i]);
 
@@ -603,7 +606,7 @@ namespace Dogo
 		}
 
 	}
-	void OpenGLRenderer2D::Begin(const std::weak_ptr<Camera>& cam)
+	void Renderer2D::Begin(const std::weak_ptr<Camera>& cam)
 	{
 		if (!cam.expired())
 		{
@@ -611,14 +614,14 @@ namespace Dogo
 			m_Proj = cam.lock()->GetProjectionMatrix();
 		}
 	}
-	float OpenGLRenderer2D::GetFontHeight(float scale)
+	float Renderer2D::GetFontHeight(float scale)
 	{
 		auto it = Characters.find('H');
 		if (it != Characters.end())
 			return it->second.size.y * scale;
 		return 0.0f;
 	}
-	float OpenGLRenderer2D::ComputeTextWidth(const std::string& text, float scale)
+	float Renderer2D::ComputeTextWidth(const std::string& text, float scale)
 	{
 		float width = 0.0f;
 		for (char c : text)
@@ -632,7 +635,7 @@ namespace Dogo
 		}
 		return width;
 	}
-	void OpenGLRenderer2D::LoadFont(const std::string& fontPath, uint32_t size)
+	void Renderer2D::LoadFont(const std::string& fontPath, uint32_t size)
 	{
 
 		Characters.clear();
@@ -737,7 +740,7 @@ namespace Dogo
 		FT_Done_Face(face);
 		FT_Done_FreeType(ft);
 	}
-	void OpenGLRenderer2D::SubmitText(const std::string& text, float x, float y, float scale, const glm::vec3& color)
+	void Renderer2D::SubmitText(const std::string& text, float x, float y, float scale, const glm::vec3& color)
 	{
 		TextCommand cmd;
 		cmd.text = text;
@@ -749,15 +752,15 @@ namespace Dogo
 		m_TextCommands.push_back(cmd);
 	}
 
-	void OpenGLRenderer2D::RenderText()
+	void Renderer2D::RenderText()
 	{
 		if (m_TextCommands.empty()) return;
 
 		glDepthFunc(GL_ALWAYS);
 		m_TextShader->Bind();
-		m_TextShader->SetUniformMatrix4f("projection", m_Proj);
-		m_TextShader->SetUniformMatrix4f("view", m_View);
-		m_TextShader->SetUniform1i("text", 0);
+		Shader::SetUniformMatrix4f(m_TextShader->GetID(), "projection", m_Proj);
+		Shader::SetUniformMatrix4f(m_TextShader->GetID(), "view", m_View);
+		Shader::SetUniform1i(m_TextShader->GetID(), "text", 0);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_FontAtlasTextureID);
@@ -805,7 +808,7 @@ namespace Dogo
 				cursorX += (ch.advance >> 6) * cmd.scale;
 			}
 
-			m_TextShader->SetUniform3f("textColor", cmd.color);
+			Shader::SetUniform3f(m_TextShader->GetID(), "textColor", cmd.color);
 			glBindBuffer(GL_ARRAY_BUFFER, m_FontVertexBuffer);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(float), vertices.data());
 			glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size() / 4));
@@ -818,7 +821,7 @@ namespace Dogo
 		m_TextCommands.clear();
 	}
 
-	void OpenGLRenderer2D::BeginBatch()
+	void Renderer2D::BeginBatch()
 	{
 		QuadBufferPtr = QuadBuffer;
 		Quad_IndexCount = 0;
@@ -838,7 +841,7 @@ namespace Dogo
 		m_TextureSlotIndex = 1;
 	}
 
-	void OpenGLRenderer2D::EndBatch()
+	void Renderer2D::EndBatch()
 	{
 		GLsizeiptr quadsize =(uint32_t)((uint8_t*)QuadBufferPtr - (uint8_t*)QuadBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, m_QuadsVertexBuffer);

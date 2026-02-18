@@ -1,5 +1,5 @@
 #pragma once
-#include "Dogo/Renderer/Core/Texture.h"
+#include "Platform/OpenGL/Texture2D.h"
 #include "UV.h"
 namespace Dogo
 {
@@ -39,7 +39,7 @@ namespace Dogo
 
 		std::string m_Name;
 		glm::vec4 m_Color;
-		std::optional<std::unique_ptr<Texture>> m_Texture;
+		std::optional<std::unique_ptr<Texture2D>> m_Texture;
 		Pivot m_Pivot;
 		float m_Width, m_Height;
 		float m_PivotX, m_PivotY;

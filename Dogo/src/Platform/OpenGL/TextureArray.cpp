@@ -1,10 +1,10 @@
 #include "dgpch.h"
-#include "OpenGLTextureArray.h"
+#include "TextureArray.h"
 #include "Dogo/Utils/Logger.h"
 #include "stb/stb_image.h"
 namespace Dogo
 {
-    uint32_t OpenGLTextureArray::AddTexture(const std::string& filepath)
+    uint32_t TextureArray::AddTexture(const std::string& filepath)
 	{
         if (m_CurrentLayer >= m_MaxLayers) {
             DG_ERROR("Error: Texture array is full!\n");
@@ -26,18 +26,18 @@ namespace Dogo
             return -1;
         }
 
-        glBindTexture(GL_TEXTURE_2D_ARRAY, m_RendererID);
+        glBindTexture(GL_TEXTURE_2D_ARRAY, m_ID);
         glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, m_CurrentLayer, m_Width, m_Height, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
         stbi_image_free(data);
 
         return m_CurrentLayer++;
 	}
-    void OpenGLTextureArray::OpenGLTextureArray::AddWhiteLayer()
+    void TextureArray::AddWhiteLayer()
     {
         std::vector<uint32_t> whitePixels(m_Width * m_Height, 0xffffffff);
 
-        glBindTexture(GL_TEXTURE_2D_ARRAY, m_RendererID);
+        glBindTexture(GL_TEXTURE_2D_ARRAY, m_ID);
 
         glTexSubImage3D(
             GL_TEXTURE_2D_ARRAY,
@@ -51,17 +51,17 @@ namespace Dogo
 
         m_CurrentLayer++;
     }
-	void OpenGLTextureArray::Bind() const
+	void TextureArray::Bind() const
 	{
-        glBindTexture(GL_TEXTURE_2D_ARRAY, m_RendererID);
+        glBindTexture(GL_TEXTURE_2D_ARRAY, m_ID);
 	}
-    void OpenGLTextureArray::Clear() const
+    void TextureArray::Clear() const
     {
     }
-	OpenGLTextureArray::OpenGLTextureArray(uint32_t width, uint32_t height, uint32_t maxLayers) : TextureArray(width, height, maxLayers)
+    TextureArray::TextureArray(uint32_t width, uint32_t height, uint32_t maxLayers)
 	{
-		glGenTextures(1, &m_RendererID);
-		glBindTexture(GL_TEXTURE_2D_ARRAY, m_RendererID);
+		glGenTextures(1, &m_ID);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, m_ID);
 
 		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA8, m_Width, m_Height, m_MaxLayers, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 
@@ -72,8 +72,8 @@ namespace Dogo
 
 		m_CurrentLayer = 0;
 	}
-    OpenGLTextureArray::~OpenGLTextureArray()
+    TextureArray::~TextureArray()
     {
-        glDeleteTextures(1, &m_RendererID);
+        glDeleteTextures(1, &m_ID);
     }
 }

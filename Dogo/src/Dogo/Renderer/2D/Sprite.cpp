@@ -7,7 +7,7 @@ namespace Dogo
 	{
 		std::optional<TextureAsset> asset = AssetSystem::LoadTexture(filepath);
 		if (asset.has_value() && asset.value().IsValid())
-			m_Texture = std::unique_ptr<Texture>(Texture::Create(filepath));
+			m_Texture = std::make_unique<Texture2D>(filepath);
 		else
 			m_Texture = {};
 	}
@@ -29,7 +29,7 @@ namespace Dogo
 	{
 		std::optional<TextureAsset> asset = AssetSystem::LoadTexture(filepath);
 		if (asset.has_value() && asset.value().IsValid())
-			m_Texture = std::unique_ptr<Texture>(Texture::Create(filepath));
+			m_Texture = std::make_unique<Texture2D>(filepath);
 		else
 			m_Texture = {};
 		switch (pivot)

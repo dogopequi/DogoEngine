@@ -1,28 +1,28 @@
 #include "dgpch.h"
-#include "OpenGLTexture2D.h"
+#include "Texture2D.h"
 #include "Dogo/Utils/Logger.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
 namespace Dogo
 {
-	OpenGLTexture2D::OpenGLTexture2D(std::string_view filepath)
+	Texture2D::Texture2D(std::string_view filepath)
 	{
 		Init(filepath);
 	}
-	OpenGLTexture2D::~OpenGLTexture2D()
+	Texture2D::~Texture2D()
 	{
 		glDeleteTextures(1, &m_RendererID);
 	}
-	void OpenGLTexture2D::Bind(uint32_t slot) const
+	void Texture2D::Bind(uint32_t slot) const
 	{
 		glBindTextureUnit(slot, m_RendererID);
 	}
-	void OpenGLTexture2D::UpdateTexture(std::string_view filepath)
+	void Texture2D::UpdateTexture(std::string_view filepath)
 	{
 		Init(filepath);
 	}
-	void OpenGLTexture2D::Init(std::string_view filepath)
+	void Texture2D::Init(std::string_view filepath)
 	{
 		stbi_set_flip_vertically_on_load(1);
 		int width, height, channels;

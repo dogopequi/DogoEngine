@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include "Dogo/Renderer/Core/FrameBuffer.h"
+#include "Platform/OpenGL/FrameBuffer.h"
 #include "Dogo/Component/Components.h"
 namespace Dogo
 {

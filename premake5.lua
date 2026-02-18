@@ -223,6 +223,7 @@ project "Sandbox"
         "%{IncludeDir.DogoECS}",
         "%{IncludeDir.GLFW}",
         PHYSXinclude,
+        FreeTypeInclude,
         "%{IncludeDir.OpenAL}"
     }
     links {

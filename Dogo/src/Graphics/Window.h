@@ -1,7 +1,7 @@
 #pragma once
 #include "Dogo/Core.h"
 #include "Dogo/Events/Event.h"
-#include "Graphics/GraphicsContext.h"
+#include "Platform/OpenGL/GraphicsContext.h"
 #include "Dogo/Events/ApplicationEvent.h"
 #include "Dogo/Events/KeyEvent.h"
 #include "Dogo/Events/MouseEvent.h"
@@ -17,12 +17,12 @@
 namespace Dogo
 {
 	using EventCallbackFn = std::function<void(Event&)>;
-	class DogoWindow
+	class Window
 	{
 	public:
-		DogoWindow(int width, int height, std::string_view name);
-		~DogoWindow();
-		
+		Window(int width, int height, std::string_view name);
+		~Window();
+
 		bool WindowShouldClose() const;
 
 		double GetTime() const;
@@ -37,13 +37,12 @@ namespace Dogo
 		void ClearBuffers();
 		void Viewport(int x, int y, int z, int a);
 		void PollEvents();
-		void SetEventCallback(const EventCallbackFn& callback)  { EventCallback = callback; }
+		void SetEventCallback(const EventCallbackFn& callback) { EventCallback = callback; }
 		inline EventCallbackFn GetEventCallback() const { return EventCallback; }
 
 	private:
-		GLFWwindow* window;
+		GLFWwindow* m_Window;
 		EventCallbackFn EventCallback;
-		GraphicsContext* m_Context;
 		uint32_t m_Width{};
 		uint32_t m_Height{};
 		std::string m_Name{};

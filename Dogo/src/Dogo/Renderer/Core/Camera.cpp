@@ -13,7 +13,7 @@ namespace Dogo
             SetPosition({ a / 2.0f, b / 2.0f, 0.0f });
             SetOrthographic(a, b, c, d);
         }
-        m_RenderTarget = std::unique_ptr<Framebuffer>(Framebuffer::Create(800, 600));
+        m_RenderTarget = std::make_unique<Framebuffer>(800, 600);
         UpdateViewMatrix();
     }
 

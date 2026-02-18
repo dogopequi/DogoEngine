@@ -1,6 +1,6 @@
 #pragma once
 #include "glm/common.hpp"
-#include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Platform/OpenGL/Renderer2D.h"
 #include "Dogo/Utils/Logger.h"
 namespace Dogo
 {

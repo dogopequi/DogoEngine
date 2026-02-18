@@ -3,13 +3,13 @@
 #include "../vendor/DogoECS/include/DG_Component.h"
 #include "Dogo/Renderer/UI/UI.h"
 #include "Dogo/Input/Input.h"
-#include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Platform/OpenGL/Renderer2D.h"
 #include "Snake.h"
-Pong::Pong(const std::string& name, std::shared_ptr<Dogo::DogoWindow> window)
+Pong::Pong(const std::string& name, std::shared_ptr<Dogo::Window> window)
 	: Layer2D(name, window)
 {
 	DG_INFO("Example App starting");
-	Renderer = std::shared_ptr<Dogo::Renderer2D>(Dogo::Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl"));
+	Renderer = std::make_shared<Dogo::Renderer2D>(std::filesystem::path("../Dogo/resources/Shaders/2Dvertex.glsl"), std::filesystem::path("../Dogo/resources/Shaders/2Dpixel.glsl"));
 	Renderer->SetProjectionMatrix(glm::orthoRH_NO(
 		0.0f,
 		static_cast<float>(m_Window->GetWidth()),

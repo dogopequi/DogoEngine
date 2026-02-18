@@ -1,5 +1,5 @@
 #pragma once
-#include "Dogo/Renderer/Core/FrameBuffer.h"
+
 #ifdef DG_PLATFORM_WINDOWS
 #include <glad/glad.h>
 #else
@@ -8,11 +8,11 @@
 #endif
 namespace Dogo
 {
-	class OpenGLFrameBuffer : public Framebuffer
+	class Framebuffer
     {
     public:
-		OpenGLFrameBuffer(uint32_t width, uint32_t height);
-		~OpenGLFrameBuffer();
+        Framebuffer(uint32_t width, uint32_t height);
+		~Framebuffer();
         void Bind();
         void Unbind();
         void Resize(uint32_t width, uint32_t height);

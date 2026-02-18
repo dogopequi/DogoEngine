@@ -1,6 +1,6 @@
 #pragma once
 #include "Components.h"
-#include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Platform/OpenGL/Renderer2D.h"
 #include "Dogo/Renderer/2D/Sprite.h"
 namespace Dogo
 {

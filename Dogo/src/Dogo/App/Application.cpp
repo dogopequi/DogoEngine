@@ -2,19 +2,12 @@
 #include "Dogo/Core.h"
 #include "Application.h"
 #include "Dogo/Utils/Logger.h"
-#include "Platform/OpenGL/OpenGLBuffer.h"
-#include "Platform/OpenGL/OpenGLIndexBuffer.h"
-#include "Platform/OpenGL/OpenGLVertexArrayBuffer.h"
-#include "Dogo/Renderer/Core/Buffers.h"
-#include "Platform/OpenGL/OpenGLTexture2D.h"
+#include "Platform/OpenGL/Texture2D.h"
 #include "Dogo/Utils/Timer.h"
 #include <stb/stb_image.h>
 #include "Dogo/Utils/DogoMemory.h"
-#include "Dogo/Renderer/3D/AssimpModel.h"
-#include "Dogo/Renderer/3D/AssimpRenderer.h"
 #include "Dogo/Physics/DG_Physics.h"
 #include "Dogo/Actors/Actor.h"
-#include "Dogo/Renderer/3D/Line.h"
 #include "Dogo/Renderer/UI/UI.h"
 #include "Dogo/Audio/AudioEngine.h"
 #include <glm/glm.hpp>
@@ -29,9 +22,9 @@ namespace Dogo
 	}
 	Application::Application() : m_Pool(2)
 	{
-		m_Window = std::make_shared<Dogo::DogoWindow>(1280, 720, "Dogo Window");
+		m_Window = std::make_shared<Dogo::Window>(1280, 720, "Dogo Window");
 		m_Window->SetEventCallback(DG_BIND_EVENT_FN(Application::OnEvent));
-		m_Renderer = std::shared_ptr<Renderer2D>(Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl"));
+		m_Renderer = std::make_shared<Renderer2D>(std::filesystem::path("../Dogo/resources/Shaders/2Dvertex.glsl"), std::filesystem::path("../Dogo/resources/Shaders/2Dpixel.glsl"));
 		m_Camera = std::make_unique<Dogo::Camera>(Dogo::Camera::Orthographic(m_Window->GetWidth(), m_Window->GetHeight(), -1.0f, 1.0f));
 		m_Renderer->SetViewMatrix(m_Camera->GetViewMatrix());
 		m_Renderer->SetProjectionMatrix(m_Camera->GetProjectionMatrix());

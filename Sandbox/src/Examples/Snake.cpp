@@ -6,13 +6,13 @@
 #include "Dogo/Component/RigidBodyComponent.h"
 #include "Dogo/Renderer/2D/Sprite.h"
 #include "Dogo/Input/Input.h"
-#include "Dogo/Renderer/Core/Texture.h"
+#include "Platform/OpenGL/Texture2D.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include <glm/gtc/type_ptr.hpp>
 std::mt19937 SnakeGame::gen(std::random_device{}());
 
-SnakeGame::SnakeGame(const std::string& name, std::shared_ptr<Dogo::DogoWindow> window) : Layer2D(name, window)
+SnakeGame::SnakeGame(const std::string& name, std::shared_ptr<Dogo::Window> window) : Layer2D(name, window)
 {
 	startX = std::round(startX / square) * square;
 	startY = std::round(startY / square) * square;
@@ -51,20 +51,20 @@ SnakeGame::SnakeGame(const std::string& name, std::shared_ptr<Dogo::DogoWindow> 
 		applesToEat = 15;
 	}
 
-	head_down = Dogo::Texture::Create("../Dogo/resources/Textures/head_down.png");
-	head_up = Dogo::Texture::Create("../Dogo/resources/Textures/head_up.png");
-	head_left = Dogo::Texture::Create("../Dogo/resources/Textures/head_left.png");
-	head_right = Dogo::Texture::Create("../Dogo/resources/Textures/head_right.png");
-	tail_down = Dogo::Texture::Create("../Dogo/resources/Textures/tail_down.png");
-	tail_up = Dogo::Texture::Create("../Dogo/resources/Textures/tail_up.png");
-	tail_left = Dogo::Texture::Create("../Dogo/resources/Textures/tail_left.png");
-	tail_right = Dogo::Texture::Create("../Dogo/resources/Textures/tail_right.png");
-	body_vertical = Dogo::Texture::Create("../Dogo/resources/Textures/body_vertical.png");
-	body_topright = Dogo::Texture::Create("../Dogo/resources/Textures/body_topright.png");
-	body_topleft = Dogo::Texture::Create("../Dogo/resources/Textures/body_topleft.png");
-	body_bottomright = Dogo::Texture::Create("../Dogo/resources/Textures/body_bottomright.png");
-	body_bottomleft = Dogo::Texture::Create("../Dogo/resources/Textures/body_bottomleft.png");
-	body_horizontal = Dogo::Texture::Create("../Dogo/resources/Textures/body_horizontal.png");
+	head_down = new Dogo::Texture2D("../Dogo/resources/Textures/head_down.png");
+	head_up = new Dogo::Texture2D("../Dogo/resources/Textures/head_up.png");
+	head_left = new Dogo::Texture2D("../Dogo/resources/Textures/head_left.png");
+	head_right = new Dogo::Texture2D("../Dogo/resources/Textures/head_right.png");
+	tail_down = new Dogo::Texture2D("../Dogo/resources/Textures/tail_down.png");
+	tail_up = new Dogo::Texture2D("../Dogo/resources/Textures/tail_up.png");
+	tail_left = new Dogo::Texture2D("../Dogo/resources/Textures/tail_left.png");
+	tail_right = new Dogo::Texture2D("../Dogo/resources/Textures/tail_right.png");
+	body_vertical = new Dogo::Texture2D("../Dogo/resources/Textures/body_vertical.png");
+	body_topright = new Dogo::Texture2D("../Dogo/resources/Textures/body_topright.png");
+	body_topleft = new Dogo::Texture2D("../Dogo/resources/Textures/body_topleft.png");
+	body_bottomright = new Dogo::Texture2D("../Dogo/resources/Textures/body_bottomright.png");
+	body_bottomleft = new Dogo::Texture2D("../Dogo/resources/Textures/body_bottomleft.png");
+	body_horizontal = new Dogo::Texture2D("../Dogo/resources/Textures/body_horizontal.png");
 
 
 	glm::vec2 posapple = GetRandomPositionInBounds();

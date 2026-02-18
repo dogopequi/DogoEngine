@@ -1,8 +1,8 @@
 #pragma once
 #include <Dogo/Core.h>
 #include "Dogo/Events/Event.h"
-#include "Graphics/DogoWindow.h"
-#include "Dogo/Renderer/Core/FrameBuffer.h"
+#include "Graphics/Window.h"
+#include "Platform/OpenGL/FrameBuffer.h"
 #include "Dogo/Scene/Scene.h"
 #include "Dogo/Systems/System.h"
 namespace Dogo
@@ -11,7 +11,7 @@ namespace Dogo
 	{
 	public:
 		friend class Application;
-		Layer2D(const std::string& name, const std::shared_ptr<DogoWindow>& window);
+		Layer2D(const std::string& name, const std::shared_ptr<Window>& window);
 		virtual ~Layer2D();
 
 		virtual void OnAttach() {}
@@ -28,7 +28,7 @@ namespace Dogo
 		virtual void Submit() {}
 		std::string m_Name;
 		std::unique_ptr<Framebuffer> m_FrameBuffer;
-		std::shared_ptr<DogoWindow> m_Window;
+		std::shared_ptr<Window> m_Window;
 		std::shared_ptr<Scene> m_Scene;
 		std::shared_ptr<Renderer2D> m_Renderer;
 	};

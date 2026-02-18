@@ -1,11 +1,11 @@
 #pragma once
 #include "Dogo/App/Layer.h"
 #include "Dogo/Utils/Logger.h"
-#include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Platform/OpenGL/Renderer2D.h"
 #include "Dogo/Actors/Actor.h"
 #include "Dogo/Scene/Scene.h"
-#include "Graphics/DogoWindow.h"
-#include "Dogo/Renderer/Core/FrameBuffer.h"
+#include "Graphics/Window.h"
+#include "Platform/OpenGL/FrameBuffer.h"
 #include "imgui.h"
 #include "Dogo/Systems/AssetSystem.h"
 #include "Dogo/Component/AudioSourceComponent.h"
@@ -17,7 +17,7 @@ enum class LEVEL
 class SnakeGame : public Dogo::Layer2D
 {
 public:
-	SnakeGame(const std::string& name, std::shared_ptr<Dogo::DogoWindow> window);
+	SnakeGame(const std::string& name, std::shared_ptr<Dogo::Window> window);
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate(double delta) override;
@@ -49,20 +49,20 @@ private:
 	uint32_t applesToEat = { 5 };
 	glm::vec2 dir = glm::vec2(0.0f, square);
 
-	Dogo::Texture* head_down;
-	Dogo::Texture* head_up;
-	Dogo::Texture* head_left;
-	Dogo::Texture* head_right;
-	Dogo::Texture* tail_down;
-	Dogo::Texture* tail_up;
-	Dogo::Texture* tail_left;
-	Dogo::Texture* tail_right;
-	Dogo::Texture* body_vertical;
-	Dogo::Texture* body_topright;
-	Dogo::Texture* body_topleft;
-	Dogo::Texture* body_bottomright;
-	Dogo::Texture* body_bottomleft;
-	Dogo::Texture* body_horizontal;
+	Dogo::Texture2D* head_down;
+	Dogo::Texture2D* head_up;
+	Dogo::Texture2D* head_left;
+	Dogo::Texture2D* head_right;
+	Dogo::Texture2D* tail_down;
+	Dogo::Texture2D* tail_up;
+	Dogo::Texture2D* tail_left;
+	Dogo::Texture2D* tail_right;
+	Dogo::Texture2D* body_vertical;
+	Dogo::Texture2D* body_topright;
+	Dogo::Texture2D* body_topleft;
+	Dogo::Texture2D* body_bottomright;
+	Dogo::Texture2D* body_bottomleft;
+	Dogo::Texture2D* body_horizontal;
 
 
 
@@ -73,7 +73,7 @@ private:
 
 	std::uniform_int_distribution<> distCell;
 
-	std::deque<std::pair<glm::vec2, Dogo::Texture*>> snake;
+	std::deque<std::pair<glm::vec2, Dogo::Texture2D*>> snake;
 	size_t snakesize = { 7 };
 
 	std::shared_ptr<Dogo::Camera> m_Camera;

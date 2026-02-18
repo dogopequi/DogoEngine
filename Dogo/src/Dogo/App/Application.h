@@ -1,14 +1,14 @@
 #pragma once
 #include "Dogo/Core.h"
 #include "Dogo/App/LayerStack.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+#include "Platform/OpenGL/Shader.h"
 #include "Dogo/Events/Event.h"
 #include "Dogo/Events/ApplicationEvent.h"
 #include "Dogo/Events/KeyEvent.h"
 #include "Dogo/Events/MouseEvent.h"
 #include "Dogo/Renderer/Core/Camera.h"
-#include "Graphics/DogoWindow.h"
-#include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Graphics/Window.h"
+#include "Platform/OpenGL/Renderer2D.h"
 #include "Dogo/Utils/ThreadPool.h"
 #include "Dogo/Component/Components.h"
 #include "Dogo/Renderer/Core/Camera.h"
@@ -53,7 +53,7 @@ namespace Dogo
 	protected:
 		DogoECS::DG_EntityManager* entityManager;
 		DogoECS::DG_ComponentManager* componentManager;
-		std::shared_ptr<DogoWindow> m_Window;
+		std::shared_ptr<Window> m_Window;
 		LayerStack m_LayerStack;
 		std::shared_ptr<Renderer2D> m_Renderer;
 		std::atomic<bool> m_Running{ true };

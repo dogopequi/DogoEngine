@@ -4,12 +4,12 @@
 #include "backends/imgui_impl_opengl3.h"
 namespace Dogo
 {
-	Layer2D::Layer2D(const std::string& name, const std::shared_ptr<DogoWindow>& window)
+	Layer2D::Layer2D(const std::string& name, const std::shared_ptr<Window>& window)
 		: m_Name(name), m_Window(window)
 	{
-		m_FrameBuffer = std::unique_ptr<Framebuffer>(Framebuffer::Create(m_Window->GetWidth(), m_Window->GetHeight()));
+		m_FrameBuffer = std::make_unique<Framebuffer>(m_Window->GetWidth(), m_Window->GetHeight());
 		m_Scene = std::make_shared<Scene>();
-		m_Renderer = std::shared_ptr<Dogo::Renderer2D>(Dogo::Renderer2D::Create(L"../Dogo/resources/Shaders/2Dvertex.glsl", L"../Dogo/resources/Shaders/2Dpixel.glsl"));
+		m_Renderer = std::make_shared<Dogo::Renderer2D>(std::filesystem::path("../Dogo/resources/Shaders/2Dvertex.glsl"), std::filesystem::path("../Dogo/resources/Shaders/2Dpixel.glsl"));
 	}
 	void Layer2D::OnResizeNotify()
 	{

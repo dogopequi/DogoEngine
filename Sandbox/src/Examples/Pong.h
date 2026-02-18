@@ -1,13 +1,13 @@
 #pragma once
 #include "Dogo/App/Layer.h"
 #include "Dogo/Utils/Logger.h"
-#include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Platform/OpenGL/Renderer2D.h"
 #include "Dogo/Renderer/UI/UI.h"
-#include "Graphics/DogoWindow.h"
+#include "Graphics/Window.h"
 class Pong : public Dogo::Layer2D
 {
 public:
-	Pong(const std::string& name, std::shared_ptr<Dogo::DogoWindow> window);
+	Pong(const std::string& name, std::shared_ptr<Dogo::Window> window);
 	void OnAttach() override;
 	void OnDetach() override;
 	void OnUpdate(double delta) override;
@@ -18,7 +18,7 @@ public:
 	std::shared_ptr<Dogo::DogoUI::UIButton> startbutton;
 	std::shared_ptr<Dogo::DogoUI::UIButton> pausebutton;
 	std::shared_ptr<Dogo::DogoUI::UIPanel> panel;
-	Dogo::DogoWindow* window;
+	Dogo::Window* window;
 	double time;
 	// game
 	float player{};

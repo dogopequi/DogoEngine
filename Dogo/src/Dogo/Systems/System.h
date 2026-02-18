@@ -1,5 +1,5 @@
 #pragma once
-#include "Dogo/Renderer/2D/Renderer2D.h"
+#include "Platform/OpenGL/Renderer2D.h"
 namespace Dogo
 {
 
